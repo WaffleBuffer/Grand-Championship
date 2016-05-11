@@ -48,7 +48,7 @@ public class Actor extends Observable{
 		traits.add(BasicTraitFactory.getBasicTrait(ITrait.WILL, will));
 	}
 	
-	public void addIStatusr(IStatus status) {
+	public void addIStatus(IStatus status) {
 		this.status.add(status);
 		
 		Iterator<ITraitModifier> traitModifierIter = status.traitModifiers().iterator();
@@ -65,11 +65,58 @@ public class Actor extends Observable{
 				
 				if (currentActorTrait.traitType() == currentModifiedTrait.traitType()) {
 					
-					currentActorTrait.setValue(currentModifiedTrait.value() + currentModifiedTrait.value());
+					currentActorTrait.setValue(currentActorTrait.value() + currentModifiedTrait.value());
 					return;
 				}
 			}
 		}
+	}
+	
+	public void removeStatus (IStatus status) {
+		
+		Iterator<ITraitModifier> traitModifierIter = status.traitModifiers().iterator();
+		
+		while (traitModifierIter.hasNext()) {
+			
+			ITraitModifier currentModifiedTrait = traitModifierIter.next();
+			
+			Iterator<ITrait> traitsIter = this.traits.iterator();
+			
+			while (traitsIter.hasNext()) {
+			
+				ITrait currentActorTrait = traitsIter.next();
+				
+				if (currentActorTrait.traitType() == currentModifiedTrait.traitType()) {
+					
+					currentActorTrait.setValue(currentActorTrait.value() - currentModifiedTrait.value());
+					this.status.remove(status);
+					return;
+				}
+			}
+		}	
+	}
+	
+	public void removeAllStatus (IStatus status) {
+		
+		Iterator<ITraitModifier> traitModifierIter = status.traitModifiers().iterator();
+		
+		while (traitModifierIter.hasNext()) {
+			
+			ITraitModifier currentModifiedTrait = traitModifierIter.next();
+			
+			Iterator<ITrait> traitsIter = this.traits.iterator();
+			
+			while (traitsIter.hasNext()) {
+			
+				ITrait currentActorTrait = traitsIter.next();
+				
+				if (currentActorTrait.traitType() == currentModifiedTrait.traitType()) {
+					
+					currentActorTrait.setValue(currentActorTrait.value() - currentModifiedTrait.value());
+					this.status.remove(status);
+				}
+			}
+		}	
 	}
 	
 	public String name() {
