@@ -3,4 +3,4 @@
  * @author tmedard
  *
  */
-package character;
+package actor;
