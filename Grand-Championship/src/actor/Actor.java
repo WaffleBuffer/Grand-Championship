@@ -7,9 +7,10 @@ import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Set;
 
+import actor.characteristics.status.IStatus;
+import actor.characteristics.status.traitModifier.ITraitModifier;
 import actor.characteristics.traits.BasicTraitFactory;
 import actor.characteristics.traits.ITrait;
-import actor.characteristics.traitsModifier.ITraitModifier;
 
 public class Actor extends Observable{
 	
@@ -18,14 +19,14 @@ public class Actor extends Observable{
 	private String name;
 	
 	private Set<ITrait> traits;
-	private Collection<ITraitModifier> traitModifiers;
+	private Collection<IStatus> status;
 	
 	public Actor (String name) throws Exception {
 		super();
 		
 		this.name = name;
 		this.traits = new HashSet<ITrait>();
-		this.traitModifiers = new LinkedList<ITraitModifier>();
+		this.status = new LinkedList<IStatus>();
 		
 		traits.add(BasicTraitFactory.getBasicTrait(ITrait.VITALITY, DEFAULT_TRAIT_VALUE));
 		traits.add(BasicTraitFactory.getBasicTrait(ITrait.STRENGTH, DEFAULT_TRAIT_VALUE));
@@ -47,17 +48,26 @@ public class Actor extends Observable{
 		traits.add(BasicTraitFactory.getBasicTrait(ITrait.WILL, will));
 	}
 	
-	public void addTraitModifier(ITraitModifier traitModifier) {
-		traitModifiers.add(traitModifier);
+	public void addIStatusr(IStatus status) {
+		this.status.add(status);
 		
-		Iterator<ITrait> traitIter = traits.iterator();
+		Iterator<ITraitModifier> traitModifierIter = status.traitModifiers().iterator();
 		
-		while (traitIter.hasNext()) {
-			ITrait currentTrait = traitIter.next();
+		while (traitModifierIter.hasNext()) {
 			
-			if (currentTrait.traitType() == traitModifier.traitType()) {
+			ITraitModifier currentModifiedTrait = traitModifierIter.next();
+			
+			Iterator<ITrait> traitsIter = this.traits.iterator();
+			
+			while (traitsIter.hasNext()) {
+			
+				ITrait currentActorTrait = traitsIter.next();
 				
-				currentTrait.setValue(currentTrait.value() + traitModifier.value());
+				if (currentActorTrait.traitType() == currentModifiedTrait.traitType()) {
+					
+					currentActorTrait.setValue(currentModifiedTrait.value() + currentModifiedTrait.value());
+					return;
+				}
 			}
 		}
 	}
@@ -75,6 +85,6 @@ public class Actor extends Observable{
 		return "Character [\n"
 				+ "name=" + name + ",\n"
 				+ "traits=" + traits + "\n"
-				+ "traits modifiers=" + traitModifiers + "]";
+				+ "status=" + status + "]";
 	}
 }

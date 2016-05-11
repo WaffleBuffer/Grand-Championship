@@ -3,4 +3,4 @@
  * @author tmedard
  *
  */
-package actor.characteristics.traitsModifier;
+package actor.characteristics.status.traitModifier;

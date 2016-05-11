@@ -1,15 +1,13 @@
-package actor.characteristics.traitsModifier;
+package actor.characteristics.status.traitModifier;
 
 import actor.characteristics.traits.ITrait;
 
 public class BasicTraitModifier implements ITraitModifier {
 
-	private String name;
 	private int    traitType;
 	private int    value;
 	
-	public BasicTraitModifier(String name, int traitType, int value) {
-		this.name      = name;
+	public BasicTraitModifier(int traitType, int value) {
 		this.traitType = traitType;
 		this.value     = value;
 	}
@@ -20,17 +18,12 @@ public class BasicTraitModifier implements ITraitModifier {
 	}
 
 	@Override
-	public String name() {
-		return name;
-	}
-
-	@Override
 	public int value() {
 		return value;
 	}
 
 	@Override
 	public String toString() {
-		return name + " : " + value + " " + ITrait.TRAITS_STR[traitType];
+		return value + " " + ITrait.TRAITS_STR[traitType];
 	}
 }
