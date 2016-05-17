@@ -4,10 +4,12 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 import actor.Actor;
-import actor.characteristics.status.Status;
+import actor.characteristics.status.IStatus;
+import actor.characteristics.status.OneTimeStatus;
 import actor.characteristics.status.traitModifier.BasicTraitModifier;
 import actor.characteristics.status.traitModifier.ITraitModifier;
 import actor.characteristics.traits.ITrait;
+import objects.equipables.weapons.meleWeapons.MeleWeapon;
 
 public class ActorTest {
 
@@ -18,13 +20,19 @@ public class ActorTest {
 			Collection<ITraitModifier> modifiedTraits = new LinkedList<ITraitModifier>();
 			modifiedTraits.add(new BasicTraitModifier(ITrait.DEXTERITY, -2));
 			
-			Status sleepy = new Status("Sleepy", "You are not really awaken (not like the force)", modifiedTraits);
+			OneTimeStatus sleepy = new OneTimeStatus("Sleepy", "This cannot be so boring right?", modifiedTraits);
 			bob.addIStatus(sleepy);
 			
-			System.out.println(bob);
+			Collection<ITraitModifier> weaponModifiedTraits = new LinkedList<ITraitModifier>();
+			weaponModifiedTraits.add(new BasicTraitModifier(ITrait.STRENGTH, +1));
+			OneTimeStatus weaponStatus = new OneTimeStatus("Better strength", "Equiping this makes you feel stronger", weaponModifiedTraits);
 			
-			bob.removeStatus(sleepy);
+			Collection<IStatus> weaponStatuss = new LinkedList<IStatus>();
+			weaponStatuss.add(weaponStatus);
+			MeleWeapon spoo = new MeleWeapon(null, "sppon", "It's a spoon", 1, 1, 0, 3, weaponStatuss);
 			
+			bob.pick(spoo);
+			spoo.equipe(bob);
 			System.out.println(bob);
 		} 
 		catch (Exception e) {
