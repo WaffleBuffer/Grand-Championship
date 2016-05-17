@@ -9,6 +9,7 @@ import actor.characteristics.status.OneTimeStatus;
 import actor.characteristics.status.traitModifier.BasicTraitModifier;
 import actor.characteristics.status.traitModifier.ITraitModifier;
 import actor.characteristics.traits.ITrait;
+import objects.equipables.IEquipable;
 import objects.equipables.weapons.meleWeapons.MeleWeapon;
 
 public class ActorTest {
@@ -29,10 +30,10 @@ public class ActorTest {
 			
 			Collection<IStatus> weaponStatuss = new LinkedList<IStatus>();
 			weaponStatuss.add(weaponStatus);
-			MeleWeapon spoo = new MeleWeapon(null, "sppon", "It's a spoon", 1, 1, 0, 3, weaponStatuss);
+			MeleWeapon spoon = new MeleWeapon(null, "spoon", "It's a spoon", 1, 1, 0, 3, weaponStatuss, IEquipable.ONE_HANDE);
 			
-			bob.pick(spoo);
-			spoo.equipe(bob);
+			bob.pick(spoon);
+			spoon.equipe(bob);
 			System.out.println(bob);
 		} 
 		catch (Exception e) {
