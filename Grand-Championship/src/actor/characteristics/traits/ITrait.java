@@ -2,19 +2,36 @@ package actor.characteristics.traits;
 
 public interface ITrait {
 	
-	public static final int VITALITY     = 0;
-	public static final int STRENGTH     = 1;
-	public static final int DEXTERITY    = 2;
-	public static final int CONSTITUTION = 3;
-	public static final int WILL         = 4;
+	public enum TraitType {
+		VITALITY, 
+		STRENGTH, 
+		DEXTERITY, 
+		CONSTITUTION, 
+		WILL;
+	}
 	
-	public static final String[] TRAITS_STR = {"Vitality", "Strength", "Dexterity", "Constitution", "Will"};
+	public static String getTraitName (final TraitType type) throws Exception{
+		switch (type) {
+			case VITALITY :
+					return "Vitality";
+			case STRENGTH :
+					return "Strength";
+			case DEXTERITY : 
+					return "Dexterity";
+			case CONSTITUTION :
+					return "Constitution";
+			case WILL :
+					return "Will";
+			default :
+				throw new Exception ("Unsupported type of BasicTrait");
+		}
+	}
 
-	public String name();
+	public String getName();
 	
-	public int traitType();
+	public TraitType getTraitType();
 	
-	public int value();
+	public int getValue();
 	
 	public void setValue(int value);
 }

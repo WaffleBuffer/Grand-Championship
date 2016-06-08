@@ -37,12 +37,12 @@ public class EachTurnStatus implements IStatus {
 
 	@Override
 	public String toString() {
-		return "\n" + name + " :\n" + description + "\n" + traitModifiers;
+		return name + " : " + description + System.lineSeparator() + traitModifiers;
 	}
 
 	@Override
-	public int type() {
-		return IStatus.EACH_TURN_STATUS;
+	public StatusType type() {
+		return IStatus.StatusType.EACH_TURN;
 	}
 	
 	@Override
@@ -59,9 +59,9 @@ public class EachTurnStatus implements IStatus {
 			
 				ITrait currentActorTrait = traitsIter.next();
 				
-				if (currentActorTrait.traitType() == currentModifiedTrait.traitType()) {
+				if (currentActorTrait.getTraitType() == currentModifiedTrait.getTraitType()) {
 					
-					currentActorTrait.setValue(currentActorTrait.value() - currentModifiedTrait.value());
+					currentActorTrait.setValue(currentActorTrait.getValue() - currentModifiedTrait.getValue());
 				}
 			}
 		}

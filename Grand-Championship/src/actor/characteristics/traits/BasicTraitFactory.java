@@ -1,19 +1,21 @@
 package actor.characteristics.traits;
 
+import actor.characteristics.traits.ITrait.TraitType;
+
 public class BasicTraitFactory {
 
-	public static BasicTrait getBasicTrait (int type, int value) throws Exception{
+	public static BasicTrait getBasicTrait (final TraitType type, final int value) throws Exception{
 		switch (type) {
-			case ITrait.VITALITY :
-					return new BasicTrait(ITrait.TRAITS_STR[ITrait.VITALITY], ITrait.VITALITY, value);
-			case ITrait.STRENGTH :
-					return new BasicTrait(ITrait.TRAITS_STR[ITrait.STRENGTH], ITrait.STRENGTH, value);
-			case ITrait.DEXTERITY : 
-					return new BasicTrait(ITrait.TRAITS_STR[ITrait.DEXTERITY], ITrait.DEXTERITY, value);
-			case ITrait.CONSTITUTION :
-					return new BasicTrait(ITrait.TRAITS_STR[ITrait.CONSTITUTION], ITrait.CONSTITUTION, value);
-			case ITrait.WILL :
-					return new BasicTrait(ITrait.TRAITS_STR[ITrait.WILL], ITrait.WILL, value);
+			case VITALITY :
+					return new BasicTrait(ITrait.getTraitName(type), TraitType.VITALITY, value);
+			case STRENGTH :
+					return new BasicTrait(ITrait.getTraitName(type), TraitType.STRENGTH, value);
+			case DEXTERITY : 
+					return new BasicTrait(ITrait.getTraitName(type), TraitType.DEXTERITY, value);
+			case CONSTITUTION :
+					return new BasicTrait(ITrait.getTraitName(type), TraitType.CONSTITUTION, value);
+			case WILL :
+					return new BasicTrait(ITrait.getTraitName(type), TraitType.WILL, value);
 			default :
 				throw new Exception ("Unsupported type of BasicTrait");
 		}

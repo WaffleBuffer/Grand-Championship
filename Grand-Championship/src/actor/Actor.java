@@ -13,6 +13,7 @@ import actor.characteristics.status.OneTimeStatus;
 import actor.characteristics.status.traitModifier.ITraitModifier;
 import actor.characteristics.traits.BasicTraitFactory;
 import actor.characteristics.traits.ITrait;
+import gameExceptions.GameException;
 import objects.IObject;
 
 /**
@@ -32,7 +33,7 @@ public class Actor extends Observable{
 	private Collection<OneTimeStatus> oneTimestatus;
 	private Collection<EachTurnStatus> eachTurnStatus;
 	
-	private int maxWeight;
+	private final int maxWeight;
 	private int currentWeight;
 	private Collection<IObject> inventory;
 	
@@ -47,11 +48,11 @@ public class Actor extends Observable{
 		this.currentWeight = 0;
 		this.inventory = new LinkedList<IObject>();
 		
-		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.VITALITY, DEFAULT_TRAIT_VALUE));
-		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.STRENGTH, DEFAULT_TRAIT_VALUE));
-		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.DEXTERITY, DEFAULT_TRAIT_VALUE));
-		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.CONSTITUTION, DEFAULT_TRAIT_VALUE));
-		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.WILL, DEFAULT_TRAIT_VALUE));
+		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.VITALITY, DEFAULT_TRAIT_VALUE));
+		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.STRENGTH, DEFAULT_TRAIT_VALUE));
+		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.DEXTERITY, DEFAULT_TRAIT_VALUE));
+		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.CONSTITUTION, DEFAULT_TRAIT_VALUE));
+		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.WILL, DEFAULT_TRAIT_VALUE));
 		
 		currentCharacteristics = new HashSet<ITrait>(basicCharacteristics);
 	}
@@ -66,11 +67,11 @@ public class Actor extends Observable{
 		this.currentWeight = 0;
 		this.inventory = new LinkedList<IObject>();
 		
-		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.VITALITY, Vitality));
-		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.STRENGTH, strength));
-		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.DEXTERITY, dexterity));
-		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.CONSTITUTION, constitution));
-		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.WILL, will));
+		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.VITALITY, Vitality));
+		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.STRENGTH, strength));
+		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.DEXTERITY, dexterity));
+		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.CONSTITUTION, constitution));
+		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.WILL, will));
 		
 		currentCharacteristics = new HashSet<ITrait>(basicCharacteristics);
 	}
@@ -78,10 +79,10 @@ public class Actor extends Observable{
 	public void addIStatus(IStatus status) throws Exception {
 		
 		switch (status.type()) {
-		case IStatus.ONE_TIME_STATUS :
+		case ONE_TIME :
 			this.oneTimestatus.add((OneTimeStatus) status);
 			break;
-		case IStatus.EACH_TURN_STATUS :
+		case EACH_TURN :
 			this.eachTurnStatus.add((EachTurnStatus) status);
 			break;
 		default :
@@ -100,9 +101,9 @@ public class Actor extends Observable{
 			
 				ITrait currentActorTrait = traitsIter.next();
 				
-				if (currentActorTrait.traitType() == currentModifiedTrait.traitType()) {
+				if (currentActorTrait.getTraitType() == currentModifiedTrait.getTraitType()) {
 					
-					currentActorTrait.setValue(currentActorTrait.value() + currentModifiedTrait.value());
+					currentActorTrait.setValue(currentActorTrait.getValue() + currentModifiedTrait.getValue());
 					return;
 				}
 			}
@@ -112,11 +113,11 @@ public class Actor extends Observable{
 	public void removeStatus (IStatus status) throws Exception {
 		
 		switch (status.type()) {
-		case IStatus.ONE_TIME_STATUS :
+		case ONE_TIME :
 			this.oneTimestatus.remove((OneTimeStatus) status);
 			((OneTimeStatus) status).removeEffect(this);
 			break;
-		case IStatus.EACH_TURN_STATUS :
+		case EACH_TURN :
 			this.eachTurnStatus.remove((EachTurnStatus) status);
 			break;
 		default :
@@ -130,13 +131,30 @@ public class Actor extends Observable{
 
 	@Override
 	public String toString() {
-		return "Character [\n"
-				+ "name=" + name + ",\n"
-				+ "traits=" + currentCharacteristics + "\n"
-				+ "status=" + oneTimestatus + "\n" +
-				"on each turn status=" + eachTurnStatus + "\n"
-				+ ", maxWeight=" + maxWeight + ", currentWeight=" + currentWeight + "\n" + 
-				"inventory=" + inventory + "]";
+		String actorString = "Character " + System.lineSeparator()
+		+ name + System.lineSeparator()
+		+ currentCharacteristics + System.lineSeparator();
+		
+		if (!oneTimestatus.isEmpty()) {
+			actorString += "Status : " + System.lineSeparator();
+			for (OneTimeStatus currentOneTimeStatus : oneTimestatus) {
+				
+				actorString += currentOneTimeStatus + System.lineSeparator();
+			}
+		}
+		
+		if (!eachTurnStatus.isEmpty()) {
+			actorString += "Each turn status : " + System.lineSeparator();
+			for (EachTurnStatus currentEachTurnStatus : eachTurnStatus) {
+				
+				actorString += currentEachTurnStatus + System.lineSeparator();
+			}
+		}
+		
+		actorString += "Weight = " + currentWeight + "/" + maxWeight + " Kg" + System.lineSeparator() + 
+		"inventory = " + System.lineSeparator() + inventory;
+		
+		return actorString;
 	}
 
 	public Set<ITrait> currentCharacteristics() {
@@ -151,14 +169,14 @@ public class Actor extends Observable{
 		return currentWeight;
 	}
 	
-	public String pick (IObject object) {
+	public String pick (IObject object) throws GameException {
 		if (this.currentWeight <= object.weight()) {
 			this.inventory.add(object);
 			this.currentWeight += object.weight();
 			return  object.name() + " picked";
 		}
 		else {
-			return object.name() + " is too heavy";
+			throw new GameException("Object is too heavy", GameException.ExceptionType.OBJECT_EXCEPTION);
 		}
 	}
 	

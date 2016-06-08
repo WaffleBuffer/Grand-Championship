@@ -1,8 +1,5 @@
 /**
- * 
- */
-/**
  * @author tmedard
  *
  */
-package weapons;
+package gameExceptions;

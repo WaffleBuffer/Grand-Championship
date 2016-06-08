@@ -2,6 +2,7 @@ package objects.equipables.weapons.meleWeapons;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 import actor.Actor;
 import actor.characteristics.status.IStatus;
@@ -16,15 +17,19 @@ public class MeleWeapon implements IWeapon {
 	private String description;
 	private int weight;
 	private int value;
-	private int damageType;
+	private DamageType damageType;
 	private int damageValue;
 	private Collection<IStatus> statusApllied;
-	private int occupiedPlace;
+	private OccupiedPlace occupiedPlace;
 	
 	public MeleWeapon(Collection<ITrait> requiredTraits, String name, String description, int weight, int value,
-			int damageType, int damageValue, Collection<IStatus> statusApllied, int occupiedPlace) {
+			DamageType damageType, int damageValue, Collection<IStatus> statusApllied, OccupiedPlace occupiedPlace) {
 		super();
+		
 		this.requiredTraits = requiredTraits;
+		if (requiredTraits == null) {
+			this.requiredTraits = new LinkedList<ITrait>();
+		}
 		this.name = name;
 		this.description = description;
 		this.weight = weight;
@@ -32,6 +37,9 @@ public class MeleWeapon implements IWeapon {
 		this.damageType = damageType;
 		this.damageValue = damageValue;
 		this.statusApllied = statusApllied;
+		if (statusApllied == null) {
+			this.statusApllied = new LinkedList<IStatus>();
+		}
 		this.occupiedPlace = occupiedPlace;
 	}
 
@@ -61,7 +69,7 @@ public class MeleWeapon implements IWeapon {
 	}
 
 	@Override
-	public int damageType() {
+	public DamageType damageType() {
 		return damageType;
 	}
 
@@ -94,14 +102,28 @@ public class MeleWeapon implements IWeapon {
 
 	@Override
 	public String toString() {
-		return "MeleWeapon [requiredTraits=" + requiredTraits + ", name=" + name + ", description=" + description
-				+ ", weight=" + weight + ", value=" + value + ", damageType=" + damageType + ", damageValue="
-				+ damageValue + ", emplacement=" + IEquipable.OCCUPIED_PLACE_STR[occupiedPlace] + "\n" +
-				"statusApllied=" + statusApllied + "]";
+		try {
+			String weaponStr = name + " : " + description + System.lineSeparator() +
+					IEquipable.getOccupiedPlaceString(occupiedPlace) + System.lineSeparator() +
+					 + damageValue + " " + IWeapon.getDamageTypeString(damageType) + " damage" + System.lineSeparator() +
+					weight + " Kg, " + value + " $" + System.lineSeparator();
+			
+			if (!requiredTraits.isEmpty()) {
+				weaponStr += "required : " + requiredTraits + System.lineSeparator();
+			}
+			if (!statusApllied.isEmpty()) {
+				weaponStr += "applies" + statusApllied + System.lineSeparator();
+			}
+			return  weaponStr;
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	@Override
-	public int occupiedPlace() {
+	public OccupiedPlace occupiedPlace() {
 		return occupiedPlace;
 	}
 }

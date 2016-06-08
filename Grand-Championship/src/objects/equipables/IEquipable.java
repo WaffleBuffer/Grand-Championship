@@ -8,12 +8,26 @@ import objects.IObject;
 
 public interface IEquipable extends IObject {
 	
-	public static final int ONE_HANDE  = 0;
-	public static final int LEGS       = 1;
-	public static final int BOTH_HANDE  = 2;
-	public static final int HEAD       = 3;
-	public static final int TORSO      = 4;
-	public static final String[] OCCUPIED_PLACE_STR = {"One hande", "Legs", "Both handes", "Head", "Torso"};
+	public enum OccupiedPlace {
+		ONE_HAND, LEGS, BOTH_HANDS, HEAD, TORSO
+	}
+	
+	public static String getOccupiedPlaceString (final OccupiedPlace occupiedPlace) throws Exception {
+		switch (occupiedPlace) {
+		case ONE_HAND :
+			return "One hand";
+		case LEGS :
+			return "Legs";
+		case BOTH_HANDS :
+			return "Both Hands";
+		case HEAD :
+			return "Head";
+		case TORSO :
+			return "Torso";
+		default :
+			throw new Exception ("Unsupported place");
+		}
+	}
 
 	public Collection<ITrait> requiredTraits();
 	
@@ -21,5 +35,5 @@ public interface IEquipable extends IObject {
 	
 	public void desequipe(Actor target) throws Exception;
 	
-	public int occupiedPlace ();
+	public OccupiedPlace occupiedPlace ();
 }

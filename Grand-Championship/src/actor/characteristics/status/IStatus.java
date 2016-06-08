@@ -7,11 +7,11 @@ import actor.characteristics.status.traitModifier.ITraitModifier;
 
 public interface IStatus {
 	
-	public static final int ONE_TIME_STATUS = 0;
+	public enum StatusType {
+		ONE_TIME, EACH_TURN
+	}
 	
-	public static final int EACH_TURN_STATUS = 1;
-	
-	public int type();
+	public StatusType type();
 	
 	public String name();
 	

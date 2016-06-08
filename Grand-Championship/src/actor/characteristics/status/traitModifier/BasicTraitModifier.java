@@ -1,29 +1,38 @@
 package actor.characteristics.status.traitModifier;
 
 import actor.characteristics.traits.ITrait;
+import actor.characteristics.traits.ITrait.TraitType;
 
 public class BasicTraitModifier implements ITraitModifier {
 
-	private int    traitType;
-	private int    value;
+	private final TraitType traitType;
+	private final int value;
 	
-	public BasicTraitModifier(int traitType, int value) {
+	public BasicTraitModifier(final TraitType traitType, final int value) {
 		this.traitType = traitType;
 		this.value     = value;
 	}
 	
+	public static final String[] TRAITS_STR = {"Vitality", "Strength", "Dexterity", "Constitution", "Will"};
+	
 	@Override
-	public int traitType() {
+	public TraitType getTraitType() {
 		return traitType;
 	}
 
 	@Override
-	public int value() {
+	public int getValue() {
 		return value;
 	}
 
 	@Override
 	public String toString() {
-		return value + " " + ITrait.TRAITS_STR[traitType];
+		try {
+			return value + " " + ITrait.getTraitName(traitType);
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }
