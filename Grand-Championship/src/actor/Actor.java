@@ -2,7 +2,6 @@ package actor;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Set;
@@ -10,7 +9,6 @@ import java.util.Set;
 import actor.characteristics.status.EachTurnStatus;
 import actor.characteristics.status.IStatus;
 import actor.characteristics.status.OneTimeStatus;
-import actor.characteristics.status.traitModifier.ITraitModifier;
 import actor.characteristics.traits.BasicTraitFactory;
 import actor.characteristics.traits.ITrait;
 import gameExceptions.GameException;
@@ -81,6 +79,7 @@ public class Actor extends Observable{
 		switch (status.type()) {
 		case ONE_TIME :
 			this.oneTimestatus.add((OneTimeStatus) status);
+			status.applyEffect(this);
 			break;
 		case EACH_TURN :
 			this.eachTurnStatus.add((EachTurnStatus) status);
@@ -89,7 +88,7 @@ public class Actor extends Observable{
 			throw new Exception("Unknown status type");
 		}
 		
-		Iterator<ITraitModifier> traitModifierIter = status.traitModifiers().iterator();
+		/*Iterator<ITraitModifier> traitModifierIter = status.traitModifiers().iterator();
 		
 		while (traitModifierIter.hasNext()) {
 			
@@ -107,7 +106,7 @@ public class Actor extends Observable{
 					return;
 				}
 			}
-		}
+		}*/
 	}
 	
 	public void removeStatus (IStatus status) throws Exception {
@@ -131,9 +130,10 @@ public class Actor extends Observable{
 
 	@Override
 	public String toString() {
-		String actorString = "Character " + System.lineSeparator()
-		+ name + System.lineSeparator()
-		+ currentCharacteristics + System.lineSeparator();
+		String actorString = "Character " + System.lineSeparator() +
+		name + System.lineSeparator() +
+		currentCharacteristics + System.lineSeparator() +
+		currentWeight + "/" + maxWeight + " Kg" + System.lineSeparator(); 
 		
 		if (!oneTimestatus.isEmpty()) {
 			actorString += "Status : " + System.lineSeparator();
@@ -151,8 +151,13 @@ public class Actor extends Observable{
 			}
 		}
 		
-		actorString += "Weight = " + currentWeight + "/" + maxWeight + " Kg" + System.lineSeparator() + 
-		"inventory = " + System.lineSeparator() + inventory;
+		if (! inventory.isEmpty()) {
+			actorString += "inventory : " + System.lineSeparator();
+			for (IObject currentObject : inventory) {
+				
+				actorString += currentObject + System.lineSeparator();
+			}
+		}
 		
 		return actorString;
 	}
@@ -170,13 +175,13 @@ public class Actor extends Observable{
 	}
 	
 	public String pick (IObject object) throws GameException {
-		if (this.currentWeight <= object.weight()) {
+		if (object.weight() + this.currentWeight <= this.maxWeight) {
 			this.inventory.add(object);
 			this.currentWeight += object.weight();
 			return  object.name() + " picked";
 		}
 		else {
-			throw new GameException("Object is too heavy", GameException.ExceptionType.OBJECT_EXCEPTION);
+			throw new GameException("Object is too heavy", GameException.ExceptionType.OBJECT_WEIGHT);
 		}
 	}
 	

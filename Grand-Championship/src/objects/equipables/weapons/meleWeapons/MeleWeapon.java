@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import actor.Actor;
 import actor.characteristics.status.IStatus;
 import actor.characteristics.traits.ITrait;
+import gameExceptions.GameException;
 import objects.equipables.IEquipable;
 import objects.equipables.weapons.IWeapon;
 
@@ -79,7 +80,37 @@ public class MeleWeapon implements IWeapon {
 	}
 
 	@Override
-	public void equipe(Actor target) throws Exception {
+	public void equipe(Actor target) throws GameException, Exception {
+		
+		int counter = 0;
+		
+		Iterator<ITrait> requiredIter = requiredTraits.iterator();
+		
+		while (requiredIter.hasNext()) {
+			ITrait currentRequiredTrait = requiredIter.next();
+		
+			Iterator<ITrait> targetTraitIter = target.currentCharacteristics().iterator();
+			
+			while(targetTraitIter.hasNext()) {
+				ITrait currentTargetTrait = targetTraitIter.next();
+				
+				if (currentTargetTrait.getTraitType() == currentRequiredTrait.getTraitType()) {
+					if (currentTargetTrait.getValue() < currentRequiredTrait.getValue()) {
+						throw new GameException("You're level in " + currentTargetTrait.getName() + " is too low", 
+								GameException.ExceptionType.REQUIRED_TRAIT);
+					}
+					else {
+						++counter;
+					}
+				}
+			}
+		}
+		
+		if (counter < requiredTraits.size()) {
+			throw new GameException("You're missing traits", 
+					GameException.ExceptionType.REQUIRED_TRAIT);
+		}
+		
 		Iterator<IStatus> statusIter = statusApllied.iterator();
 		
 		while (statusIter.hasNext()) {
@@ -87,6 +118,8 @@ public class MeleWeapon implements IWeapon {
 			
 			target.addIStatus(currentStatus);
 		}
+		
+		this.name += "(E)";
 	}
 
 	@Override
@@ -98,6 +131,8 @@ public class MeleWeapon implements IWeapon {
 			
 			target.removeStatus(currentStatus);
 		}
+		
+		this.name = this.name.substring(0, name.length() - 3);
 	}
 
 	@Override

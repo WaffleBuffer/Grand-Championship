@@ -9,6 +9,7 @@ import actor.characteristics.status.OneTimeStatus;
 import actor.characteristics.status.traitModifier.BasicTraitModifier;
 import actor.characteristics.status.traitModifier.ITraitModifier;
 import actor.characteristics.traits.ITrait;
+import gameExceptions.GameException;
 import objects.equipables.IEquipable;
 import objects.equipables.weapons.IWeapon;
 import objects.equipables.weapons.meleWeapons.MeleWeapon;
@@ -43,7 +44,28 @@ public class ActorTest {
 					IEquipable.OccupiedPlace.ONE_HAND);
 			
 			bob.pick(spoon);
+			
 			spoon.equipe(bob);
+			spoon.desequipe(bob);
+			
+			MeleWeapon bigHighDoubleHandedSword = new MeleWeapon(
+					null, 
+					"big High Double Handed Sword",
+					"It's a very (too) heavy double handed sword",
+					50,
+					10, 
+					IWeapon.DamageType.SLASH,
+					30, 
+					null, 
+					IEquipable.OccupiedPlace.BOTH_HANDS);
+			
+			try {
+				bob.pick(bigHighDoubleHandedSword);
+			}
+			catch (GameException e) {
+				e.printStackTrace();
+			}
+			
 			System.out.println(bob);
 		} 
 		catch (Exception e) {

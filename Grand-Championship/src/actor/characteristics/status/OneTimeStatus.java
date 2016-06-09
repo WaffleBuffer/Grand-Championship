@@ -37,7 +37,7 @@ public class OneTimeStatus implements IStatus {
 
 	@Override
 	public String toString() {
-		return name + " :" + description + System.lineSeparator() + traitModifiers;
+		return name + " :" + description + " " + traitModifiers;
 	}
 
 	@Override
