@@ -45,7 +45,7 @@ public class MeleWeapon implements IWeapon {
 	}
 
 	@Override
-	public Collection<ITrait> requiredTraits() {
+	public Collection<ITrait> getRequiredTraits() {
 		return requiredTraits;
 	}
 
@@ -80,36 +80,7 @@ public class MeleWeapon implements IWeapon {
 	}
 
 	@Override
-	public void equipe(Actor target) throws GameException, Exception {
-		
-		int counter = 0;
-		
-		Iterator<ITrait> requiredIter = requiredTraits.iterator();
-		
-		while (requiredIter.hasNext()) {
-			ITrait currentRequiredTrait = requiredIter.next();
-		
-			Iterator<ITrait> targetTraitIter = target.currentCharacteristics().iterator();
-			
-			while(targetTraitIter.hasNext()) {
-				ITrait currentTargetTrait = targetTraitIter.next();
-				
-				if (currentTargetTrait.getTraitType() == currentRequiredTrait.getTraitType()) {
-					if (currentTargetTrait.getValue() < currentRequiredTrait.getValue()) {
-						throw new GameException("You're level in " + currentTargetTrait.getName() + " is too low", 
-								GameException.ExceptionType.REQUIRED_TRAIT);
-					}
-					else {
-						++counter;
-					}
-				}
-			}
-		}
-		
-		if (counter < requiredTraits.size()) {
-			throw new GameException("You're missing traits", 
-					GameException.ExceptionType.REQUIRED_TRAIT);
-		}
+	public void applieOnEquipe(Actor target) throws GameException, Exception {
 		
 		Iterator<IStatus> statusIter = statusApllied.iterator();
 		
@@ -123,7 +94,7 @@ public class MeleWeapon implements IWeapon {
 	}
 
 	@Override
-	public void desequipe(Actor target) throws Exception {
+	public void removeApplieOnEquipe(Actor target) throws Exception {
 		Iterator<IStatus> statusIter = statusApllied.iterator();
 		
 		while (statusIter.hasNext()) {
@@ -158,7 +129,7 @@ public class MeleWeapon implements IWeapon {
 	}
 
 	@Override
-	public OccupiedPlace occupiedPlace() {
+	public OccupiedPlace getOccupiedPlace() {
 		return occupiedPlace;
 	}
 }

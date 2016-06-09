@@ -1,8 +1,11 @@
 package actor;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Set;
 
@@ -13,6 +16,8 @@ import actor.characteristics.traits.BasicTraitFactory;
 import actor.characteristics.traits.ITrait;
 import gameExceptions.GameException;
 import objects.IObject;
+import objects.equipables.IEquipable;
+import objects.equipables.IEquipable.OccupiedPlace;
 
 /**
  * A basic character
@@ -31,6 +36,8 @@ public class Actor extends Observable{
 	private Collection<OneTimeStatus> oneTimestatus;
 	private Collection<EachTurnStatus> eachTurnStatus;
 	
+	private Map<IEquipable.OccupiedPlace, IEquipable> equipedObjects;
+	
 	private final int maxWeight;
 	private int currentWeight;
 	private Collection<IObject> inventory;
@@ -45,6 +52,14 @@ public class Actor extends Observable{
 		this.maxWeight = 100;
 		this.currentWeight = 0;
 		this.inventory = new LinkedList<IObject>();
+		
+		this.equipedObjects = new HashMap<IEquipable.OccupiedPlace, IEquipable>();
+		equipedObjects.put(OccupiedPlace.BOTH_HANDS, null);
+		equipedObjects.put(OccupiedPlace.HEAD, null);
+		equipedObjects.put(OccupiedPlace.LEGS, null);
+		equipedObjects.put(OccupiedPlace.LEFT_HAND, null);
+		equipedObjects.put(OccupiedPlace.RIGHT_HAND, null);
+		equipedObjects.put(OccupiedPlace.TORSO, null);
 		
 		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.VITALITY, DEFAULT_TRAIT_VALUE));
 		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.STRENGTH, DEFAULT_TRAIT_VALUE));
@@ -130,8 +145,7 @@ public class Actor extends Observable{
 
 	@Override
 	public String toString() {
-		String actorString = "Character " + System.lineSeparator() +
-		name + System.lineSeparator() +
+		String actorString = "=============== " + name + " ===============" + System.lineSeparator() +
 		currentCharacteristics + System.lineSeparator() +
 		currentWeight + "/" + maxWeight + " Kg" + System.lineSeparator(); 
 		
@@ -158,6 +172,8 @@ public class Actor extends Observable{
 				actorString += currentObject + System.lineSeparator();
 			}
 		}
+		
+		actorString += "==============================";
 		
 		return actorString;
 	}
@@ -189,5 +205,76 @@ public class Actor extends Observable{
 		this.inventory.remove(object);
 		this.currentWeight -= object.weight();
 		return object.name() + " has been thrown away";
+	}
+	
+	public String equip(IEquipable equipObject) throws GameException, Exception{
+		
+		int counter = 0;
+		
+		Iterator<ITrait> requiredIter = equipObject.getRequiredTraits().iterator();
+		
+		while (requiredIter.hasNext()) {
+			ITrait currentRequiredTrait = requiredIter.next();
+		
+			Iterator<ITrait> targetTraitIter = this.currentCharacteristics().iterator();
+			
+			while(targetTraitIter.hasNext()) {
+				ITrait currentTargetTrait = targetTraitIter.next();
+				
+				if (currentTargetTrait.getTraitType() == currentRequiredTrait.getTraitType()) {
+					if (currentTargetTrait.getValue() < currentRequiredTrait.getValue()) {
+						throw new GameException("You're level in " + currentTargetTrait.getName() + " is too low", 
+								GameException.ExceptionType.REQUIRED_TRAIT);
+					}
+					else {
+						++counter;
+					}
+				}
+			}
+		}
+		
+		if (counter < equipObject.getRequiredTraits().size()) {
+			throw new GameException("You're missing traits", 
+					GameException.ExceptionType.REQUIRED_TRAIT);
+		}
+		
+		if (!inventory.contains(equipObject)) {
+			this.pick(equipObject);
+		}
+		
+		if (equipObject.getOccupiedPlace() == OccupiedPlace.BOTH_HANDS) {
+			if (equipedObjects.get(OccupiedPlace.LEFT_HAND) == null) {
+				desequip(equipedObjects.get(OccupiedPlace.LEFT_HAND));
+			}
+			if ()
+			equipedObjects.put(OccupiedPlace.RIGHT_HAND, null);
+			
+			equipedObjects.put(OccupiedPlace.BOTH_HANDS, equipObject);
+		}
+		else if (equipObject.getOccupiedPlace() == OccupiedPlace.ONE_HAND) {
+			equipedObjects.put(OccupiedPlace.BOTH_HANDS, null);
+			
+			if (equipedObjects.get(OccupiedPlace.RIGHT_HAND) != null) {
+				if (equipedObjects.get(OccupiedPlace.LEFT_HAND) != null) {
+					equipedObjects.put(OccupiedPlace.RIGHT_HAND, equipObject);
+				}
+			}
+			else {
+				equipedObjects.put(OccupiedPlace.LEFT_HAND, equipObject);
+			}
+		}
+		else {
+			equipedObjects.put(equipObject.getOccupiedPlace(), equipObject);
+		}
+		
+		equipObject.applieOnEquipe(this);
+		return name + " is equiped with " + equipObject;
+	}
+	
+	public String desequip(IEquipable object) throws Exception {
+		equipedObjects.put(object.getOccupiedPlace(), null);
+		object.removeApplieOnEquipe(this);
+		
+		return name + " is no longer equiped with" + object;
 	}
 }

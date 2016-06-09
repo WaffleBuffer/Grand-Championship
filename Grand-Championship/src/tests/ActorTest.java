@@ -8,7 +8,9 @@ import actor.characteristics.status.IStatus;
 import actor.characteristics.status.OneTimeStatus;
 import actor.characteristics.status.traitModifier.BasicTraitModifier;
 import actor.characteristics.status.traitModifier.ITraitModifier;
+import actor.characteristics.traits.BasicTraitFactory;
 import actor.characteristics.traits.ITrait;
+import actor.characteristics.traits.ITrait.TraitType;
 import gameExceptions.GameException;
 import objects.equipables.IEquipable;
 import objects.equipables.weapons.IWeapon;
@@ -45,8 +47,7 @@ public class ActorTest {
 			
 			bob.pick(spoon);
 			
-			spoon.equipe(bob);
-			spoon.desequipe(bob);
+			bob.equip(spoon);
 			
 			MeleWeapon bigHighDoubleHandedSword = new MeleWeapon(
 					null, 
@@ -65,6 +66,24 @@ public class ActorTest {
 			catch (GameException e) {
 				e.printStackTrace();
 			}
+			
+			Collection<ITrait> required = new LinkedList<ITrait>();
+			
+			new BasicTraitFactory();
+			required.add(BasicTraitFactory.getBasicTrait(TraitType.STRENGTH, 6));
+			MeleWeapon theBigPoint = new MeleWeapon(
+					required, 
+					"The Big Point",
+					"Make you oponent getting to the point",
+					15,
+					5, 
+					IWeapon.DamageType.SMASH,
+					20, 
+					null, 
+					IEquipable.OccupiedPlace.ONE_HAND);
+			
+			bob.pick(theBigPoint);
+			bob.equip(theBigPoint);
 			
 			System.out.println(bob);
 		} 

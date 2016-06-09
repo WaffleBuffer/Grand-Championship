@@ -61,7 +61,7 @@ public class OneTimeStatus implements IStatus {
 				
 				if (currentActorTrait.getTraitType() == currentModifiedTrait.getTraitType()) {
 					
-					currentActorTrait.setValue(currentActorTrait.getValue() - currentModifiedTrait.getValue());
+					currentActorTrait.setValue(currentActorTrait.getValue() + currentModifiedTrait.getValue());
 				}
 			}
 		}

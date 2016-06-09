@@ -9,7 +9,7 @@ import objects.IObject;
 public interface IEquipable extends IObject {
 	
 	public enum OccupiedPlace {
-		ONE_HAND, LEGS, BOTH_HANDS, HEAD, TORSO
+		ONE_HAND, LEGS, BOTH_HANDS, HEAD, TORSO, LEFT_HAND, RIGHT_HAND
 	}
 	
 	public static String getOccupiedPlaceString (final OccupiedPlace occupiedPlace) throws Exception {
@@ -29,11 +29,11 @@ public interface IEquipable extends IObject {
 		}
 	}
 
-	public Collection<ITrait> requiredTraits();
+	public Collection<ITrait> getRequiredTraits();
 	
-	public void equipe(Actor target) throws Exception;
+	public void applieOnEquipe(Actor target) throws Exception;
 	
-	public void desequipe(Actor target) throws Exception;
+	public void removeApplieOnEquipe(Actor target) throws Exception;
 	
-	public OccupiedPlace occupiedPlace ();
+	public OccupiedPlace getOccupiedPlace ();
 }
