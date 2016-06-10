@@ -27,8 +27,13 @@ public class BasicTraitModifier implements ITraitModifier {
 
 	@Override
 	public String toString() {
+		String traitModifierString = "";
+		if (value > 0) {
+			traitModifierString += "+";
+		}
+		
 		try {
-			return value + " " + ITrait.getTraitName(traitType);
+			return traitModifierString += value + " " + ITrait.getTraitName(traitType);
 		} 
 		catch (Exception e) {
 			e.printStackTrace();

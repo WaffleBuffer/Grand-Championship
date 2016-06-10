@@ -46,8 +46,10 @@ public class ActorTest {
 					IEquipable.OccupiedPlace.ONE_HAND);
 			
 			bob.pick(spoon);
-			
 			bob.equip(spoon);
+			
+			Collection<ITrait> required = new LinkedList<ITrait>();
+			required.add(BasicTraitFactory.getBasicTrait(TraitType.STRENGTH, 8));
 			
 			MeleWeapon bigHighDoubleHandedSword = new MeleWeapon(
 					null, 
@@ -67,10 +69,10 @@ public class ActorTest {
 				e.printStackTrace();
 			}
 			
-			Collection<ITrait> required = new LinkedList<ITrait>();
+			//bob.desequip(OccupiedPlace.RIGHT_HAND);
 			
-			new BasicTraitFactory();
-			required.add(BasicTraitFactory.getBasicTrait(TraitType.STRENGTH, 6));
+			required = new LinkedList<ITrait>();
+			required.add(BasicTraitFactory.getBasicTrait(TraitType.DEXTERITY, 6));
 			MeleWeapon theBigPoint = new MeleWeapon(
 					required, 
 					"The Big Point",
@@ -80,10 +82,15 @@ public class ActorTest {
 					IWeapon.DamageType.SMASH,
 					20, 
 					null, 
-					IEquipable.OccupiedPlace.ONE_HAND);
+					IEquipable.OccupiedPlace.BOTH_HANDS);
 			
 			bob.pick(theBigPoint);
-			bob.equip(theBigPoint);
+			try {
+				bob.equip(theBigPoint);
+			}
+			catch (GameException e) {
+				e.printStackTrace();
+			}
 			
 			System.out.println(bob);
 		} 

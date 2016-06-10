@@ -165,11 +165,26 @@ public class Actor extends Observable{
 			}
 		}
 		
-		if (! inventory.isEmpty()) {
+		if (!inventory.isEmpty()) {
 			actorString += "inventory : " + System.lineSeparator();
 			for (IObject currentObject : inventory) {
 				
 				actorString += currentObject + System.lineSeparator();
+			}
+		}
+		
+		if (!equipedObjects.isEmpty()) {
+			actorString += "Euiped Objects : " + System.lineSeparator();
+			for (Map.Entry<OccupiedPlace, IEquipable> currentEntry : equipedObjects.entrySet()) {
+				
+				if (currentEntry.getValue() != null) {
+					try {
+						actorString += currentEntry.getKey() + " : " + currentEntry.getValue() + System.lineSeparator();
+					} 
+					catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
 			}
 		}
 		
@@ -243,27 +258,37 @@ public class Actor extends Observable{
 		}
 		
 		if (equipObject.getOccupiedPlace() == OccupiedPlace.BOTH_HANDS) {
-			if (equipedObjects.get(OccupiedPlace.LEFT_HAND) == null) {
-				desequip(equipedObjects.get(OccupiedPlace.LEFT_HAND));
+			if (equipedObjects.get(OccupiedPlace.LEFT_HAND) != null) {
+				desequip(OccupiedPlace.LEFT_HAND);
 			}
-			if ()
-			equipedObjects.put(OccupiedPlace.RIGHT_HAND, null);
+			if (equipedObjects.get(OccupiedPlace.RIGHT_HAND) != null) {
+				desequip(OccupiedPlace.RIGHT_HAND);
+			}
 			
 			equipedObjects.put(OccupiedPlace.BOTH_HANDS, equipObject);
 		}
 		else if (equipObject.getOccupiedPlace() == OccupiedPlace.ONE_HAND) {
-			equipedObjects.put(OccupiedPlace.BOTH_HANDS, null);
+			if (equipedObjects.get(OccupiedPlace.BOTH_HANDS) != null) {
+				desequip(OccupiedPlace.BOTH_HANDS);
+			}
 			
 			if (equipedObjects.get(OccupiedPlace.RIGHT_HAND) != null) {
 				if (equipedObjects.get(OccupiedPlace.LEFT_HAND) != null) {
+					desequip(OccupiedPlace.RIGHT_HAND);
 					equipedObjects.put(OccupiedPlace.RIGHT_HAND, equipObject);
+				}
+				else {
+					desequip(OccupiedPlace.LEFT_HAND);
+					equipedObjects.put(OccupiedPlace.LEFT_HAND, equipObject);
 				}
 			}
 			else {
-				equipedObjects.put(OccupiedPlace.LEFT_HAND, equipObject);
+				desequip(OccupiedPlace.RIGHT_HAND);
+				equipedObjects.put(OccupiedPlace.RIGHT_HAND, equipObject);
 			}
 		}
 		else {
+			desequip(equipObject.getOccupiedPlace());
 			equipedObjects.put(equipObject.getOccupiedPlace(), equipObject);
 		}
 		
@@ -271,10 +296,20 @@ public class Actor extends Observable{
 		return name + " is equiped with " + equipObject;
 	}
 	
-	public String desequip(IEquipable object) throws Exception {
-		equipedObjects.put(object.getOccupiedPlace(), null);
-		object.removeApplieOnEquipe(this);
-		
-		return name + " is no longer equiped with" + object;
+	public String desequip(OccupiedPlace place) throws Exception {
+		if (equipedObjects.get(place) != null) {
+			final IEquipable object = equipedObjects.get(place);
+			object.removeApplieOnEquipe(this);
+			equipedObjects.put(place, null);
+			
+			return name + " is no longer equiped with" + object;
+		}
+		else {
+			return "";
+		}
+	}
+	
+	public IEquipable getEquipedObject(OccupiedPlace place) {
+		return equipedObjects.get(place);
 	}
 }
