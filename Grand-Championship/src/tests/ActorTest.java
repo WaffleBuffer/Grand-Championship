@@ -72,7 +72,7 @@ public class ActorTest {
 			//bob.desequip(OccupiedPlace.RIGHT_HAND);
 			
 			required = new LinkedList<ITrait>();
-			required.add(BasicTraitFactory.getBasicTrait(TraitType.DEXTERITY, 6));
+			//required.add(BasicTraitFactory.getBasicTrait(TraitType.DEXTERITY, 6));
 			MeleWeapon theBigPoint = new MeleWeapon(
 					required, 
 					"The Big Point",

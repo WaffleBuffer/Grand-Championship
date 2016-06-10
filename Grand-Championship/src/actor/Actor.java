@@ -12,8 +12,11 @@ import java.util.Set;
 import actor.characteristics.status.EachTurnStatus;
 import actor.characteristics.status.IStatus;
 import actor.characteristics.status.OneTimeStatus;
+import actor.characteristics.traits.BasicTrait;
 import actor.characteristics.traits.BasicTraitFactory;
 import actor.characteristics.traits.ITrait;
+import actor.characteristics.traits.Stat;
+import actor.characteristics.traits.StatFactory;
 import gameExceptions.GameException;
 import objects.IObject;
 import objects.equipables.IEquipable;
@@ -33,6 +36,8 @@ public class Actor extends Observable{
 	private Set<ITrait> basicCharacteristics;
 	private Set<ITrait> currentCharacteristics;
 	
+	private Set<ITrait> stats;
+	
 	private Collection<OneTimeStatus> oneTimestatus;
 	private Collection<EachTurnStatus> eachTurnStatus;
 	
@@ -47,6 +52,7 @@ public class Actor extends Observable{
 		
 		this.name = name;
 		this.basicCharacteristics = new HashSet<ITrait>();
+		this.stats = new HashSet<ITrait>();
 		this.oneTimestatus = new LinkedList<OneTimeStatus>();
 		this.eachTurnStatus = new LinkedList<EachTurnStatus>();
 		this.maxWeight = 100;
@@ -63,11 +69,17 @@ public class Actor extends Observable{
 		
 		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.VITALITY, DEFAULT_TRAIT_VALUE));
 		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.STRENGTH, DEFAULT_TRAIT_VALUE));
-		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.DEXTERITY, DEFAULT_TRAIT_VALUE));
+		BasicTrait dexterity = BasicTraitFactory.getBasicTrait(ITrait.TraitType.DEXTERITY, DEFAULT_TRAIT_VALUE);
+		basicCharacteristics.add(dexterity);
 		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.CONSTITUTION, DEFAULT_TRAIT_VALUE));
 		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.WILL, DEFAULT_TRAIT_VALUE));
 		
 		currentCharacteristics = new HashSet<ITrait>(basicCharacteristics);
+		
+		Observable [] dependencys = new Observable[1];
+		dependencys[0] = dexterity;
+		final Stat critical = StatFactory.createState(ITrait.TraitType.CRITICAL, (10 + 2 * dexterity.getValue()), dependencys);
+		stats.add(critical);
 	}
 	
 	public Actor (String name, int Vitality, int strength, int dexterity, int constitution, int will) throws Exception {
@@ -147,6 +159,7 @@ public class Actor extends Observable{
 	public String toString() {
 		String actorString = "=============== " + name + " ===============" + System.lineSeparator() +
 		currentCharacteristics + System.lineSeparator() +
+		stats + System.lineSeparator() +
 		currentWeight + "/" + maxWeight + " Kg" + System.lineSeparator(); 
 		
 		if (!oneTimestatus.isEmpty()) {

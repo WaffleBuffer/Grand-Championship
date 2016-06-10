@@ -7,21 +7,28 @@ public interface ITrait {
 		STRENGTH, 
 		DEXTERITY, 
 		CONSTITUTION, 
-		WILL;
+		WILL,
+		
+		ARMOR,
+		CRITICAL
 	}
 	
 	public static String getTraitName (final TraitType type) throws Exception{
 		switch (type) {
 			case VITALITY :
-					return "Vitality";
+				return "Vitality";
 			case STRENGTH :
-					return "Strength";
+				return "Strength";
 			case DEXTERITY : 
-					return "Dexterity";
+				return "Dexterity";
 			case CONSTITUTION :
-					return "Constitution";
+				return "Constitution";
 			case WILL :
-					return "Will";
+				return "Will";
+			case ARMOR :
+				return "Armor";
+			case CRITICAL :
+				return "Critical chance";
 			default :
 				throw new Exception ("Unsupported type of BasicTrait");
 		}
@@ -33,5 +40,5 @@ public interface ITrait {
 	
 	public int getValue();
 	
-	public void setValue(int value);
+	public void setValue(final int value);
 }

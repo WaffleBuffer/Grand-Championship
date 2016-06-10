@@ -2,7 +2,7 @@ package actor.characteristics.traits;
 
 import actor.characteristics.traits.ITrait.TraitType;
 
-public class BasicTraitFactory {
+public abstract class BasicTraitFactory {
 
 	public static BasicTrait getBasicTrait (final TraitType type, final int value) throws Exception{
 		switch (type) {

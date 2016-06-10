@@ -1,14 +1,15 @@
 package actor.characteristics.traits;
 
 import java.util.Observable;
+import java.util.Observer;
 
-public class BasicTrait extends Observable implements ITrait {
+public abstract class Stat implements ITrait, Observer {
 
 	private final String name;
 	private final TraitType type;
 	private int    value;
 	
-	public BasicTrait (final String name, final TraitType type, final int value) {
+	public Stat (final String name, final TraitType type, final int value) {
 		this.name = name;
 		this.type = type;
 		this.value = value;
@@ -31,15 +32,14 @@ public class BasicTrait extends Observable implements ITrait {
 	
 	@Override
 	public void setValue(final int value) {
-		final int lastValue = this.getValue();
-		
 		this.value = value;
-		setChanged();
-		notifyObservers(lastValue - this.getValue());
 	}
 	
 	@Override
 	public String toString() {
 		return name + " = " + value;
 	}
+
+	@Override
+	public abstract void update(Observable o, Object arg);
 }
