@@ -28,12 +28,14 @@ public class ActorTest {
 			Collection<ITraitModifier> modifiedTraits = new LinkedList<ITraitModifier>();
 			modifiedTraits.add(new BasicTraitModifier(ITrait.TraitType.DEXTERITY, -2));
 			
-			OneTimeStatus sleepy = new OneTimeStatus("Sleepy", "This cannot be so boring right?", modifiedTraits);
-			bob.addIStatus(sleepy);
+			OneTimeStatus sleepy = new OneTimeStatus("Sleepy", "This cannot be so boring right?", modifiedTraits, true);
+			
+			System.out.println(bob.addIStatus(sleepy));
 			
 			Collection<ITraitModifier> weaponModifiedTraits = new LinkedList<ITraitModifier>();
 			weaponModifiedTraits.add(new BasicTraitModifier(ITrait.TraitType.STRENGTH, +1));
-			OneTimeStatus weaponStatus = new OneTimeStatus("Better strength", "Equiping this makes you feel stronger", weaponModifiedTraits);
+			OneTimeStatus weaponStatus = new OneTimeStatus("Better strength", "Equiping this makes you feel stronger", 
+					weaponModifiedTraits, true);
 			
 			Collection<IStatus> weaponStatuss = new LinkedList<IStatus>();
 			Collection<OccupiedPlace> occupiedPlaces = new LinkedList<OccupiedPlace>();
@@ -50,8 +52,8 @@ public class ActorTest {
 					weaponStatuss, 
 					occupiedPlaces);
 			
-			bob.pick(spoon);
-			bob.equip(spoon);
+			System.out.println(bob.pick(spoon));
+			System.out.println(bob.equip(spoon));
 			
 			Collection<ITrait> required = new LinkedList<ITrait>();
 			occupiedPlaces = new LinkedList<OccupiedPlace>();
@@ -70,7 +72,7 @@ public class ActorTest {
 					occupiedPlaces);
 			
 			try {
-				bob.pick(bigHighDoubleHandedSword);
+				System.out.println(bob.pick(bigHighDoubleHandedSword));
 			}
 			catch (GameException e) {
 				e.printStackTrace();
@@ -91,9 +93,9 @@ public class ActorTest {
 					null, 
 					occupiedPlaces);
 			
-			bob.pick(theBigPoint);
+			System.out.println(bob.pick(theBigPoint));
 			try {
-				bob.equip(theBigPoint);
+				System.out.println(bob.equip(theBigPoint));
 			}
 			catch (GameException e) {
 				e.printStackTrace();
@@ -112,9 +114,11 @@ public class ActorTest {
 					null, 
 					occupiedPlaces);
 			
-			bob.pick(metalPlates);
+			System.out.println(bob.pick(metalPlates));
 			
-			bob.equip(metalPlates);
+			System.out.println(bob.equip(metalPlates));
+			
+			System.out.println(bob.desequip(IEquipable.OccupiedPlace.TORSO));
 			
 			System.out.println(bob);
 		} 

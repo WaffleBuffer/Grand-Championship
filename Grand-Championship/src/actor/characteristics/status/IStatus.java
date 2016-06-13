@@ -22,4 +22,6 @@ public interface IStatus {
 	public String applyEffect(final Actor target);
 
 	public String removeEffect(final Actor target);
+	
+	public Boolean isDiplayable();
 }

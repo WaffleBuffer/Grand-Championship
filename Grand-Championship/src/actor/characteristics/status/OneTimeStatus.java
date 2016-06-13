@@ -2,6 +2,7 @@ package actor.characteristics.status;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 import actor.Actor;
 import actor.characteristics.status.traitModifier.ITraitModifier;
@@ -13,12 +14,18 @@ public class OneTimeStatus implements IStatus {
 	private String name;
 	private String description;
 	private Collection<ITraitModifier> traitModifiers;
+	private final Boolean displayable;
 
-	public OneTimeStatus(String name, String description, Collection<ITraitModifier> traitModifiers) {
+	public OneTimeStatus(String name, String description, Collection<ITraitModifier> traitModifiers,
+			final Boolean displayable) {
 		super();
 		this.name = name;
 		this.description = description;
 		this.traitModifiers = traitModifiers;
+		if (traitModifiers == null) {
+			this.traitModifiers = new LinkedList<ITraitModifier>();
+		}
+		this.displayable = displayable;
 	}
 
 	@Override
@@ -115,5 +122,10 @@ public class OneTimeStatus implements IStatus {
 			}
 		}
 		return name + " doesn't applie any more";
+	}
+
+	@Override
+	public Boolean isDiplayable() {
+		return displayable;
 	}
 }

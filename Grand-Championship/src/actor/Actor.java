@@ -84,13 +84,12 @@ public class Actor extends Observable{
 		stats.add(armor);
 	}
 	
-	public void addIStatus(IStatus status) throws Exception {
+	public String addIStatus(IStatus status) throws Exception {
 		
 		switch (status.type()) {
 		case ONE_TIME :
 			this.oneTimestatus.add((OneTimeStatus) status);
-			status.applyEffect(this);
-			break;
+			return (status.applyEffect(this));
 		case EACH_TURN :
 			this.eachTurnStatus.add((EachTurnStatus) status);
 			break;
@@ -98,6 +97,7 @@ public class Actor extends Observable{
 			throw new Exception("Unknown status type");
 		}
 		
+		return "";
 		/*Iterator<ITraitModifier> traitModifierIter = status.traitModifiers().iterator();
 		
 		while (traitModifierIter.hasNext()) {
@@ -119,19 +119,20 @@ public class Actor extends Observable{
 		}*/
 	}
 	
-	public void removeStatus (IStatus status) throws Exception {
+	public String removeStatus (IStatus status) throws Exception {
 		
 		switch (status.type()) {
 		case ONE_TIME :
 			this.oneTimestatus.remove((OneTimeStatus) status);
-			((OneTimeStatus) status).removeEffect(this);
-			break;
+			return ((OneTimeStatus) status).removeEffect(this);
 		case EACH_TURN :
 			this.eachTurnStatus.remove((EachTurnStatus) status);
 			break;
 		default :
 			throw new Exception("Unknown status type");
 		}	
+		
+		return "";
 	}
 	
 	public String name() {
@@ -148,16 +149,18 @@ public class Actor extends Observable{
 		if (!oneTimestatus.isEmpty()) {
 			actorString += "Status : " + System.lineSeparator();
 			for (OneTimeStatus currentOneTimeStatus : oneTimestatus) {
-				
-				actorString += currentOneTimeStatus + System.lineSeparator();
+				if (currentOneTimeStatus.isDiplayable()) {
+					actorString += currentOneTimeStatus + System.lineSeparator();
+				}
 			}
 		}
 		
 		if (!eachTurnStatus.isEmpty()) {
 			actorString += "Each turn status : " + System.lineSeparator();
 			for (EachTurnStatus currentEachTurnStatus : eachTurnStatus) {
-				
-				actorString += currentEachTurnStatus + System.lineSeparator();
+				if (currentEachTurnStatus.isDiplayable()) {
+					actorString += currentEachTurnStatus + System.lineSeparator();
+				}
 			}
 		}
 		
@@ -202,10 +205,10 @@ public class Actor extends Observable{
 	}
 	
 	public String pick (IObject object) throws GameException {
-		if (object.weight() + this.currentWeight <= this.maxWeight) {
+		if (object.getWeight() + this.currentWeight <= this.maxWeight) {
 			this.inventory.add(object);
-			this.currentWeight += object.weight();
-			return  object.name() + " picked";
+			this.currentWeight += object.getWeight();
+			return  object.getName() + " picked";
 		}
 		else {
 			throw new GameException("Object is too heavy", GameException.ExceptionType.OBJECT_WEIGHT);
@@ -214,8 +217,8 @@ public class Actor extends Observable{
 	
 	public String throwObject (IObject object) {
 		this.inventory.remove(object);
-		this.currentWeight -= object.weight();
-		return object.name() + " has been thrown away";
+		this.currentWeight -= object.getWeight();
+		return object.getName() + " has been thrown away";
 	}
 	
 	public String equip(IEquipable equipObject) throws GameException, Exception{
@@ -291,7 +294,7 @@ public class Actor extends Observable{
 		}
 		
 		equipObject.applieOnEquipe(this);
-		return name + " is equiped with " + equipObject;
+		return name + " is equiped with " + equipObject.getName();
 	}
 	
 	public String desequip(OccupiedPlace place) throws Exception {
@@ -300,7 +303,7 @@ public class Actor extends Observable{
 			object.removeApplieOnEquipe(this);
 			equipedObjects.put(place, null);
 			
-			return name + " is no longer equiped with" + object;
+			return name + " is no longer equiped with " + object.getName();
 		}
 		else {
 			return "";

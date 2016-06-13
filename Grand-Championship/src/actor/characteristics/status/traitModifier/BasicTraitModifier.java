@@ -38,4 +38,9 @@ public class BasicTraitModifier implements ITraitModifier {
 		}
 		return null;
 	}
+
+	@Override
+	public ModifierType getModifierType() {
+		return ModifierType.BASIC_TRAIT;
+	}
 }

@@ -51,22 +51,22 @@ public class MeleWeapon implements IWeapon {
 	}
 
 	@Override
-	public String name() {
+	public String getName() {
 		return name;
 	}
 
 	@Override
-	public String description() {
+	public String getDescription() {
 		return description;
 	}
 
 	@Override
-	public int weight() {
+	public int getWeight() {
 		return weight;
 	}
 
 	@Override
-	public int value() {
+	public int getValue() {
 		return value;
 	}
 

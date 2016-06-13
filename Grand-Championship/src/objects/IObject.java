@@ -2,11 +2,11 @@ package objects;
 
 public interface IObject {
 
-	public String name();
+	public String getName();
 	
-	public String description();
+	public String getDescription();
 	
-	public int weight();
+	public int getWeight();
 	
-	public int value();
+	public int getValue();
 }

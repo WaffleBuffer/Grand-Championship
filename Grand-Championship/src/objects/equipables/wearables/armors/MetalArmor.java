@@ -46,7 +46,7 @@ public class MetalArmor implements IArmor {
 		
 		Collection<ITraitModifier> armorModifier = new LinkedList<ITraitModifier>();
 		armorModifier.add(new StatModifier(ITrait.TraitType.ARMOR, armorValue));
-		this.statusApllied.add(new OneTimeStatus(name, "Armor form " + name, armorModifier));
+		this.statusApllied.add(new OneTimeStatus(name, "Armor form " + name, armorModifier, false));
 		
 		this.occupiedPlace = occupiedPlace;
 	}
@@ -127,22 +127,22 @@ public class MetalArmor implements IArmor {
 	}
 
 	@Override
-	public String name() {
+	public String getName() {
 		return name;
 	}
 
 	@Override
-	public String description() {
+	public String getDescription() {
 		return description;
 	}
 
 	@Override
-	public int weight() {
+	public int getWeight() {
 		return weight;
 	}
 
 	@Override
-	public int value() {
+	public int getValue() {
 		return value;
 	}
 	

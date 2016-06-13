@@ -2,6 +2,7 @@ package actor.characteristics.status;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 import actor.Actor;
 import actor.characteristics.status.traitModifier.ITraitModifier;
@@ -14,14 +15,19 @@ public class EachTurnStatus implements IStatus {
 	private String description;
 	private Collection<ITraitModifier> traitModifiers;
 	private final int nbTurn;
+	private final Boolean displayable;
 
 	public EachTurnStatus(String name, String description, Collection<ITraitModifier> traitModifiers,
-			final int nbTurns) {
+			final int nbTurns, final Boolean displayable) {
 		super();
 		this.name = name;
 		this.description = description;
 		this.traitModifiers = traitModifiers;
+		if (traitModifiers == null) {
+			this.traitModifiers = new LinkedList<ITraitModifier>();
+		}
 		this.nbTurn = nbTurns;
+		this.displayable = displayable;
 	}
 
 	@Override
@@ -122,5 +128,10 @@ public class EachTurnStatus implements IStatus {
 	
 	public int getNbTurns() {
 		return nbTurn;
+	}
+
+	@Override
+	public Boolean isDiplayable() {
+		return displayable;
 	}
 }

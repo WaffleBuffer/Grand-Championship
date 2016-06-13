@@ -38,4 +38,9 @@ public class StatModifier implements ITraitModifier {
 		}
 		return null;
 	}
+
+	@Override
+	public ModifierType getModifierType() {
+		return ModifierType.STAT;
+	}
 }
