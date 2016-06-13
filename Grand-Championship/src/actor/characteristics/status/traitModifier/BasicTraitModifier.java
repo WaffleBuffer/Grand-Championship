@@ -25,13 +25,9 @@ public class BasicTraitModifier implements ITraitModifier {
 
 	@Override
 	public String toString() {
-		String traitModifierString = "";
-		if (value > 0) {
-			traitModifierString += "+";
-		}
-		
 		try {
-			return traitModifierString += value + " " + ITrait.getTraitName(traitType);
+			String traitModifierString = String.format("%+d " + ITrait.getTraitName(traitType), value);
+			return traitModifierString;
 		} 
 		catch (Exception e) {
 			e.printStackTrace();
