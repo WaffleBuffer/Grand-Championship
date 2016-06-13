@@ -15,16 +15,17 @@ public class MeleWeapon implements IWeapon {
 	
 	private Collection<ITrait> requiredTraits;
 	private String name;
-	private String description;
-	private int weight;
-	private int value;
-	private DamageType damageType;
-	private int damageValue;
+	private final String description;
+	private final int weight;
+	private final int value;
+	private final DamageType damageType;
+	private final int damageValue;
 	private Collection<IStatus> statusApllied;
-	private OccupiedPlace occupiedPlace;
+	private final Collection<OccupiedPlace> occupiedPlace;
 	
-	public MeleWeapon(Collection<ITrait> requiredTraits, String name, String description, int weight, int value,
-			DamageType damageType, int damageValue, Collection<IStatus> statusApllied, OccupiedPlace occupiedPlace) {
+	public MeleWeapon(final Collection<ITrait> requiredTraits, final String name, final String description, 
+			final int weight, final int value, final DamageType damageType, final int damageValue, 
+			final Collection<IStatus> statusApllied, final Collection<OccupiedPlace> occupiedPlace) {
 		super();
 		
 		this.requiredTraits = requiredTraits;
@@ -109,8 +110,12 @@ public class MeleWeapon implements IWeapon {
 	@Override
 	public String toString() {
 		try {
-			String weaponStr = name + " : " + description + System.lineSeparator() +
-					IEquipable.getOccupiedPlaceString(occupiedPlace) + System.lineSeparator() +
+			String weaponStr = name + " : " + description + System.lineSeparator();
+			
+			for (IEquipable.OccupiedPlace occupiedPlace : occupiedPlace) {
+				weaponStr += occupiedPlace + " ";
+			}
+			weaponStr += System.lineSeparator() +
 					 + damageValue + " " + IWeapon.getDamageTypeString(damageType) + " damage" + System.lineSeparator() +
 					weight + " Kg, " + value + " $" + System.lineSeparator();
 			
@@ -129,7 +134,7 @@ public class MeleWeapon implements IWeapon {
 	}
 
 	@Override
-	public OccupiedPlace getOccupiedPlace() {
+	public Collection<OccupiedPlace> getOccupiedPlace() {
 		return occupiedPlace;
 	}
 }

@@ -13,8 +13,11 @@ import actor.characteristics.traits.ITrait;
 import actor.characteristics.traits.ITrait.TraitType;
 import gameExceptions.GameException;
 import objects.equipables.IEquipable;
+import objects.equipables.IEquipable.OccupiedPlace;
 import objects.equipables.weapons.IWeapon;
 import objects.equipables.weapons.meleWeapons.MeleWeapon;
+import objects.equipables.wearables.armors.IArmor;
+import objects.equipables.wearables.armors.MetalArmor;
 
 public class ActorTest {
 
@@ -33,6 +36,8 @@ public class ActorTest {
 			OneTimeStatus weaponStatus = new OneTimeStatus("Better strength", "Equiping this makes you feel stronger", weaponModifiedTraits);
 			
 			Collection<IStatus> weaponStatuss = new LinkedList<IStatus>();
+			Collection<OccupiedPlace> occupiedPlaces = new LinkedList<OccupiedPlace>();
+			occupiedPlaces.add(IEquipable.OccupiedPlace.ONE_HAND);
 			weaponStatuss.add(weaponStatus);
 			MeleWeapon spoon = new MeleWeapon(
 					null, 
@@ -43,12 +48,14 @@ public class ActorTest {
 					IWeapon.DamageType.SLASH,
 					3, 
 					weaponStatuss, 
-					IEquipable.OccupiedPlace.ONE_HAND);
+					occupiedPlaces);
 			
 			bob.pick(spoon);
 			bob.equip(spoon);
 			
 			Collection<ITrait> required = new LinkedList<ITrait>();
+			occupiedPlaces = new LinkedList<OccupiedPlace>();
+			occupiedPlaces.add(IEquipable.OccupiedPlace.BOTH_HANDS);
 			required.add(BasicTraitFactory.getBasicTrait(TraitType.STRENGTH, 8));
 			
 			MeleWeapon bigHighDoubleHandedSword = new MeleWeapon(
@@ -60,7 +67,7 @@ public class ActorTest {
 					IWeapon.DamageType.SLASH,
 					30, 
 					null, 
-					IEquipable.OccupiedPlace.BOTH_HANDS);
+					occupiedPlaces);
 			
 			try {
 				bob.pick(bigHighDoubleHandedSword);
@@ -76,13 +83,13 @@ public class ActorTest {
 			MeleWeapon theBigPoint = new MeleWeapon(
 					required, 
 					"The Big Point",
-					"Make you oponent getting to the point",
+					"Make your oponent getting to the point",
 					15,
 					5, 
 					IWeapon.DamageType.SMASH,
 					20, 
 					null, 
-					IEquipable.OccupiedPlace.BOTH_HANDS);
+					occupiedPlaces);
 			
 			bob.pick(theBigPoint);
 			try {
@@ -91,6 +98,23 @@ public class ActorTest {
 			catch (GameException e) {
 				e.printStackTrace();
 			}
+			
+			occupiedPlaces = new LinkedList<OccupiedPlace>();
+			occupiedPlaces.add(IEquipable.OccupiedPlace.TORSO);
+			MetalArmor metalPlates = new MetalArmor(
+					null,
+					"Metal plates", 
+					"Some good old metal plates",
+					30,
+					60,
+					IArmor.ArmorType.PHYSICAL, 
+					20, 
+					null, 
+					occupiedPlaces);
+			
+			bob.pick(metalPlates);
+			
+			bob.equip(metalPlates);
 			
 			System.out.println(bob);
 		} 

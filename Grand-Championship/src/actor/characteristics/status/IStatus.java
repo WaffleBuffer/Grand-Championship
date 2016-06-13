@@ -19,5 +19,7 @@ public interface IStatus {
 	
 	public Collection<ITraitModifier> traitModifiers();
 	
-	public String applyEffect(Actor target);
+	public String applyEffect(final Actor target);
+
+	public String removeEffect(final Actor target);
 }

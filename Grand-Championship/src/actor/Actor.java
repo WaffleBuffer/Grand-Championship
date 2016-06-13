@@ -36,7 +36,7 @@ public class Actor extends Observable{
 	private Set<ITrait> basicCharacteristics;
 	private Set<ITrait> currentCharacteristics;
 	
-	private Set<ITrait> stats;
+	private Set<Stat> stats;
 	
 	private Collection<OneTimeStatus> oneTimestatus;
 	private Collection<EachTurnStatus> eachTurnStatus;
@@ -52,7 +52,7 @@ public class Actor extends Observable{
 		
 		this.name = name;
 		this.basicCharacteristics = new HashSet<ITrait>();
-		this.stats = new HashSet<ITrait>();
+		this.stats = new HashSet<Stat>();
 		this.oneTimestatus = new LinkedList<OneTimeStatus>();
 		this.eachTurnStatus = new LinkedList<EachTurnStatus>();
 		this.maxWeight = 100;
@@ -80,25 +80,8 @@ public class Actor extends Observable{
 		dependencys[0] = dexterity;
 		final Stat critical = StatFactory.createState(ITrait.TraitType.CRITICAL, (10 + 2 * dexterity.getValue()), dependencys);
 		stats.add(critical);
-	}
-	
-	public Actor (String name, int Vitality, int strength, int dexterity, int constitution, int will) throws Exception {
-		super();
-
-		this.name = name;
-		this.basicCharacteristics = new HashSet<ITrait>();
-		this.eachTurnStatus = new LinkedList<EachTurnStatus>();
-		this.maxWeight = 100;
-		this.currentWeight = 0;
-		this.inventory = new LinkedList<IObject>();
-		
-		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.VITALITY, Vitality));
-		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.STRENGTH, strength));
-		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.DEXTERITY, dexterity));
-		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.CONSTITUTION, constitution));
-		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.WILL, will));
-		
-		currentCharacteristics = new HashSet<ITrait>(basicCharacteristics);
+		final Stat armor = StatFactory.createState(ITrait.TraitType.ARMOR, 0, null);
+		stats.add(armor);
 	}
 	
 	public void addIStatus(IStatus status) throws Exception {
@@ -270,39 +253,41 @@ public class Actor extends Observable{
 			this.pick(equipObject);
 		}
 		
-		if (equipObject.getOccupiedPlace() == OccupiedPlace.BOTH_HANDS) {
-			if (equipedObjects.get(OccupiedPlace.LEFT_HAND) != null) {
-				desequip(OccupiedPlace.LEFT_HAND);
-			}
-			if (equipedObjects.get(OccupiedPlace.RIGHT_HAND) != null) {
-				desequip(OccupiedPlace.RIGHT_HAND);
-			}
-			
-			equipedObjects.put(OccupiedPlace.BOTH_HANDS, equipObject);
-		}
-		else if (equipObject.getOccupiedPlace() == OccupiedPlace.ONE_HAND) {
-			if (equipedObjects.get(OccupiedPlace.BOTH_HANDS) != null) {
-				desequip(OccupiedPlace.BOTH_HANDS);
-			}
-			
-			if (equipedObjects.get(OccupiedPlace.RIGHT_HAND) != null) {
+		for (OccupiedPlace occupiedPlace : equipObject.getOccupiedPlace()) {
+			if (occupiedPlace == OccupiedPlace.BOTH_HANDS) {
 				if (equipedObjects.get(OccupiedPlace.LEFT_HAND) != null) {
+					desequip(OccupiedPlace.LEFT_HAND);
+				}
+				if (equipedObjects.get(OccupiedPlace.RIGHT_HAND) != null) {
+					desequip(OccupiedPlace.RIGHT_HAND);
+				}
+				
+				equipedObjects.put(OccupiedPlace.BOTH_HANDS, equipObject);
+			}
+			else if (occupiedPlace == OccupiedPlace.ONE_HAND) {
+				if (equipedObjects.get(OccupiedPlace.BOTH_HANDS) != null) {
+					desequip(OccupiedPlace.BOTH_HANDS);
+				}
+				
+				if (equipedObjects.get(OccupiedPlace.RIGHT_HAND) != null) {
+					if (equipedObjects.get(OccupiedPlace.LEFT_HAND) != null) {
+						desequip(OccupiedPlace.RIGHT_HAND);
+						equipedObjects.put(OccupiedPlace.RIGHT_HAND, equipObject);
+					}
+					else {
+						desequip(OccupiedPlace.LEFT_HAND);
+						equipedObjects.put(OccupiedPlace.LEFT_HAND, equipObject);
+					}
+				}
+				else {
 					desequip(OccupiedPlace.RIGHT_HAND);
 					equipedObjects.put(OccupiedPlace.RIGHT_HAND, equipObject);
 				}
-				else {
-					desequip(OccupiedPlace.LEFT_HAND);
-					equipedObjects.put(OccupiedPlace.LEFT_HAND, equipObject);
-				}
 			}
 			else {
-				desequip(OccupiedPlace.RIGHT_HAND);
-				equipedObjects.put(OccupiedPlace.RIGHT_HAND, equipObject);
+				desequip(occupiedPlace);
+				equipedObjects.put(occupiedPlace, equipObject);
 			}
-		}
-		else {
-			desequip(equipObject.getOccupiedPlace());
-			equipedObjects.put(equipObject.getOccupiedPlace(), equipObject);
 		}
 		
 		equipObject.applieOnEquipe(this);
@@ -324,5 +309,9 @@ public class Actor extends Observable{
 	
 	public IEquipable getEquipedObject(OccupiedPlace place) {
 		return equipedObjects.get(place);
+	}
+	
+	public Collection<Stat> getStats() {
+		return stats;
 	}
 }

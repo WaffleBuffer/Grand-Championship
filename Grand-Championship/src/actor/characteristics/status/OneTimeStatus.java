@@ -6,6 +6,7 @@ import java.util.Iterator;
 import actor.Actor;
 import actor.characteristics.status.traitModifier.ITraitModifier;
 import actor.characteristics.traits.ITrait;
+import actor.characteristics.traits.Stat;
 
 public class OneTimeStatus implements IStatus {
 	
@@ -64,10 +65,23 @@ public class OneTimeStatus implements IStatus {
 					currentActorTrait.setValue(currentActorTrait.getValue() + currentModifiedTrait.getValue());
 				}
 			}
+			
+			Iterator<Stat> statsIter = target.getStats().iterator();
+			
+			while (statsIter.hasNext()) {
+				
+				ITrait currentActorStat = statsIter.next();
+				
+				if (currentActorStat.getTraitType() == currentModifiedTrait.getTraitType()) {
+					
+					currentActorStat.setValue(currentActorStat.getValue() + currentModifiedTrait.getValue());
+				}
+			}
 		}
 		return description;
 	}
 
+	@Override
 	public String removeEffect(Actor target) {
 		
 		Iterator<ITraitModifier> traitModifierIter = this.traitModifiers().iterator();
@@ -85,6 +99,18 @@ public class OneTimeStatus implements IStatus {
 				if (currentActorTrait.getTraitType() == currentModifiedTrait.getTraitType()) {
 					
 					currentActorTrait.setValue(currentActorTrait.getValue() - currentModifiedTrait.getValue());
+				}
+			}
+			
+			Iterator<Stat> statsIter = target.getStats().iterator();
+			
+			while (statsIter.hasNext()) {
+				
+				ITrait currentActorStat = statsIter.next();
+				
+				if (currentActorStat.getTraitType() == currentModifiedTrait.getTraitType()) {
+					
+					currentActorStat.setValue(currentActorStat.getValue() - currentModifiedTrait.getValue());
 				}
 			}
 		}

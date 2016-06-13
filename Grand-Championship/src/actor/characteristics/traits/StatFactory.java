@@ -28,6 +28,14 @@ public abstract class StatFactory {
 			}
 			
 			return critical;
+		case ARMOR :
+			return new Stat(ITrait.getTraitName(type), type, value) {
+				
+				@Override
+				public void update(Observable o, Object arg) {
+					
+				}
+			};
 		default :
 			throw new Exception ("Unknown stat type");
 		}

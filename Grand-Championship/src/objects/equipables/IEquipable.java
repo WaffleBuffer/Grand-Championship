@@ -39,5 +39,5 @@ public interface IEquipable extends IObject {
 	
 	public void removeApplieOnEquipe(Actor target) throws Exception;
 	
-	public OccupiedPlace getOccupiedPlace ();
+	public Collection<OccupiedPlace> getOccupiedPlace ();
 }

@@ -3,12 +3,12 @@ package actor.characteristics.status.traitModifier;
 import actor.characteristics.traits.ITrait;
 import actor.characteristics.traits.ITrait.TraitType;
 
-public class BasicTraitModifier implements ITraitModifier {
+public class StatModifier implements ITraitModifier {
 
 	private final TraitType traitType;
 	private final int value;
 	
-	public BasicTraitModifier(final TraitType traitType, final int value) {
+	public StatModifier(final TraitType traitType, final int value) {
 		this.traitType = traitType;
 		this.value     = value;
 	}
