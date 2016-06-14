@@ -26,7 +26,35 @@ public interface IArmor extends IEquipable{
 		}
 	}
 	
-	public int getArmorReduction (final IWeapon.DamageType damageType, final int damageValue) throws Exception;
+	public static int getArmorReduction (final IWeapon.DamageType damageType, final int damageValue, 
+			final ArmorType armorType, final int armorValue)
+			throws Exception {
+		switch (damageType) {
+		case PIERCING :
+			if (armorType == ArmorType.PHYSICAL) {
+				return (int) (armorValue - armorValue * 0.2);
+			}
+			else {
+				return 0;
+			}
+		case SLASH :
+			if (armorType == ArmorType.PHYSICAL) {
+				return (int) (armorValue);
+			}
+			else {
+				return 0;
+			}
+		case SMASH :
+			if (armorType == ArmorType.PHYSICAL) {
+				return (int) (armorValue);
+			}
+			else {
+				return 0;
+			}
+		default :
+			throw new Exception ("Unknown armor type");
+		}
+	}
 	
 	public int getArmorValue();
 	

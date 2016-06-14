@@ -17,10 +17,13 @@ import actor.characteristics.traits.BasicTraitFactory;
 import actor.characteristics.traits.ITrait;
 import actor.characteristics.traits.Stat;
 import actor.characteristics.traits.StatFactory;
+import actor.characteristics.traits.ITrait.TraitType;
 import gameExceptions.GameException;
 import objects.IObject;
 import objects.equipables.IEquipable;
 import objects.equipables.IEquipable.OccupiedPlace;
+import objects.equipables.weapons.IWeapon;
+import objects.equipables.wearables.armors.IArmor;
 
 /**
  * A basic character
@@ -31,21 +34,21 @@ public class Actor extends Observable{
 	
 	public static final int DEFAULT_TRAIT_VALUE = 5;
 
-	private String name;
+	private final String name;
 	
-	private Set<ITrait> basicCharacteristics;
-	private Set<ITrait> currentCharacteristics;
+	private final Set<ITrait> basicCharacteristics;
+	private final Set<ITrait> currentCharacteristics;
 	
-	private Set<Stat> stats;
+	private final Set<Stat> stats;
 	
-	private Collection<OneTimeStatus> oneTimestatus;
-	private Collection<EachTurnStatus> eachTurnStatus;
+	private final Collection<OneTimeStatus> oneTimestatus;
+	private final Collection<EachTurnStatus> eachTurnStatus;
 	
-	private Map<IEquipable.OccupiedPlace, IEquipable> equipedObjects;
+	private final Map<IEquipable.OccupiedPlace, IEquipable> equipedObjects;
 	
 	private final int maxWeight;
 	private int currentWeight;
-	private Collection<IObject> inventory;
+	private final Collection<IObject> inventory;
 	
 	public Actor (String name) throws Exception {
 		super();
@@ -67,14 +70,20 @@ public class Actor extends Observable{
 		equipedObjects.put(OccupiedPlace.RIGHT_HAND, null);
 		equipedObjects.put(OccupiedPlace.TORSO, null);
 		
-		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.VITALITY, DEFAULT_TRAIT_VALUE));
+		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.VITALITY, 200));
 		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.STRENGTH, DEFAULT_TRAIT_VALUE));
 		BasicTrait dexterity = BasicTraitFactory.getBasicTrait(ITrait.TraitType.DEXTERITY, DEFAULT_TRAIT_VALUE);
 		basicCharacteristics.add(dexterity);
 		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.CONSTITUTION, DEFAULT_TRAIT_VALUE));
 		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.WILL, DEFAULT_TRAIT_VALUE));
 		
-		currentCharacteristics = new HashSet<ITrait>(basicCharacteristics);
+		currentCharacteristics = new HashSet<ITrait>();
+		currentCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.VITALITY, 200));
+		currentCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.STRENGTH, DEFAULT_TRAIT_VALUE));
+		dexterity = BasicTraitFactory.getBasicTrait(ITrait.TraitType.DEXTERITY, DEFAULT_TRAIT_VALUE);
+		currentCharacteristics.add(dexterity);
+		currentCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.CONSTITUTION, DEFAULT_TRAIT_VALUE));
+		currentCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.WILL, DEFAULT_TRAIT_VALUE));
 		
 		Observable [] dependencys = new Observable[1];
 		dependencys[0] = dexterity;
@@ -135,14 +144,32 @@ public class Actor extends Observable{
 		return "";
 	}
 	
-	public String name() {
+	public String getName() {
 		return this.name;
 	}
 
 	@Override
 	public String toString() {
 		String actorString = "=============== " + name + " ===============" + System.lineSeparator() +
-		currentCharacteristics + System.lineSeparator() +
+		getCurrentTrait(TraitType.VITALITY) + "/" + getBasicTrait(TraitType.VITALITY).getValue() + ", ";
+		
+		Iterator<ITrait> traitIter = currentCharacteristics.iterator();
+
+		while(traitIter.hasNext()) {
+			final ITrait currentTrait = traitIter.next();
+			
+			if (currentTrait.getTraitType() == TraitType.VITALITY) {
+				continue;
+			}
+			
+			actorString += currentTrait;
+			if (traitIter.hasNext()) {
+				actorString += ", ";
+			}
+			
+		}
+		
+		actorString += System.lineSeparator() +
 		stats + System.lineSeparator() +
 		currentWeight + "/" + maxWeight + " Kg" + System.lineSeparator(); 
 		
@@ -173,7 +200,7 @@ public class Actor extends Observable{
 		}
 		
 		if (!equipedObjects.isEmpty()) {
-			actorString += "Euiped Objects : " + System.lineSeparator();
+			actorString += System.lineSeparator() + "Equiped Objects : " + System.lineSeparator();
 			for (Map.Entry<OccupiedPlace, IEquipable> currentEntry : equipedObjects.entrySet()) {
 				
 				if (currentEntry.getValue() != null) {
@@ -316,5 +343,72 @@ public class Actor extends Observable{
 	
 	public Collection<Stat> getStats() {
 		return stats;
+	}
+	
+	public ITrait getCurrentTrait (final ITrait.TraitType type) {
+		final Iterator<ITrait> currentTraitIter = currentCharacteristics.iterator();
+		
+		while(currentTraitIter.hasNext()) {
+			final ITrait currentTrait = currentTraitIter.next();
+			
+			if (currentTrait.getTraitType() == type) {
+				return currentTrait;
+			}
+		}
+		
+		return null;
+	}
+	
+	public ITrait getBasicTrait (final ITrait.TraitType type) {
+		final Iterator<ITrait> basicTraitIter = basicCharacteristics.iterator();
+		
+		while(basicTraitIter.hasNext()) {
+			final ITrait currentTrait = basicTraitIter.next();
+			
+			if (currentTrait.getTraitType() == type) {
+				return currentTrait;
+			}
+		}
+		
+		return null;
+	}
+	
+	public Stat getStat (final ITrait.TraitType type) {
+		final Iterator<Stat> statIter = stats.iterator();
+		
+		while(statIter.hasNext()) {
+			final Stat currentStat = statIter.next();
+			
+			if (currentStat.getTraitType() == type) {
+				return currentStat;
+			}
+		}
+		
+		return null;
+	}
+	
+	public String takeDamage (final Actor origin, final int value, final IWeapon.DamageType damageType) throws Exception {
+		int realDamage = value;
+		
+		if (getStat(ITrait.TraitType.ARMOR) != null) {
+			final int armor = getStat(ITrait.TraitType.ARMOR).getValue();
+			realDamage -= IArmor.getArmorReduction(damageType, value, IArmor.ArmorType.PHYSICAL, armor);
+		}
+		
+		if (getStat(ITrait.TraitType.MAGICAL_PROTECTION) != null) {
+			final int magicArmor = getStat(ITrait.TraitType.MAGICAL_PROTECTION).getValue();
+			realDamage -= IArmor.getArmorReduction(damageType, value, IArmor.ArmorType.MAGIC, magicArmor);
+		}
+		
+		final int currentVitality = this.getCurrentTrait(TraitType.VITALITY).getValue();
+		
+		if (currentVitality - realDamage < 0) {
+			this.getCurrentTrait(TraitType.VITALITY).setValue(0);
+		}
+		else {
+			this.getCurrentTrait(TraitType.VITALITY).setValue(currentVitality - realDamage);
+		}
+		return getName() + " took " + realDamage + " " + IWeapon.getDamageTypeString(damageType) + " damage" +
+		" (" + (value - realDamage) + " absorbed) from " + origin.getName();
 	}
 }

@@ -10,6 +10,7 @@ public interface ITrait {
 		WILL,
 		
 		ARMOR,
+		MAGICAL_PROTECTION,
 		CRITICAL
 	}
 	
@@ -27,6 +28,8 @@ public interface ITrait {
 				return "Will";
 			case ARMOR :
 				return "Armor";
+			case MAGICAL_PROTECTION :
+				return "Magical protection";
 			case CRITICAL :
 				return "Critical chance";
 			default :

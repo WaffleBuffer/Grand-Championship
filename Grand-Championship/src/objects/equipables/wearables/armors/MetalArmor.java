@@ -11,7 +11,6 @@ import actor.characteristics.status.traitModifier.ITraitModifier;
 import actor.characteristics.status.traitModifier.StatModifier;
 import actor.characteristics.traits.ITrait;
 import objects.equipables.IEquipable;
-import objects.equipables.weapons.IWeapon.DamageType;
 
 public class MetalArmor implements IArmor {
 	
@@ -49,35 +48,6 @@ public class MetalArmor implements IArmor {
 		this.statusApllied.add(new OneTimeStatus(name, "Armor form " + name, armorModifier, false));
 		
 		this.occupiedPlace = occupiedPlace;
-	}
-
-	@Override
-	public int getArmorReduction(DamageType damageType, int damageValue) throws Exception {
-		switch (damageType) {
-		case PIERCING :
-			if (this.getArmorType() == ArmorType.PHYSICAL) {
-				return (int) (damageValue - (this.getArmorValue() - this.getArmorValue() * 0.2));
-			}
-			else {
-				return 0;
-			}
-		case SLASH :
-			if (this.getArmorType() == ArmorType.PHYSICAL) {
-				return (int) (damageValue - this.getArmorValue());
-			}
-			else {
-				return 0;
-			}
-		case SMASH :
-			if (this.getArmorType() == ArmorType.PHYSICAL) {
-				return (int) (damageValue - this.getArmorValue());
-			}
-			else {
-				return 0;
-			}
-		default :
-			throw new Exception ("Unknown armor type");
-		}
 	}
 
 	@Override

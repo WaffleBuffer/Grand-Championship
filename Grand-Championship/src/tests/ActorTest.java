@@ -18,6 +18,7 @@ import objects.equipables.weapons.IWeapon;
 import objects.equipables.weapons.meleWeapons.MeleWeapon;
 import objects.equipables.wearables.armors.IArmor;
 import objects.equipables.wearables.armors.MetalArmor;
+import objects.usables.potions.HealingPotion;
 
 public class ActorTest {
 
@@ -78,8 +79,6 @@ public class ActorTest {
 				e.printStackTrace();
 			}
 			
-			//bob.desequip(OccupiedPlace.RIGHT_HAND);
-			
 			required = new LinkedList<ITrait>();
 			//required.add(BasicTraitFactory.getBasicTrait(TraitType.DEXTERITY, 6));
 			MeleWeapon theBigPoint = new MeleWeapon(
@@ -118,7 +117,20 @@ public class ActorTest {
 			
 			System.out.println(bob.equip(metalPlates));
 			
-			System.out.println(bob.desequip(IEquipable.OccupiedPlace.TORSO));
+			//System.out.println(bob.desequip(IEquipable.OccupiedPlace.TORSO));
+			
+			HealingPotion potion = new HealingPotion(
+					"Healing potion", 
+					"Get you back on your feets",
+					1,
+					50,
+					50);
+			
+			System.out.println(bob.takeDamage(bob, 40, IWeapon.DamageType.SMASH));
+			
+			System.out.println(bob.pick(potion));
+			
+			System.out.println(potion.use(bob, bob));
 			
 			System.out.println(bob);
 		} 
