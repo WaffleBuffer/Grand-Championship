@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 import actor.characteristics.status.EachTurnStatus;
 import actor.characteristics.status.IStatus;
@@ -410,5 +411,53 @@ public class Actor extends Observable{
 		}
 		return getName() + " took " + realDamage + " " + IWeapon.getDamageTypeString(damageType) + " damage" +
 		" (" + (value - realDamage) + " absorbed) from " + origin.getName();
+	}
+	
+	public String weaponAtack(final Actor target) {
+		try {
+			String log = "";
+			IWeapon weapon = (IWeapon) this.getEquipedObject(IEquipable.OccupiedPlace.BOTH_HANDS);
+			if (weapon == null) {
+				weapon = (IWeapon) this.getEquipedObject(IEquipable.OccupiedPlace.RIGHT_HAND);
+				IWeapon leftWeapon = (IWeapon) this.getEquipedObject(IEquipable.OccupiedPlace.LEFT_HAND);
+				if (weapon != null) {
+					log += weapon.attack(target);
+				}
+				if (leftWeapon != null) {
+					log += leftWeapon.attack(target);
+				}
+			}
+			else {
+				log += weapon.attack(target);
+			}
+			return log;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return this.name + " don't have any weapon equiped";
+		}
+	}
+	
+	public String tryToResist (final IStatus status, final int applyChances) throws Exception {
+		ITrait resistanceTrait = this.getBasicTrait(status.getResistance());
+		
+		if (resistanceTrait == null) {
+			resistanceTrait = this.getStat(status.getResistance());
+		}
+		if (resistanceTrait == null) {
+			this.addIStatus(status);
+			return this.getName() + " is now affected by " + status;
+		}
+		else {
+			final int resistanceResult = ThreadLocalRandom.current().nextInt(0, 100 + 1);
+			if (resistanceResult > resistanceTrait.getValue() - 
+					(resistanceTrait.getValue() * (applyChances / 100))) {
+				this.addIStatus(status);
+				return this.getName() + " is now affected by " + status;
+			}
+			else {
+				return this.getName() + " has resisted to " + status;
+			}
+		}
 	}
 }

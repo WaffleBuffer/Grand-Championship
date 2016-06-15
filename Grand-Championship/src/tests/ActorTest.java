@@ -24,7 +24,7 @@ public class ActorTest {
 
 	public static void main(String[] args) {
 		try {
-			Actor bob = new Actor("Bob");
+			final Actor bob = new Actor("Bob");
 			
 			Collection<ITraitModifier> modifiedTraits = new LinkedList<ITraitModifier>();
 			modifiedTraits.add(new BasicTraitModifier(ITrait.TraitType.DEXTERITY, -2));

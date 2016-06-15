@@ -7,17 +7,21 @@ import java.util.LinkedList;
 import actor.Actor;
 import actor.characteristics.status.traitModifier.ITraitModifier;
 import actor.characteristics.traits.ITrait;
+import actor.characteristics.traits.ITrait.TraitType;
 import actor.characteristics.traits.Stat;
 
 public class OneTimeStatus implements IStatus {
 	
-	private String name;
-	private String description;
+	private final String name;
+	private final String description;
 	private Collection<ITraitModifier> traitModifiers;
 	private final Boolean displayable;
+	private int applyChances;
+	private final ITrait.TraitType resistance;
 
-	public OneTimeStatus(String name, String description, Collection<ITraitModifier> traitModifiers,
-			final Boolean displayable) {
+	public OneTimeStatus(final String name, final String description, 
+			final Collection<ITraitModifier> traitModifiers,
+			final Boolean displayable, final int applyChances, final ITrait.TraitType resistance) {
 		super();
 		this.name = name;
 		this.description = description;
@@ -26,6 +30,8 @@ public class OneTimeStatus implements IStatus {
 			this.traitModifiers = new LinkedList<ITraitModifier>();
 		}
 		this.displayable = displayable;
+		this.applyChances = applyChances;
+		this.resistance = resistance;
 	}
 
 	@Override
@@ -127,5 +133,15 @@ public class OneTimeStatus implements IStatus {
 	@Override
 	public Boolean isDiplayable() {
 		return displayable;
+	}
+
+	@Override
+	public int getApplyChances() {
+		return applyChances;
+	}
+
+	@Override
+	public TraitType getResistance() {
+		return resistance;
 	}
 }

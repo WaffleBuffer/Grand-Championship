@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import actor.Actor;
 import actor.characteristics.status.traitModifier.ITraitModifier;
 import actor.characteristics.traits.ITrait;
+import actor.characteristics.traits.ITrait.TraitType;
 import actor.characteristics.traits.Stat;
 
 public class EachTurnStatus implements IStatus {
@@ -16,9 +17,11 @@ public class EachTurnStatus implements IStatus {
 	private Collection<ITraitModifier> traitModifiers;
 	private final int nbTurn;
 	private final Boolean displayable;
+	private int applyChances;
+	private final ITrait.TraitType resistance;
 
 	public EachTurnStatus(String name, String description, Collection<ITraitModifier> traitModifiers,
-			final int nbTurns, final Boolean displayable) {
+			final int nbTurns, final Boolean displayable, final int applyChances, final ITrait.TraitType resistance) {
 		super();
 		this.name = name;
 		this.description = description;
@@ -28,6 +31,8 @@ public class EachTurnStatus implements IStatus {
 		}
 		this.nbTurn = nbTurns;
 		this.displayable = displayable;
+		this.applyChances = applyChances;
+		this.resistance = resistance;
 	}
 
 	@Override
@@ -133,5 +138,15 @@ public class EachTurnStatus implements IStatus {
 	@Override
 	public Boolean isDiplayable() {
 		return displayable;
+	}
+
+	@Override
+	public int getApplyChances() {
+		return this.applyChances;
+	}
+
+	@Override
+	public TraitType getResistance() {
+		return resistance;
 	}
 }

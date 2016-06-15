@@ -1,5 +1,6 @@
 package objects.equipables.weapons;
 
+import actor.Actor;
 import objects.equipables.IEquipable;
 
 public interface IWeapon extends IEquipable {
@@ -24,4 +25,6 @@ public interface IWeapon extends IEquipable {
 	public DamageType damageType();
 	
 	public int damageValue();
+	
+	public String attack(final Actor target) throws Exception;
 }

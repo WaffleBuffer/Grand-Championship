@@ -20,12 +20,14 @@ public class MeleWeapon implements IWeapon {
 	private final int value;
 	private final DamageType damageType;
 	private final int damageValue;
-	private Collection<IStatus> statusApllied;
+	private Collection<IStatus> statusAplliedOnEquip;
+	private Collection<IStatus> statusAplliedOnAttack;
 	private final Collection<OccupiedPlace> occupiedPlace;
 	
 	public MeleWeapon(final Collection<ITrait> requiredTraits, final String name, final String description, 
 			final int weight, final int value, final DamageType damageType, final int damageValue, 
-			final Collection<IStatus> statusApllied, final Collection<OccupiedPlace> occupiedPlace) {
+			final Collection<IStatus> statusApllied, final Collection<IStatus> statusAplliedOnAttack, 
+			final Collection<OccupiedPlace> occupiedPlace) {
 		super();
 		
 		this.requiredTraits = requiredTraits;
@@ -38,9 +40,13 @@ public class MeleWeapon implements IWeapon {
 		this.value = value;
 		this.damageType = damageType;
 		this.damageValue = damageValue;
-		this.statusApllied = statusApllied;
+		this.statusAplliedOnEquip = statusApllied;
 		if (statusApllied == null) {
-			this.statusApllied = new LinkedList<IStatus>();
+			this.statusAplliedOnEquip = new LinkedList<IStatus>();
+		}
+		this.statusAplliedOnAttack = statusAplliedOnAttack;
+		if (statusAplliedOnAttack == null) {
+			this.statusAplliedOnAttack = new LinkedList<IStatus>();
 		}
 		this.occupiedPlace = occupiedPlace;
 	}
@@ -83,7 +89,7 @@ public class MeleWeapon implements IWeapon {
 	@Override
 	public void applieOnEquipe(Actor target) throws GameException, Exception {
 		
-		Iterator<IStatus> statusIter = statusApllied.iterator();
+		Iterator<IStatus> statusIter = statusAplliedOnEquip.iterator();
 		
 		while (statusIter.hasNext()) {
 			IStatus currentStatus = statusIter.next();
@@ -96,7 +102,7 @@ public class MeleWeapon implements IWeapon {
 
 	@Override
 	public void removeApplieOnEquipe(Actor target) throws Exception {
-		Iterator<IStatus> statusIter = statusApllied.iterator();
+		Iterator<IStatus> statusIter = statusAplliedOnEquip.iterator();
 		
 		while (statusIter.hasNext()) {
 			IStatus currentStatus = statusIter.next();
@@ -122,8 +128,11 @@ public class MeleWeapon implements IWeapon {
 			if (!requiredTraits.isEmpty()) {
 				weaponStr += "required : " + requiredTraits + System.lineSeparator();
 			}
-			if (!statusApllied.isEmpty()) {
-				weaponStr += "applies" + statusApllied + System.lineSeparator();
+			if (!statusAplliedOnEquip.isEmpty()) {
+				weaponStr += "applies " + statusAplliedOnEquip + System.lineSeparator();
+			}
+			if (!statusAplliedOnAttack.isEmpty()) {
+				weaponStr += "on attack " + statusAplliedOnAttack + System.lineSeparator();
 			}
 			return  weaponStr;
 		} 
@@ -136,5 +145,18 @@ public class MeleWeapon implements IWeapon {
 	@Override
 	public Collection<OccupiedPlace> getOccupiedPlace() {
 		return occupiedPlace;
+	}
+
+	@Override
+	public String attack(Actor target) throws Exception {
+		Iterator<IStatus> statusIter = statusAplliedOnAttack.iterator();
+		
+		String log = "";
+		while (statusIter.hasNext()) {
+			IStatus currentStatus = statusIter.next();
+			
+			log += target.tryToResist(currentStatus) + System.lineSeparator();
+		}		
+		return log;
 	}
 }
