@@ -3,12 +3,12 @@ package objects.equipables.weapons.meleWeapons;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Observable;
 
 import actor.Actor;
 import actor.characteristics.status.IStatus;
 import actor.characteristics.traits.ITrait;
 import gameExceptions.GameException;
-import objects.equipables.IEquipable;
 import objects.equipables.weapons.IWeapon;
 
 public class MeleWeapon implements IWeapon {
@@ -22,12 +22,12 @@ public class MeleWeapon implements IWeapon {
 	private final int damageValue;
 	private Collection<IStatus> statusAplliedOnEquip;
 	private Collection<IStatus> statusAplliedOnAttack;
-	private final Collection<OccupiedPlace> occupiedPlace;
+	private final OccupiedPlace occupiedPlace;
 	
 	public MeleWeapon(final Collection<ITrait> requiredTraits, final String name, final String description, 
 			final int weight, final int value, final DamageType damageType, final int damageValue, 
 			final Collection<IStatus> statusApllied, final Collection<IStatus> statusAplliedOnAttack, 
-			final Collection<OccupiedPlace> occupiedPlace) {
+			final OccupiedPlace occupiedPlace) {
 		super();
 		
 		this.requiredTraits = requiredTraits;
@@ -82,22 +82,24 @@ public class MeleWeapon implements IWeapon {
 	}
 
 	@Override
-	public int damageValue() {
+	public int getDamageValue() {
 		return damageValue;
 	}
 
 	@Override
-	public void applieOnEquipe(Actor target) throws GameException, Exception {
+	public String applieOnEquipe(Actor target) throws GameException, Exception {
 		
 		Iterator<IStatus> statusIter = statusAplliedOnEquip.iterator();
 		
+		String log = "";
 		while (statusIter.hasNext()) {
 			IStatus currentStatus = statusIter.next();
 			
-			target.addIStatus(currentStatus);
+			log += target.addIStatus(currentStatus) + System.lineSeparator();
 		}
 		
 		this.name += "(E)";
+		return log;
 	}
 
 	@Override
@@ -118,9 +120,7 @@ public class MeleWeapon implements IWeapon {
 		try {
 			String weaponStr = name + " : " + description + System.lineSeparator();
 			
-			for (IEquipable.OccupiedPlace occupiedPlace : occupiedPlace) {
-				weaponStr += occupiedPlace + " ";
-			}
+			weaponStr += occupiedPlace + " ";
 			weaponStr += System.lineSeparator() +
 					 + damageValue + " " + IWeapon.getDamageTypeString(damageType) + " damage" + System.lineSeparator() +
 					weight + " Kg, " + value + " $" + System.lineSeparator();
@@ -143,20 +143,81 @@ public class MeleWeapon implements IWeapon {
 	}
 
 	@Override
-	public Collection<OccupiedPlace> getOccupiedPlace() {
+	public OccupiedPlace getOccupiedPlace() {
 		return occupiedPlace;
 	}
 
 	@Override
-	public String attack(Actor target) throws Exception {
+	public String attack(final Actor target) throws Exception {
 		Iterator<IStatus> statusIter = statusAplliedOnAttack.iterator();
 		
 		String log = "";
 		while (statusIter.hasNext()) {
 			IStatus currentStatus = statusIter.next();
 			
-			log += target.tryToResist(currentStatus) + System.lineSeparator();
-		}		
+			log += target.tryToResist(currentStatus, currentStatus.getApplyChances()) + System.lineSeparator();
+		}	
+		
+		log += target.takeDamage(null, this.getDamageValue(), this.damageType());
 		return log;
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		final Actor actor;
+		try {
+			actor = (Actor) o;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}
+		int counter = 0;
+		
+		Iterator<ITrait> requiredIter = this.getRequiredTraits().iterator();
+		
+		while (requiredIter.hasNext()) {
+			ITrait currentRequiredTrait = requiredIter.next();
+		
+			final ITrait currentTargetTrait = actor.getCurrentTrait(currentRequiredTrait.getTraitType());
+			
+			if(currentTargetTrait != null) {
+				
+				if (currentTargetTrait.getValue() < currentRequiredTrait.getValue()) {
+					try {
+						actor.desequip(this.getOccupiedPlace());
+					} 
+					catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				else {
+					++counter;
+				}
+			}
+		}
+		
+		if (counter < this.getRequiredTraits().size()) {
+			try {
+				actor.desequip(this.getOccupiedPlace());
+			} 
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public static MeleWeapon getFists (final int damage) {
+		return new MeleWeapon(
+				null,
+				"Fists",
+				"You know whene they sais : \"Do it by yourself\".",
+				0,
+				0,
+				DamageType.SMASH,
+				damage,
+				null,
+				null,
+				OccupiedPlace.BOTH_HANDS);
 	}
 }

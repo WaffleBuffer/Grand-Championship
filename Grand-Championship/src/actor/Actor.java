@@ -18,12 +18,15 @@ import actor.characteristics.traits.BasicTraitFactory;
 import actor.characteristics.traits.ITrait;
 import actor.characteristics.traits.Stat;
 import actor.characteristics.traits.StatFactory;
+import gameEngine.ai.AI;
+import gameEngine.ai.DefaultAI;
 import actor.characteristics.traits.ITrait.TraitType;
 import gameExceptions.GameException;
 import objects.IObject;
 import objects.equipables.IEquipable;
 import objects.equipables.IEquipable.OccupiedPlace;
 import objects.equipables.weapons.IWeapon;
+import objects.equipables.weapons.meleWeapons.MeleWeapon;
 import objects.equipables.wearables.armors.IArmor;
 
 /**
@@ -43,13 +46,15 @@ public class Actor extends Observable{
 	private final Set<Stat> stats;
 	
 	private final Collection<OneTimeStatus> oneTimestatus;
-	private final Collection<EachTurnStatus> eachTurnStatus;
+	private final Set<EachTurnStatus> eachTurnStatus;
 	
 	private final Map<IEquipable.OccupiedPlace, IEquipable> equipedObjects;
 	
 	private final int maxWeight;
 	private int currentWeight;
 	private final Collection<IObject> inventory;
+	
+	private AI ai;
 	
 	public Actor (String name) throws Exception {
 		super();
@@ -58,10 +63,11 @@ public class Actor extends Observable{
 		this.basicCharacteristics = new HashSet<ITrait>();
 		this.stats = new HashSet<Stat>();
 		this.oneTimestatus = new LinkedList<OneTimeStatus>();
-		this.eachTurnStatus = new LinkedList<EachTurnStatus>();
+		this.eachTurnStatus = new HashSet<EachTurnStatus>();
 		this.maxWeight = 100;
 		this.currentWeight = 0;
 		this.inventory = new LinkedList<IObject>();
+		this.setAi(new DefaultAI(this));
 		
 		this.equipedObjects = new HashMap<IEquipable.OccupiedPlace, IEquipable>();
 		equipedObjects.put(OccupiedPlace.BOTH_HANDS, null);
@@ -86,22 +92,36 @@ public class Actor extends Observable{
 		currentCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.CONSTITUTION, DEFAULT_TRAIT_VALUE));
 		currentCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.WILL, DEFAULT_TRAIT_VALUE));
 		
-		Observable [] dependencys = new Observable[1];
-		dependencys[0] = dexterity;
-		final Stat critical = StatFactory.createState(ITrait.TraitType.CRITICAL, (10 + 2 * dexterity.getValue()), dependencys);
+		final Stat critical = StatFactory.createState(ITrait.TraitType.CRITICAL, (10 + 2 * dexterity.getValue()), this);
 		stats.add(critical);
-		final Stat armor = StatFactory.createState(ITrait.TraitType.ARMOR, 0, null);
+		final Stat armor = StatFactory.createState(ITrait.TraitType.ARMOR, 0, this);
 		stats.add(armor);
 	}
 	
 	public String addIStatus(IStatus status) throws Exception {
 		
-		switch (status.type()) {
+		switch (status.getType()) {
 		case ONE_TIME :
 			this.oneTimestatus.add((OneTimeStatus) status);
 			return (status.applyEffect(this));
 		case EACH_TURN :
+		case TEMPORARY :
+			final EachTurnStatus eachTurnStatu = (EachTurnStatus) status;
+			
+			if (this.eachTurnStatus.contains(eachTurnStatu)) {
+				Iterator<EachTurnStatus> statusIter = this.eachTurnStatus.iterator();
+				
+				while (statusIter.hasNext()) {
+					EachTurnStatus currentStatus = statusIter.next();
+					
+					if (currentStatus == status) {
+						currentStatus.setNbTurns(eachTurnStatu.getNbTurns());
+						return "";
+					}
+				}
+			}
 			this.eachTurnStatus.add((EachTurnStatus) status);
+			status.applyEffect(this);
 			break;
 		default :
 			throw new Exception("Unknown status type");
@@ -131,18 +151,19 @@ public class Actor extends Observable{
 	
 	public String removeStatus (IStatus status) throws Exception {
 		
-		switch (status.type()) {
+		switch (status.getType()) {
 		case ONE_TIME :
 			this.oneTimestatus.remove((OneTimeStatus) status);
 			return ((OneTimeStatus) status).removeEffect(this);
 		case EACH_TURN :
-			this.eachTurnStatus.remove((EachTurnStatus) status);
+		case TEMPORARY :
+			this.eachTurnStatus.remove(status);
 			break;
 		default :
 			throw new Exception("Unknown status type");
 		}	
 		
-		return "";
+		return this.getName() + " is no longer affected by " + status.getName();
 	}
 	
 	public String getName() {
@@ -175,44 +196,50 @@ public class Actor extends Observable{
 		currentWeight + "/" + maxWeight + " Kg" + System.lineSeparator(); 
 		
 		if (!oneTimestatus.isEmpty()) {
+			actorString += System.lineSeparator();
 			actorString += "Status : " + System.lineSeparator();
 			for (OneTimeStatus currentOneTimeStatus : oneTimestatus) {
 				if (currentOneTimeStatus.isDiplayable()) {
 					actorString += currentOneTimeStatus + System.lineSeparator();
 				}
 			}
+			actorString += System.lineSeparator();
 		}
 		
 		if (!eachTurnStatus.isEmpty()) {
 			actorString += "Each turn status : " + System.lineSeparator();
 			for (EachTurnStatus currentEachTurnStatus : eachTurnStatus) {
 				if (currentEachTurnStatus.isDiplayable()) {
-					actorString += currentEachTurnStatus + System.lineSeparator();
+					actorString += currentEachTurnStatus + " (" + currentEachTurnStatus.getNbTurns() + " turns left)" +
+							System.lineSeparator();
 				}
 			}
+			actorString += System.lineSeparator();
 		}
 		
 		if (!inventory.isEmpty()) {
 			actorString += "inventory : " + System.lineSeparator();
+			actorString += System.lineSeparator();
 			for (IObject currentObject : inventory) {
 				
 				actorString += currentObject + System.lineSeparator();
 			}
+			actorString += System.lineSeparator();
 		}
 		
-		if (!equipedObjects.isEmpty()) {
-			actorString += System.lineSeparator() + "Equiped Objects : " + System.lineSeparator();
-			for (Map.Entry<OccupiedPlace, IEquipable> currentEntry : equipedObjects.entrySet()) {
-				
-				if (currentEntry.getValue() != null) {
-					try {
-						actorString += currentEntry.getKey() + " : " + currentEntry.getValue() + System.lineSeparator();
-					} 
-					catch (Exception e) {
-						e.printStackTrace();
-					}
+		actorString += System.lineSeparator() + "Equiped Objects : " + System.lineSeparator();
+		actorString += System.lineSeparator();
+		for (Map.Entry<OccupiedPlace, IEquipable> currentEntry : equipedObjects.entrySet()) {
+			
+			if (currentEntry.getValue() != null) {
+				try {
+					actorString += currentEntry.getKey() + " : " + currentEntry.getValue() + System.lineSeparator();
+				} 
+				catch (Exception e) {
+					e.printStackTrace();
 				}
 			}
+			actorString += System.lineSeparator();
 		}
 		
 		actorString += "==============================";
@@ -251,78 +278,131 @@ public class Actor extends Observable{
 	
 	public String equip(IEquipable equipObject) throws GameException, Exception{
 		
-		int counter = 0;
+		if (equipedObjects.containsValue(equipObject)) {
+			return this.getName() + " is already equiped with " + equipObject.getName();
+		}
+		if (!canEquip(equipObject)) {
+			throw new GameException("You can't equip " + equipObject.getName(), 
+					GameException.ExceptionType.REQUIRED_TRAIT);
+		}
+		
+		String log = "";
+		if (!inventory.contains(equipObject)) {
+			log += this.pick(equipObject) + System.lineSeparator();
+		}
+		
+		IEquipable lastObject;
+		final OccupiedPlace occupiedPlace = equipObject.getOccupiedPlace(); 
+		if (occupiedPlace == OccupiedPlace.BOTH_HANDS) {
+			if (equipedObjects.get(OccupiedPlace.LEFT_HAND) != null) {
+				lastObject = equipedObjects.get(OccupiedPlace.LEFT_HAND);
+				log += desequip(OccupiedPlace.LEFT_HAND) + System.lineSeparator();
+				if (!canEquip(equipObject)) {
+					equip(lastObject);
+					throw new GameException("You can't equip " + equipObject.getName(), 
+							GameException.ExceptionType.REQUIRED_TRAIT);
+				}
+			}
+			if (equipedObjects.get(OccupiedPlace.RIGHT_HAND) != null) {
+				lastObject = equipedObjects.get(OccupiedPlace.RIGHT_HAND);
+				log += desequip(OccupiedPlace.RIGHT_HAND) + System.lineSeparator();
+				if (!canEquip(equipObject)) {
+					equip(lastObject);
+					throw new GameException("You can't equip " + equipObject.getName(), 
+							GameException.ExceptionType.REQUIRED_TRAIT);
+				}
+			}
+			
+			equipedObjects.put(OccupiedPlace.BOTH_HANDS, equipObject);
+		}
+		else if (occupiedPlace == OccupiedPlace.ONE_HAND) {
+			if (equipedObjects.get(OccupiedPlace.BOTH_HANDS) != null) {
+				lastObject = equipedObjects.get(OccupiedPlace.BOTH_HANDS);
+				log += desequip(OccupiedPlace.BOTH_HANDS) + System.lineSeparator();
+				if (!canEquip(equipObject)) {
+					equip(lastObject);
+					throw new GameException("You can't equip " + equipObject.getName(), 
+							GameException.ExceptionType.REQUIRED_TRAIT);
+				}
+			}
+			
+			if (equipedObjects.get(OccupiedPlace.RIGHT_HAND) != null) {
+				if (equipedObjects.get(OccupiedPlace.LEFT_HAND) != null) {
+					lastObject = equipedObjects.get(OccupiedPlace.RIGHT_HAND);
+					log += desequip(OccupiedPlace.RIGHT_HAND) + System.lineSeparator();
+					if (!canEquip(equipObject)) {
+						equip(lastObject);
+						throw new GameException("You can't equip " + equipObject.getName(), 
+								GameException.ExceptionType.REQUIRED_TRAIT);
+					}
+					equipedObjects.put(OccupiedPlace.RIGHT_HAND, equipObject);
+				}
+				else {
+					lastObject = equipedObjects.get(OccupiedPlace.LEFT_HAND);
+					log += desequip(OccupiedPlace.LEFT_HAND) + System.lineSeparator();
+					if (!canEquip(equipObject)) {
+						equip(lastObject);
+						throw new GameException("You can't equip " + equipObject.getName(), 
+								GameException.ExceptionType.REQUIRED_TRAIT);
+					}
+					equipedObjects.put(OccupiedPlace.LEFT_HAND, equipObject);
+				}
+			}
+			else {
+				lastObject = equipedObjects.get(OccupiedPlace.RIGHT_HAND);
+				log += desequip(OccupiedPlace.RIGHT_HAND) + System.lineSeparator();
+				if (!canEquip(equipObject)) {
+					equip(lastObject);
+					throw new GameException("You can't equip " + equipObject.getName(), 
+							GameException.ExceptionType.REQUIRED_TRAIT);
+				}
+				equipedObjects.put(OccupiedPlace.RIGHT_HAND, equipObject);
+			}
+		}
+		else {
+			lastObject = equipedObjects.get(occupiedPlace);
+			log += desequip(occupiedPlace) + System.lineSeparator();
+			if (!canEquip(equipObject)) {
+				equip(lastObject);
+				throw new GameException("You can't equip " + equipObject.getName(), 
+						GameException.ExceptionType.REQUIRED_TRAIT);
+			}
+			equipedObjects.put(occupiedPlace, equipObject);
+		}
 		
 		Iterator<ITrait> requiredIter = equipObject.getRequiredTraits().iterator();
 		
 		while (requiredIter.hasNext()) {
 			ITrait currentRequiredTrait = requiredIter.next();
-		
-			Iterator<ITrait> targetTraitIter = this.currentCharacteristics().iterator();
 			
-			while(targetTraitIter.hasNext()) {
-				ITrait currentTargetTrait = targetTraitIter.next();
-				
-				if (currentTargetTrait.getTraitType() == currentRequiredTrait.getTraitType()) {
-					if (currentTargetTrait.getValue() < currentRequiredTrait.getValue()) {
-						throw new GameException("You're level in " + currentTargetTrait.getName() + " is too low", 
-								GameException.ExceptionType.REQUIRED_TRAIT);
-					}
-					else {
-						++counter;
-					}
-				}
-			}
+			ITrait trait = this.getCurrentTrait(currentRequiredTrait.getTraitType());
+			trait.addObserver(equipObject);
 		}
 		
-		if (counter < equipObject.getRequiredTraits().size()) {
-			throw new GameException("You're missing traits", 
-					GameException.ExceptionType.REQUIRED_TRAIT);
-		}
+		log += equipObject.applieOnEquipe(this);
+		log += name + " is equiped with " + equipObject.getName();
+		return log;
+	}
+	
+	private Boolean canEquip (IEquipable object) throws GameException {
+		Iterator<ITrait> requiredIter = object.getRequiredTraits().iterator();
 		
-		if (!inventory.contains(equipObject)) {
-			this.pick(equipObject);
-		}
+		while (requiredIter.hasNext()) {
+			ITrait currentRequiredTrait = requiredIter.next();
 		
-		for (OccupiedPlace occupiedPlace : equipObject.getOccupiedPlace()) {
-			if (occupiedPlace == OccupiedPlace.BOTH_HANDS) {
-				if (equipedObjects.get(OccupiedPlace.LEFT_HAND) != null) {
-					desequip(OccupiedPlace.LEFT_HAND);
-				}
-				if (equipedObjects.get(OccupiedPlace.RIGHT_HAND) != null) {
-					desequip(OccupiedPlace.RIGHT_HAND);
-				}
+			final ITrait currentTargetTrait = this.getCurrentTrait(currentRequiredTrait.getTraitType());
+			
+			if(currentTargetTrait != null) {
 				
-				equipedObjects.put(OccupiedPlace.BOTH_HANDS, equipObject);
-			}
-			else if (occupiedPlace == OccupiedPlace.ONE_HAND) {
-				if (equipedObjects.get(OccupiedPlace.BOTH_HANDS) != null) {
-					desequip(OccupiedPlace.BOTH_HANDS);
-				}
-				
-				if (equipedObjects.get(OccupiedPlace.RIGHT_HAND) != null) {
-					if (equipedObjects.get(OccupiedPlace.LEFT_HAND) != null) {
-						desequip(OccupiedPlace.RIGHT_HAND);
-						equipedObjects.put(OccupiedPlace.RIGHT_HAND, equipObject);
-					}
-					else {
-						desequip(OccupiedPlace.LEFT_HAND);
-						equipedObjects.put(OccupiedPlace.LEFT_HAND, equipObject);
-					}
-				}
-				else {
-					desequip(OccupiedPlace.RIGHT_HAND);
-					equipedObjects.put(OccupiedPlace.RIGHT_HAND, equipObject);
+				if (currentTargetTrait.getValue() < currentRequiredTrait.getValue()) {
+					return false;
 				}
 			}
 			else {
-				desequip(occupiedPlace);
-				equipedObjects.put(occupiedPlace, equipObject);
+				return false;
 			}
 		}
-		
-		equipObject.applieOnEquipe(this);
-		return name + " is equiped with " + equipObject.getName();
+		return true;
 	}
 	
 	public String desequip(OccupiedPlace place) throws Exception {
@@ -330,6 +410,15 @@ public class Actor extends Observable{
 			final IEquipable object = equipedObjects.get(place);
 			object.removeApplieOnEquipe(this);
 			equipedObjects.put(place, null);
+			
+			Iterator<ITrait> requiredIter = object.getRequiredTraits().iterator();
+			
+			while (requiredIter.hasNext()) {
+				ITrait currentRequiredTrait = requiredIter.next();
+				
+				ITrait trait = this.getCurrentTrait(currentRequiredTrait.getTraitType());
+				trait.deleteObserver(object);
+			}
 			
 			return name + " is no longer equiped with " + object.getName();
 		}
@@ -403,6 +492,9 @@ public class Actor extends Observable{
 		
 		final int currentVitality = this.getCurrentTrait(TraitType.VITALITY).getValue();
 		
+		if (realDamage < 0) {
+			realDamage = 0;
+		}
 		if (currentVitality - realDamage < 0) {
 			this.getCurrentTrait(TraitType.VITALITY).setValue(0);
 		}
@@ -410,7 +502,7 @@ public class Actor extends Observable{
 			this.getCurrentTrait(TraitType.VITALITY).setValue(currentVitality - realDamage);
 		}
 		return getName() + " took " + realDamage + " " + IWeapon.getDamageTypeString(damageType) + " damage" +
-		" (" + (value - realDamage) + " absorbed) from " + origin.getName();
+		" (" + (value - realDamage) + " absorbed)" + (origin == null ? "" : " from " + origin.getName());
 	}
 	
 	public String weaponAtack(final Actor target) {
@@ -425,6 +517,9 @@ public class Actor extends Observable{
 				}
 				if (leftWeapon != null) {
 					log += leftWeapon.attack(target);
+				}
+				if (weapon == null && leftWeapon == null) {
+					log += MeleWeapon.getFists(this.getCurrentTrait(TraitType.STRENGTH).getValue()).attack(target);
 				}
 			}
 			else {
@@ -444,20 +539,42 @@ public class Actor extends Observable{
 		if (resistanceTrait == null) {
 			resistanceTrait = this.getStat(status.getResistance());
 		}
+		final int resistanceResult = ThreadLocalRandom.current().nextInt(0, 100 + 1);
 		if (resistanceTrait == null) {
-			this.addIStatus(status);
-			return this.getName() + " is now affected by " + status;
-		}
-		else {
-			final int resistanceResult = ThreadLocalRandom.current().nextInt(0, 100 + 1);
-			if (resistanceResult > resistanceTrait.getValue() - 
-					(resistanceTrait.getValue() * (applyChances / 100))) {
+			final int threshold = applyChances;
+			if (resistanceResult < threshold) {
 				this.addIStatus(status);
-				return this.getName() + " is now affected by " + status;
+				return this.getName() + " is now affected by " + status + " (" + resistanceResult + "/" + threshold + ")";
 			}
 			else {
-				return this.getName() + " has resisted to " + status;
+				return this.getName() + " has resisted to " + status.getName() + " (" + resistanceResult + "/" + threshold + ")";
 			}
 		}
+		else {
+			final int threshold = applyChances - resistanceTrait.getValue() * 5;
+			if (resistanceResult < threshold) {
+				this.addIStatus(status);
+				return this.getName() + " is now affected by " + status + " (" + resistanceResult + "/" + threshold + ")";
+			}
+			else {
+				return this.getName() + " has resisted to " + status + " (" + resistanceResult + "/" + threshold + ")";
+			}
+		}
+	}
+	
+	public void addStat (final Stat stat) {
+		this.stats.add(stat);
+	}
+	
+	public Collection<EachTurnStatus> getEachTurnStatus() {
+		return eachTurnStatus;
+	}
+
+	public AI getAi() {
+		return ai;
+	}
+
+	public void setAi(AI ai) {
+		this.ai = ai;
 	}
 }

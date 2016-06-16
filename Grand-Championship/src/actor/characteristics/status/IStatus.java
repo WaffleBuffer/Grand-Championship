@@ -9,18 +9,18 @@ import actor.characteristics.traits.ITrait;
 public interface IStatus {
 	
 	public enum StatusType {
-		ONE_TIME, EACH_TURN
+		ONE_TIME, EACH_TURN, TEMPORARY
 	}
 	
-	public StatusType type();
+	public StatusType getType();
 	
-	public String name();
+	public String getName();
 	
-	public String description();
+	public String getDescription();
 	
-	public Collection<ITraitModifier> traitModifiers();
+	public Collection<ITraitModifier> getTraitModifiers();
 	
-	public String applyEffect(final Actor target);
+	public String applyEffect(final Actor target) throws Exception;
 
 	public String removeEffect(final Actor target);
 	

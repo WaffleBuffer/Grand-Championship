@@ -24,7 +24,7 @@ public interface IWeapon extends IEquipable {
 
 	public DamageType damageType();
 	
-	public int damageValue();
+	public int getDamageValue();
 	
 	public String attack(final Actor target) throws Exception;
 }

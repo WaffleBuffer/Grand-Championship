@@ -1,6 +1,8 @@
 package actor.characteristics.traits;
 
-public interface ITrait {
+import utilities.IObservable;
+
+public interface ITrait extends IObservable {
 	
 	public enum TraitType {
 		VITALITY, 

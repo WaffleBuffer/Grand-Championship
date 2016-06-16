@@ -39,14 +39,14 @@ public interface IArmor extends IEquipable{
 			}
 		case SLASH :
 			if (armorType == ArmorType.PHYSICAL) {
-				return (int) (armorValue);
+				return armorValue;
 			}
 			else {
 				return 0;
 			}
 		case SMASH :
 			if (armorType == ArmorType.PHYSICAL) {
-				return (int) (armorValue);
+				return armorValue;
 			}
 			else {
 				return 0;

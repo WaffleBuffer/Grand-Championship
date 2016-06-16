@@ -3,7 +3,7 @@ package actor.characteristics.traits;
 import java.util.Observable;
 import java.util.Observer;
 
-public abstract class Stat implements ITrait, Observer {
+public abstract class Stat extends Observable implements ITrait, Observer {
 
 	private final String name;
 	private final TraitType type;
@@ -32,7 +32,11 @@ public abstract class Stat implements ITrait, Observer {
 	
 	@Override
 	public void setValue(final int value) {
+		final int lastValue = this.getValue();
+		
 		this.value = value;
+		setChanged();
+		notifyObservers(lastValue - this.getValue());
 	}
 	
 	@Override

@@ -3,6 +3,7 @@ package objects.equipables.wearables.armors;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Observable;
 
 import actor.Actor;
 import actor.characteristics.status.IStatus;
@@ -10,7 +11,6 @@ import actor.characteristics.status.OneTimeStatus;
 import actor.characteristics.status.traitModifier.ITraitModifier;
 import actor.characteristics.status.traitModifier.StatModifier;
 import actor.characteristics.traits.ITrait;
-import objects.equipables.IEquipable;
 
 public class MetalArmor implements IArmor {
 	
@@ -22,11 +22,11 @@ public class MetalArmor implements IArmor {
 	private final ArmorType armorType;
 	private final int armorValue;
 	private Collection<IStatus> statusApllied;
-	private final Collection<OccupiedPlace> occupiedPlace;
+	private final OccupiedPlace occupiedPlace;
 
 	public MetalArmor(final Collection<ITrait> requiredTraits, final String name, final String description, 
 			final int weight, final int value, final ArmorType armorType, final int armorValue, 
-			final Collection<IStatus> statusApllied, final Collection<OccupiedPlace> occupiedPlace) {
+			final Collection<IStatus> statusApllied, final OccupiedPlace occupiedPlace) {
 		super();
 		this.requiredTraits = requiredTraits;
 		if (requiredTraits == null) {
@@ -45,7 +45,7 @@ public class MetalArmor implements IArmor {
 		
 		Collection<ITraitModifier> armorModifier = new LinkedList<ITraitModifier>();
 		armorModifier.add(new StatModifier(ITrait.TraitType.ARMOR, armorValue));
-		this.statusApllied.add(new OneTimeStatus(name, "Armor form " + name, armorModifier, false));
+		this.statusApllied.add(new OneTimeStatus(name, "Armor from " + name, armorModifier, false, 100, null));
 		
 		this.occupiedPlace = occupiedPlace;
 	}
@@ -66,16 +66,18 @@ public class MetalArmor implements IArmor {
 	}
 
 	@Override
-	public void applieOnEquipe(Actor target) throws Exception {
+	public String applieOnEquipe(Actor target) throws Exception {
 		Iterator<IStatus> statusIter = statusApllied.iterator();
 		
+		String log = "";
 		while (statusIter.hasNext()) {
 			IStatus currentStatus = statusIter.next();
 			
-			target.addIStatus(currentStatus);
+			log += target.addIStatus(currentStatus) + System.lineSeparator();
 		}
 		
 		this.name += "(E)";
+		return log;
 	}
 
 	@Override
@@ -92,7 +94,7 @@ public class MetalArmor implements IArmor {
 	}
 
 	@Override
-	public Collection<OccupiedPlace> getOccupiedPlace() {
+	public OccupiedPlace getOccupiedPlace() {
 		return occupiedPlace;
 	}
 
@@ -120,10 +122,8 @@ public class MetalArmor implements IArmor {
 	public String toString() {
 		try {
 			String armorStr = name + " : " + description + System.lineSeparator();
-			
-			for (IEquipable.OccupiedPlace occupiedPlace : occupiedPlace) {
-				armorStr += occupiedPlace + " ";
-			}
+
+			armorStr += occupiedPlace + " ";
 			armorStr += System.lineSeparator() +
 					 + armorValue + " " + IArmor.getArmorTypeString(armorType) + " armor" + System.lineSeparator() +
 					weight + " Kg, " + value + " $" + System.lineSeparator();
@@ -140,5 +140,52 @@ public class MetalArmor implements IArmor {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		
+		final Actor actor;
+		try {
+			actor = (Actor) o;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}
+		int counter = 0;
+		
+		Iterator<ITrait> requiredIter = this.getRequiredTraits().iterator();
+		
+		while (requiredIter.hasNext()) {
+			ITrait currentRequiredTrait = requiredIter.next();
+		
+			final ITrait currentTargetTrait = actor.getCurrentTrait(currentRequiredTrait.getTraitType());
+			
+			if(currentTargetTrait != null) {
+				
+				if (currentTargetTrait.getValue() < currentRequiredTrait.getValue()) {
+					try {
+						actor.desequip(this.getOccupiedPlace());
+					} 
+					catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				else {
+					++counter;
+				}
+			}
+		}
+		
+		if (counter < this.getRequiredTraits().size()) {
+			try {
+				actor.desequip(this.getOccupiedPlace());
+			} 
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
 	}
 }

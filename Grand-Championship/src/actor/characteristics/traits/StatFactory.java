@@ -2,15 +2,14 @@ package actor.characteristics.traits;
 
 import java.util.Observable;
 
+import actor.Actor;
+
 public abstract class StatFactory {
 
-	public static Stat createState (final ITrait.TraitType type, final int value, final Observable[] dependencys) throws Exception {
+	public static Stat createState (final ITrait.TraitType type, final int value, final Actor actor) throws Exception {
 		switch (type) {
 		case CRITICAL :
 			
-			if (dependencys.length <= 0) {
-				throw new Exception ("need at least one dependency");
-			}
 			final Stat critical = new Stat(ITrait.getTraitName(type), type, value) {
 				
 				@Override
@@ -18,14 +17,21 @@ public abstract class StatFactory {
 					if (arg == null) {
 						return;
 					}
-					
-					this.setValue(this.getValue() - (int)arg * 2);
+					try {
+						final BasicTrait dext = (BasicTrait) o;
+						
+						if (dext.getTraitType() == TraitType.DEXTERITY) {
+							this.setValue(this.getValue() - (int)arg * 2);
+						}
+					}
+					catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 			};
 			
-			for (Observable depdence : dependencys) {
-				depdence.addObserver(critical);
-			}
+			BasicTrait trait = (BasicTrait) actor.getCurrentTrait(ITrait.TraitType.DEXTERITY);
+			trait.addObserver(critical);
 			
 			return critical;
 		case ARMOR :

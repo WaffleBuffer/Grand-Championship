@@ -1,12 +1,13 @@
 package objects.equipables;
 
 import java.util.Collection;
+import java.util.Observer;
 
 import actor.Actor;
 import actor.characteristics.traits.ITrait;
 import objects.IObject;
 
-public interface IEquipable extends IObject {
+public interface IEquipable extends IObject, Observer {
 	
 	public enum OccupiedPlace {
 		ONE_HAND, LEGS, BOTH_HANDS, HEAD, TORSO, LEFT_HAND, RIGHT_HAND;
@@ -35,9 +36,9 @@ public interface IEquipable extends IObject {
 
 	public Collection<ITrait> getRequiredTraits();
 	
-	public void applieOnEquipe(Actor target) throws Exception;
+	public String applieOnEquipe(Actor target) throws Exception;
 	
 	public void removeApplieOnEquipe(Actor target) throws Exception;
 	
-	public Collection<OccupiedPlace> getOccupiedPlace ();
+	public OccupiedPlace getOccupiedPlace ();
 }

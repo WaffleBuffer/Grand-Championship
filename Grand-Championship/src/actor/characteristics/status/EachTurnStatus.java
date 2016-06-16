@@ -9,13 +9,14 @@ import actor.characteristics.status.traitModifier.ITraitModifier;
 import actor.characteristics.traits.ITrait;
 import actor.characteristics.traits.ITrait.TraitType;
 import actor.characteristics.traits.Stat;
+import actor.characteristics.traits.StatFactory;
 
 public class EachTurnStatus implements IStatus {
 
 	private String name;
 	private String description;
 	private Collection<ITraitModifier> traitModifiers;
-	private final int nbTurn;
+	private int nbTurn;
 	private final Boolean displayable;
 	private int applyChances;
 	private final ITrait.TraitType resistance;
@@ -36,17 +37,17 @@ public class EachTurnStatus implements IStatus {
 	}
 
 	@Override
-	public String name() {
+	public String getName() {
 		return name;
 	}
 
 	@Override
-	public String description() {
+	public String getDescription() {
 		return description;
 	}
 
 	@Override
-	public Collection<ITraitModifier> traitModifiers() {
+	public Collection<ITraitModifier> getTraitModifiers() {
 		return traitModifiers;
 	}
 
@@ -56,39 +57,47 @@ public class EachTurnStatus implements IStatus {
 	}
 
 	@Override
-	public StatusType type() {
+	public StatusType getType() {
 		return IStatus.StatusType.EACH_TURN;
 	}
 	
 	@Override
-	public String applyEffect(final Actor target) {
-		Iterator<ITraitModifier> traitModifierIter = this.traitModifiers().iterator();
+	public String applyEffect(final Actor target) throws Exception {
+		Iterator<ITraitModifier> traitModifierIter = this.getTraitModifiers().iterator();
 		
 		while (traitModifierIter.hasNext()) {
 			
 			ITraitModifier currentModifiedTrait = traitModifierIter.next();
 			
-			Iterator<ITrait> traitsIter = target.currentCharacteristics().iterator();
-			
-			while (traitsIter.hasNext()) {
-			
-				ITrait currentActorTrait = traitsIter.next();
+			if (!(currentModifiedTrait.getModifierType() == ITraitModifier.ModifierType.STAT)) {
+				Iterator<ITrait> traitsIter = target.currentCharacteristics().iterator();
 				
-				if (currentActorTrait.getTraitType() == currentModifiedTrait.getTraitType()) {
+				while (traitsIter.hasNext()) {
+				
+					ITrait currentActorTrait = traitsIter.next();
 					
-					currentActorTrait.setValue(currentActorTrait.getValue() + currentModifiedTrait.getValue());
+					if (currentActorTrait.getTraitType() == currentModifiedTrait.getTraitType()) {
+						
+						currentActorTrait.setValue(currentActorTrait.getValue() + currentModifiedTrait.getValue());
+					}
 				}
 			}
-			
-			Iterator<Stat> statsIter = target.getStats().iterator();
-			
-			while (statsIter.hasNext()) {
+			else {				
+				Iterator<Stat> statsIter = target.getStats().iterator();
 				
-				ITrait currentActorStat = statsIter.next();
-				
-				if (currentActorStat.getTraitType() == currentModifiedTrait.getTraitType()) {
+				while (statsIter.hasNext()) {
 					
-					currentActorStat.setValue(currentActorStat.getValue() + currentModifiedTrait.getValue());
+					ITrait currentActorStat = statsIter.next();
+					
+					if (currentActorStat.getTraitType() == currentModifiedTrait.getTraitType()) {
+						
+						currentActorStat.setValue(currentActorStat.getValue() + currentModifiedTrait.getValue());
+						break;
+					}
+					else if (!statsIter.hasNext()) {
+						target.addStat(StatFactory.createState(currentModifiedTrait.getTraitType(),
+								currentModifiedTrait.getValue(), target));
+					}
 				}
 			}
 		}
@@ -98,7 +107,7 @@ public class EachTurnStatus implements IStatus {
 	@Override
 	public String removeEffect(final Actor target) {
 		
-		Iterator<ITraitModifier> traitModifierIter = this.traitModifiers().iterator();
+		Iterator<ITraitModifier> traitModifierIter = this.getTraitModifiers().iterator();
 		
 		while (traitModifierIter.hasNext()) {
 			
@@ -148,5 +157,9 @@ public class EachTurnStatus implements IStatus {
 	@Override
 	public TraitType getResistance() {
 		return resistance;
+	}
+	
+	public void setNbTurns(final int nbTurns) {
+		this.nbTurn = nbTurns;
 	}
 }
