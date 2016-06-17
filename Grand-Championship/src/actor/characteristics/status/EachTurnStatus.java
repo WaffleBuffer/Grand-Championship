@@ -14,15 +14,17 @@ import actor.characteristics.traits.StatFactory;
 public class EachTurnStatus implements IStatus {
 
 	private String name;
-	private String description;
+	private final String description;
 	private Collection<ITraitModifier> traitModifiers;
 	private int nbTurn;
 	private final Boolean displayable;
 	private int applyChances;
 	private final ITrait.TraitType resistance;
+	private final IStatus.StatusType type;
 
 	public EachTurnStatus(String name, String description, Collection<ITraitModifier> traitModifiers,
-			final int nbTurns, final Boolean displayable, final int applyChances, final ITrait.TraitType resistance) {
+			final int nbTurns, final Boolean displayable, final int applyChances, final ITrait.TraitType resistance,
+			final IStatus.StatusType type) {
 		super();
 		this.name = name;
 		this.description = description;
@@ -34,6 +36,24 @@ public class EachTurnStatus implements IStatus {
 		this.displayable = displayable;
 		this.applyChances = applyChances;
 		this.resistance = resistance;
+		this.type = type;
+	}
+	
+	public EachTurnStatus(final IStatus status) {
+		super();
+		this.name = status.getName();
+		this.description = status.getDescription();
+		this.traitModifiers = new LinkedList<ITraitModifier>(status.getTraitModifiers());
+		if (traitModifiers == null) {
+			this.traitModifiers = new LinkedList<ITraitModifier>();
+		}
+		if (status.getType() == IStatus.StatusType.EACH_TURN || status.getType() == IStatus.StatusType.TEMPORARY) {
+			this.nbTurn = ((EachTurnStatus) status).getNbTurns();
+		}
+		this.displayable = status.isDiplayable();
+		this.applyChances = status.getApplyChances();
+		this.resistance = status.getResistance();
+		this.type = status.getType();
 	}
 
 	@Override
@@ -53,12 +73,12 @@ public class EachTurnStatus implements IStatus {
 
 	@Override
 	public String toString() {
-		return name + " : " + description + " " + traitModifiers;
+		return name + " : " + description + " " + traitModifiers + " " + nbTurn + " turns";
 	}
 
 	@Override
 	public StatusType getType() {
-		return IStatus.StatusType.EACH_TURN;
+		return this.type;
 	}
 	
 	@Override
@@ -162,4 +182,47 @@ public class EachTurnStatus implements IStatus {
 	public void setNbTurns(final int nbTurns) {
 		this.nbTurn = nbTurns;
 	}
+
+	/**
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+
+	/**
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		EachTurnStatus other = (EachTurnStatus) obj;
+		if (name == null) {
+			if (other.name != null) {
+				return false;
+			}
+		} 
+		else if (!name.equals(other.name)) {
+			return false;
+		}
+		if (type != other.type) {
+			return false;
+		}
+		return true;
+	}
+	
+	
 }

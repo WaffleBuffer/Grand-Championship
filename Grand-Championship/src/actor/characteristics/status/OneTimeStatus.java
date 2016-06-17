@@ -34,6 +34,19 @@ public class OneTimeStatus implements IStatus {
 		this.applyChances = applyChances;
 		this.resistance = resistance;
 	}
+	
+	public OneTimeStatus(final IStatus status) {
+		super();
+		this.name = status.getName();
+		this.description = status.getDescription();
+		this.traitModifiers = new LinkedList<ITraitModifier>(status.getTraitModifiers());
+		if (traitModifiers == null) {
+			this.traitModifiers = new LinkedList<ITraitModifier>();
+		}
+		this.displayable = status.isDiplayable();
+		this.applyChances = status.getApplyChances();
+		this.resistance = status.getResistance();
+	}
 
 	@Override
 	public String getName() {

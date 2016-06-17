@@ -12,6 +12,18 @@ public interface IStatus {
 		ONE_TIME, EACH_TURN, TEMPORARY
 	}
 	
+	public static IStatus copy(final IStatus status) throws Exception {
+			switch (status.getType()) {
+			case EACH_TURN :
+			case TEMPORARY :
+				return new EachTurnStatus(status);
+			case ONE_TIME :
+				return new OneTimeStatus(status);
+			default : 
+				throw new Exception("Unknown status type");
+		}
+	}
+	
 	public StatusType getType();
 	
 	public String getName();

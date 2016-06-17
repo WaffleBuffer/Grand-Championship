@@ -34,7 +34,7 @@ public class BattleTest {
 			modifiedTraits.add(new BasicTraitModifier(ITrait.TraitType.STRENGTH, -1));
 			modifiedTraits.add(new BasicTraitModifier(ITrait.TraitType.CONSTITUTION, -1));
 			attackStatus.add(new EachTurnStatus("Spoon curse", "You have been cursed by a spoon, seriously?", modifiedTraits,
-					4, true, 70, null));
+					4, true, 70, null, IStatus.StatusType.TEMPORARY));
 			
 			weaponStatuss.add(weaponStatus);
 			MeleWeapon spoon = new MeleWeapon(
@@ -53,6 +53,9 @@ public class BattleTest {
 			System.out.println(bob.equip(spoon));
 			
 			final Actor pop = new Actor("Pop");
+			
+			System.out.println(bob.weaponAtack(pop));
+			System.out.println(bob.desequip(spoon));
 
 			final IBattleControler battleControler = new DefaultBattle();
 			battleControler.addActor(bob);

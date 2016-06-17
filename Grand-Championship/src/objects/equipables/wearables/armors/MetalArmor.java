@@ -166,7 +166,7 @@ public class MetalArmor implements IArmor {
 				
 				if (currentTargetTrait.getValue() < currentRequiredTrait.getValue()) {
 					try {
-						actor.desequip(this.getOccupiedPlace());
+						actor.desequip(this);
 					} 
 					catch (Exception e) {
 						e.printStackTrace();
@@ -180,7 +180,7 @@ public class MetalArmor implements IArmor {
 		
 		if (counter < this.getRequiredTraits().size()) {
 			try {
-				actor.desequip(this.getOccupiedPlace());
+				actor.desequip(this);
 			} 
 			catch (Exception e) {
 				e.printStackTrace();

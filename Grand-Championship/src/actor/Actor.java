@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Observable;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
@@ -107,21 +108,8 @@ public class Actor extends Observable{
 		case EACH_TURN :
 		case TEMPORARY :
 			final EachTurnStatus eachTurnStatu = (EachTurnStatus) status;
-			
-			if (this.eachTurnStatus.contains(eachTurnStatu)) {
-				Iterator<EachTurnStatus> statusIter = this.eachTurnStatus.iterator();
-				
-				while (statusIter.hasNext()) {
-					EachTurnStatus currentStatus = statusIter.next();
-					
-					if (currentStatus == status) {
-						currentStatus.setNbTurns(eachTurnStatu.getNbTurns());
-						return "";
-					}
-				}
-			}
-			this.eachTurnStatus.add((EachTurnStatus) status);
-			status.applyEffect(this);
+			this.eachTurnStatus.add(eachTurnStatu);
+			eachTurnStatu.applyEffect(this);
 			break;
 		default :
 			throw new Exception("Unknown status type");
@@ -151,19 +139,21 @@ public class Actor extends Observable{
 	
 	public String removeStatus (IStatus status) throws Exception {
 		
+		String log = "";
 		switch (status.getType()) {
 		case ONE_TIME :
 			this.oneTimestatus.remove((OneTimeStatus) status);
 			return ((OneTimeStatus) status).removeEffect(this);
-		case EACH_TURN :
 		case TEMPORARY :
+			log += ((EachTurnStatus) status).removeEffect(this);
+		case EACH_TURN :
 			this.eachTurnStatus.remove(status);
 			break;
 		default :
 			throw new Exception("Unknown status type");
 		}	
-		
-		return this.getName() + " is no longer affected by " + status.getName();
+		log += this.getName() + " is no longer affected by " + status.getName();
+		return log;
 	}
 	
 	public String getName() {
@@ -233,13 +223,13 @@ public class Actor extends Observable{
 			
 			if (currentEntry.getValue() != null) {
 				try {
-					actorString += currentEntry.getKey() + " : " + currentEntry.getValue() + System.lineSeparator();
+					actorString += currentEntry.getKey() + " : " + currentEntry.getValue() + System.lineSeparator() +
+							System.lineSeparator();
 				} 
 				catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
-			actorString += System.lineSeparator();
 		}
 		
 		actorString += "==============================";
@@ -296,7 +286,7 @@ public class Actor extends Observable{
 		if (occupiedPlace == OccupiedPlace.BOTH_HANDS) {
 			if (equipedObjects.get(OccupiedPlace.LEFT_HAND) != null) {
 				lastObject = equipedObjects.get(OccupiedPlace.LEFT_HAND);
-				log += desequip(OccupiedPlace.LEFT_HAND) + System.lineSeparator();
+				log += desequip(lastObject) + System.lineSeparator();
 				if (!canEquip(equipObject)) {
 					equip(lastObject);
 					throw new GameException("You can't equip " + equipObject.getName(), 
@@ -305,7 +295,7 @@ public class Actor extends Observable{
 			}
 			if (equipedObjects.get(OccupiedPlace.RIGHT_HAND) != null) {
 				lastObject = equipedObjects.get(OccupiedPlace.RIGHT_HAND);
-				log += desequip(OccupiedPlace.RIGHT_HAND) + System.lineSeparator();
+				log += desequip(lastObject) + System.lineSeparator();
 				if (!canEquip(equipObject)) {
 					equip(lastObject);
 					throw new GameException("You can't equip " + equipObject.getName(), 
@@ -318,7 +308,7 @@ public class Actor extends Observable{
 		else if (occupiedPlace == OccupiedPlace.ONE_HAND) {
 			if (equipedObjects.get(OccupiedPlace.BOTH_HANDS) != null) {
 				lastObject = equipedObjects.get(OccupiedPlace.BOTH_HANDS);
-				log += desequip(OccupiedPlace.BOTH_HANDS) + System.lineSeparator();
+				log += desequip(lastObject) + System.lineSeparator();
 				if (!canEquip(equipObject)) {
 					equip(lastObject);
 					throw new GameException("You can't equip " + equipObject.getName(), 
@@ -329,7 +319,7 @@ public class Actor extends Observable{
 			if (equipedObjects.get(OccupiedPlace.RIGHT_HAND) != null) {
 				if (equipedObjects.get(OccupiedPlace.LEFT_HAND) != null) {
 					lastObject = equipedObjects.get(OccupiedPlace.RIGHT_HAND);
-					log += desequip(OccupiedPlace.RIGHT_HAND) + System.lineSeparator();
+					log += desequip(lastObject) + System.lineSeparator();
 					if (!canEquip(equipObject)) {
 						equip(lastObject);
 						throw new GameException("You can't equip " + equipObject.getName(), 
@@ -339,7 +329,7 @@ public class Actor extends Observable{
 				}
 				else {
 					lastObject = equipedObjects.get(OccupiedPlace.LEFT_HAND);
-					log += desequip(OccupiedPlace.LEFT_HAND) + System.lineSeparator();
+					log += desequip(lastObject) + System.lineSeparator();
 					if (!canEquip(equipObject)) {
 						equip(lastObject);
 						throw new GameException("You can't equip " + equipObject.getName(), 
@@ -350,7 +340,6 @@ public class Actor extends Observable{
 			}
 			else {
 				lastObject = equipedObjects.get(OccupiedPlace.RIGHT_HAND);
-				log += desequip(OccupiedPlace.RIGHT_HAND) + System.lineSeparator();
 				if (!canEquip(equipObject)) {
 					equip(lastObject);
 					throw new GameException("You can't equip " + equipObject.getName(), 
@@ -361,11 +350,14 @@ public class Actor extends Observable{
 		}
 		else {
 			lastObject = equipedObjects.get(occupiedPlace);
-			log += desequip(occupiedPlace) + System.lineSeparator();
-			if (!canEquip(equipObject)) {
-				equip(lastObject);
-				throw new GameException("You can't equip " + equipObject.getName(), 
-						GameException.ExceptionType.REQUIRED_TRAIT);
+			if (lastObject != null) {
+				log += desequip(lastObject) + System.lineSeparator();
+				
+				if (!canEquip(equipObject)) {
+					equip(lastObject);
+					throw new GameException("You can't equip " + equipObject.getName(), 
+							GameException.ExceptionType.REQUIRED_TRAIT);
+				}
 			}
 			equipedObjects.put(occupiedPlace, equipObject);
 		}
@@ -405,26 +397,32 @@ public class Actor extends Observable{
 		return true;
 	}
 	
-	public String desequip(OccupiedPlace place) throws Exception {
-		if (equipedObjects.get(place) != null) {
-			final IEquipable object = equipedObjects.get(place);
-			object.removeApplieOnEquipe(this);
-			equipedObjects.put(place, null);
+	public String desequip(IEquipable object) throws Exception {
+		
+		Set<Entry<OccupiedPlace, IEquipable>> entrySet = equipedObjects.entrySet();
+		
+		Iterator<Entry<OccupiedPlace, IEquipable>> entryIter =  entrySet.iterator();
+		
+		while (entryIter.hasNext()) {
+			Entry<OccupiedPlace, IEquipable> entry = entryIter.next();
 			
-			Iterator<ITrait> requiredIter = object.getRequiredTraits().iterator();
-			
-			while (requiredIter.hasNext()) {
-				ITrait currentRequiredTrait = requiredIter.next();
+			if (entry.getValue() == object) {
+				equipedObjects.put(entry.getKey(), null);
 				
-				ITrait trait = this.getCurrentTrait(currentRequiredTrait.getTraitType());
-				trait.deleteObserver(object);
+				Iterator<ITrait> requiredIter = object.getRequiredTraits().iterator();
+				
+				while (requiredIter.hasNext()) {
+					ITrait currentRequiredTrait = requiredIter.next();
+					
+					ITrait trait = this.getCurrentTrait(currentRequiredTrait.getTraitType());
+					trait.deleteObserver(object);
+				}
+				
+				object.removeApplieOnEquipe(this);
+				return name + " is no longer equiped with " + object.getName();
 			}
-			
-			return name + " is no longer equiped with " + object.getName();
 		}
-		else {
-			return "";
-		}
+		return "";
 	}
 	
 	public IEquipable getEquipedObject(OccupiedPlace place) {
@@ -540,25 +538,30 @@ public class Actor extends Observable{
 			resistanceTrait = this.getStat(status.getResistance());
 		}
 		final int resistanceResult = ThreadLocalRandom.current().nextInt(0, 100 + 1);
+		final int threshold;
 		if (resistanceTrait == null) {
-			final int threshold = applyChances;
-			if (resistanceResult < threshold) {
-				this.addIStatus(status);
-				return this.getName() + " is now affected by " + status + " (" + resistanceResult + "/" + threshold + ")";
-			}
-			else {
-				return this.getName() + " has resisted to " + status.getName() + " (" + resistanceResult + "/" + threshold + ")";
-			}
+			threshold = applyChances;	
 		}
 		else {
-			final int threshold = applyChances - resistanceTrait.getValue() * 5;
-			if (resistanceResult < threshold) {
-				this.addIStatus(status);
-				return this.getName() + " is now affected by " + status + " (" + resistanceResult + "/" + threshold + ")";
+			threshold = applyChances - resistanceTrait.getValue() * 5;
+		}
+		if (resistanceResult < threshold) {
+			if (this.eachTurnStatus.contains(status)) {
+				Iterator<EachTurnStatus> statusIter = this.eachTurnStatus.iterator();
+				
+				while (statusIter.hasNext()) {
+					EachTurnStatus currentStatus = statusIter.next();
+					if (currentStatus.equals(status)) {
+						currentStatus.setNbTurns(((EachTurnStatus) status).getNbTurns());
+						return this.getName() + " is affected again by " + status + " (" + resistanceResult + "/" + threshold + ")";
+					}
+				}
 			}
-			else {
-				return this.getName() + " has resisted to " + status + " (" + resistanceResult + "/" + threshold + ")";
-			}
+			this.addIStatus(IStatus.copy(status));
+			return this.getName() + " is now affected by " + status + " (" + resistanceResult + "/" + threshold + ")";
+		}
+		else {
+			return this.getName() + " has resisted to " + status.getName() + " (" + resistanceResult + "/" + threshold + ")";
 		}
 	}
 	

@@ -185,7 +185,7 @@ public class MeleWeapon implements IWeapon {
 				
 				if (currentTargetTrait.getValue() < currentRequiredTrait.getValue()) {
 					try {
-						actor.desequip(this.getOccupiedPlace());
+						actor.desequip(this);
 					} 
 					catch (Exception e) {
 						e.printStackTrace();
@@ -199,7 +199,7 @@ public class MeleWeapon implements IWeapon {
 		
 		if (counter < this.getRequiredTraits().size()) {
 			try {
-				actor.desequip(this.getOccupiedPlace());
+				actor.desequip(this);
 			} 
 			catch (Exception e) {
 				e.printStackTrace();

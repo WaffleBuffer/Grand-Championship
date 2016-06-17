@@ -45,7 +45,7 @@ public class ActorTest {
 			modifiedTraits.add(new BasicTraitModifier(ITrait.TraitType.STRENGTH, -1));
 			modifiedTraits.add(new BasicTraitModifier(ITrait.TraitType.CONSTITUTION, -1));
 			attackStatus.add(new EachTurnStatus("Spoon curse", "You have been cursed by a spoon, seriously?", modifiedTraits,
-					4, true, 70, null));
+					4, true, 70, null, IStatus.StatusType.TEMPORARY));
 			
 			weaponStatuss.add(weaponStatus);
 			MeleWeapon spoon = new MeleWeapon(
