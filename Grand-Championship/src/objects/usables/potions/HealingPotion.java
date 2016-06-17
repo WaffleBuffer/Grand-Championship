@@ -5,14 +5,46 @@ import actor.characteristics.traits.ITrait.TraitType;
 import gameExceptions.GameException;
 import objects.RandomObject;
 
+/**
+ * Standard healing potion
+ * @author tmedard
+ *
+ */
 public class HealingPotion implements IPotion {
+	/**
+	 * The name of the {@link HealingPotion}
+	 */
 	private final String name;
+	/**
+	 * The description of the {@link HealingPotion}
+	 */
 	private final String description;
+	/**
+	 * The weight of the {@link HealingPotion}
+	 */
 	private final int weight;
+	/**
+	 * The value (in money) of the {@link HealingPotion}
+	 */
 	private final int value;
+	/**
+	 * The healing value of teh {@link HealingPotion}
+	 */
 	private final int healing;
+	/**
+	 * The number of time you can use the {@link HealingPotion}.<br>
+	 * For a {@link HealingPotion} it's {@value 1}.
+	 */
 	private int useTime;
 	
+	/**
+	 * The constructor
+	 * @param name {@link HealingPotion#name} of the {@link HealingPotion}
+	 * @param description {@link HealingPotion#description} of the {@link HealingPotion}
+	 * @param weight {@link HealingPotion#weight} of the {@link HealingPotion}
+	 * @param value {@link HealingPotion#value} of the {@link HealingPotion}
+	 * @param healing {@link HealingPotion#healing} of the {@link HealingPotion}
+	 */
 	public HealingPotion(final String name, final String description, final int weight, final int value, final int healing) {
 		this.name = name;
 		this.description = description;
@@ -37,7 +69,7 @@ public class HealingPotion implements IPotion {
 			target.getCurrentTrait(TraitType.VITALITY).setValue(target.getCurrentTrait(TraitType.VITALITY).getValue() +
 					realHealing);
 		}
-		user.throwObject(this);
+		user.drop(this);
 		try {
 			user.pick(new RandomObject(
 					"Empty bottle",

@@ -5,59 +5,102 @@ package objects.equipables.wearables.armors;
 
 import objects.equipables.IEquipable;
 import objects.equipables.weapons.IWeapon;
+import objects.equipables.weapons.IWeapon.DamageType;
 
 /**
+ * Description of any armor
  * @author tmedard
  *
  */
 public interface IArmor extends IEquipable{
+	/**
+	 * All the armor types possibles.<br>
+	 * - {@link ArmorType#PHYSICAL}
+	 * - {@link ArmorType#MAGIC}
+	 * @author tmedard
+	 */
 	public enum ArmorType {
-		PHYSICAL, MAGIC
+		/**
+		 * Resist to :
+		 *  - {@link DamageType#PIERCING} (less efficient);
+		 *  - {@link DamageType#SLASH};
+		 *  - {@link DamageType#SMASH}.
+		 *  
+		 *  @see DamageType
+		 */
+		PHYSICAL {
+			@Override
+			public String toString(){
+                return "Physical";
+            }
+			
+			@Override
+			public int getArmorReduction (final IWeapon.DamageType damageType, final int damageValue, 
+					final int armorValue)
+					throws Exception {
+				switch (damageType) {
+				case PIERCING :
+					return (int) (armorValue - armorValue * 0.2);
+				case SLASH :
+					return armorValue;
+				case SMASH :
+					return armorValue;
+				default :
+					throw new Exception ("Unknown armor type");
+				}
+			}
+		},
+		/**
+		 * Resisti to :
+		 * - Nothing for now since there is no magic yet.
+		 */
+		MAGIC {
+			@Override
+			public String toString(){
+                return "Magical";
+            }
+			
+			@Override
+			public int getArmorReduction (final IWeapon.DamageType damageType, final int damageValue, 
+					final int armorValue)
+					throws Exception {
+				switch (damageType) {
+				case PIERCING :
+					return 0;
+				case SLASH :
+					return 0;
+				case SMASH :
+					return 0;
+				default :
+					throw new Exception ("Unknown armor type");
+				}
+			}
+		};
+		
+		/**
+		 * Calculate the armor reduction depending on the damage type and the armor type
+		 * @param damageType The {@link DamageType}
+		 * @param damageValue The damage value
+		 * @param armorValue The armor value
+		 * @return The armor reduction
+		 * @throws Exception When unknown armor type
+		 */
+		public abstract int getArmorReduction (final IWeapon.DamageType damageType, final int damageValue, 
+				final int armorValue)
+				throws Exception;
 	}
 	
-	public static String getArmorTypeString(final ArmorType type) throws Exception {
-		switch (type) {
-			case PHYSICAL :
-				return "Physical";
-			case MAGIC :
-				return "Magical";
-			default :
-				throw new Exception("Unknown armor type");
-		}
-	}
-	
-	public static int getArmorReduction (final IWeapon.DamageType damageType, final int damageValue, 
-			final ArmorType armorType, final int armorValue)
-			throws Exception {
-		switch (damageType) {
-		case PIERCING :
-			if (armorType == ArmorType.PHYSICAL) {
-				return (int) (armorValue - armorValue * 0.2);
-			}
-			else {
-				return 0;
-			}
-		case SLASH :
-			if (armorType == ArmorType.PHYSICAL) {
-				return armorValue;
-			}
-			else {
-				return 0;
-			}
-		case SMASH :
-			if (armorType == ArmorType.PHYSICAL) {
-				return armorValue;
-			}
-			else {
-				return 0;
-			}
-		default :
-			throw new Exception ("Unknown armor type");
-		}
-	}
-	
+	/**
+	 * Get the armor value
+	 * @return The armor value
+	 */
 	public int getArmorValue();
 	
+	/**
+	 * Get the {@link ArmorType}
+	 * @return the {@link ArmorType}
+	 * @see ArmorType
+	 */
 	public ArmorType getArmorType();
 
 }

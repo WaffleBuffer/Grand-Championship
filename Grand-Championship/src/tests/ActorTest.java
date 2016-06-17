@@ -20,25 +20,44 @@ import objects.equipables.wearables.armors.IArmor;
 import objects.equipables.wearables.armors.MetalArmor;
 import objects.usables.potions.HealingPotion;
 
+/**
+ * Test class to see if {@link Actor} class funtions as intended
+ * @author tmedard
+ *
+ */
 public class ActorTest {
 
+	/**
+	 * The main function
+	 * @param args args passed when calling this function (unused)
+	 */
 	public static void main(String[] args) {
 		try {
+			// Creating the Actor
 			final Actor bob = new Actor("Bob");
 			
+			// Creation of an IStatus
+			// Preparation of the effects
 			Collection<ITraitModifier> modifiedTraits = new LinkedList<ITraitModifier>();
 			modifiedTraits.add(new BasicTraitModifier(ITrait.TraitType.DEXTERITY, -2));
 			
+			// Creation
 			OneTimeStatus sleepy = new OneTimeStatus("Sleepy", "This cannot be so boring right?", modifiedTraits, true, 80, TraitType.DEXTERITY);
 			
+			// Trying to applie the IStatus on bob
 			System.out.println(bob.tryToResist(sleepy, sleepy.getApplyChances()));
 			
+			// Preparation of the creation of a special Weapon
+			// Creation of the IStatus applied on equiping the Weapon
 			Collection<ITraitModifier> weaponModifiedTraits = new LinkedList<ITraitModifier>();
 			weaponModifiedTraits.add(new BasicTraitModifier(ITrait.TraitType.STRENGTH, +1));
 			OneTimeStatus weaponStatus = new OneTimeStatus("Better strength", "Equiping this makes you feel stronger", 
 					weaponModifiedTraits, true, 100, null);
 			
 			Collection<IStatus> weaponStatuss = new LinkedList<IStatus>();
+			weaponStatuss.add(weaponStatus);
+			
+			// Status applied on target on hit
 			Collection<IStatus> attackStatus = new LinkedList<IStatus>();
 			modifiedTraits = new LinkedList<ITraitModifier>();
 			modifiedTraits.add(new BasicTraitModifier(ITrait.TraitType.WILL, -2));
@@ -47,7 +66,7 @@ public class ActorTest {
 			attackStatus.add(new EachTurnStatus("Spoon curse", "You have been cursed by a spoon, seriously?", modifiedTraits,
 					4, true, 70, null, IStatus.StatusType.TEMPORARY));
 			
-			weaponStatuss.add(weaponStatus);
+			// Creating the actual MeleWeapon
 			MeleWeapon spoon = new MeleWeapon(
 					null, 
 					"cursed spoon",
@@ -60,12 +79,16 @@ public class ActorTest {
 					attackStatus,
 					IEquipable.OccupiedPlace.ONE_HAND);
 			
+			// Picking and equiping the Weapon
 			System.out.println(bob.pick(spoon));
 			System.out.println(bob.equip(spoon));
 			
+			// Preparation of a heavy Weapon
+			// Creation of the required ITrait to equip the Weapon
 			Collection<ITrait> required = new LinkedList<ITrait>();;
 			required.add(BasicTraitFactory.getBasicTrait(TraitType.STRENGTH, 8));
 			
+			// Creation of the actual MeleWeapon
 			MeleWeapon bigHighDoubleHandedSword = new MeleWeapon(
 					null, 
 					"big High Double Handed Sword",
@@ -79,14 +102,17 @@ public class ActorTest {
 					IEquipable.OccupiedPlace.BOTH_HANDS);
 			
 			try {
+				// Trying to picking it
 				System.out.println(bob.pick(bigHighDoubleHandedSword));
 			}
 			catch (GameException e) {
 				e.printStackTrace();
 			}
 			
+			// Preparation of an nearly impossible to equipe Weapon
 			required = new LinkedList<ITrait>();
-			required.add(BasicTraitFactory.getBasicTrait(TraitType.STRENGTH, 6));
+			required.add(BasicTraitFactory.getBasicTrait(TraitType.STRENGTH, 5));
+			// Creation of the actual MeleWeapon
 			MeleWeapon theBigPoint = new MeleWeapon(
 					required, 
 					"The Big Point",
@@ -99,6 +125,7 @@ public class ActorTest {
 					null,
 					IEquipable.OccupiedPlace.BOTH_HANDS);
 			
+			// Pickin then trying to equip the Weapon
 			System.out.println(bob.pick(theBigPoint));
 			try {
 				System.out.println(bob.equip(theBigPoint));
@@ -107,6 +134,7 @@ public class ActorTest {
 				e.printStackTrace();
 			}
 			
+			// Creation of some Armor
 			MetalArmor metalPlates = new MetalArmor(
 					null,
 					"Metal plates", 
@@ -118,12 +146,11 @@ public class ActorTest {
 					null, 
 					IEquipable.OccupiedPlace.TORSO);
 			
+			// Picking then equiping the Armor
 			System.out.println(bob.pick(metalPlates));
-			
 			System.out.println(bob.equip(metalPlates));
 			
-			//System.out.println(bob.desequip(IEquipable.OccupiedPlace.TORSO));
-			
+			// Creation of an IUsable object
 			HealingPotion potion = new HealingPotion(
 					"Healing potion", 
 					"Get you back on your feets",
@@ -131,22 +158,26 @@ public class ActorTest {
 					50,
 					50);
 			
+			// Make Bob hurting himself
 			System.out.println(bob.takeDamage(bob, 40, IWeapon.DamageType.SMASH));
 			
+			// Pick then use the healing potion
 			System.out.println(bob.pick(potion));
-			
 			System.out.println(potion.use(bob, bob));
 			
+			// Trying to attack bob with some cursed Weapon
 			System.out.println(bob.equip(spoon));
 			System.out.println(bob.weaponAtack(bob));
 			
 			try {
+				// Now that bob is probably cursed, try to equip the nearly impossible to equip Weapon
 				System.out.println(bob.equip(theBigPoint));
 			}
 			catch (GameException e) {
 				e.printStackTrace();
 			}
 			
+			// Finally, display bob state
 			System.out.println(bob);
 		} 
 		catch (Exception e) {

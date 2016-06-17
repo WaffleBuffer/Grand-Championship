@@ -11,4 +11,6 @@ public interface IBattleControler {
 	public String nextActor() throws Exception;
 	
 	public Collection<Actor> getActors();
+	
+	public Boolean isBattleOver();
 }

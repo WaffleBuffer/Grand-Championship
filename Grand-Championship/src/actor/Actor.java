@@ -260,10 +260,10 @@ public class Actor extends Observable{
 		}
 	}
 	
-	public String throwObject (IObject object) {
+	public String drop (IObject object) {
 		this.inventory.remove(object);
 		this.currentWeight -= object.getWeight();
-		return object.getName() + " has been thrown away";
+		return object.getName() + " has been droped";
 	}
 	
 	public String equip(IEquipable equipObject) throws GameException, Exception{
@@ -478,14 +478,16 @@ public class Actor extends Observable{
 	public String takeDamage (final Actor origin, final int value, final IWeapon.DamageType damageType) throws Exception {
 		int realDamage = value;
 		
-		if (getStat(ITrait.TraitType.ARMOR) != null) {
-			final int armor = getStat(ITrait.TraitType.ARMOR).getValue();
-			realDamage -= IArmor.getArmorReduction(damageType, value, IArmor.ArmorType.PHYSICAL, armor);
+		final Stat armorStat = getStat(ITrait.TraitType.ARMOR);
+		if (armorStat != null) {
+			final int armor = armorStat.getValue();
+			realDamage -= IArmor.ArmorType.PHYSICAL.getArmorReduction(damageType, value, armor);
 		}
 		
-		if (getStat(ITrait.TraitType.MAGICAL_PROTECTION) != null) {
-			final int magicArmor = getStat(ITrait.TraitType.MAGICAL_PROTECTION).getValue();
-			realDamage -= IArmor.getArmorReduction(damageType, value, IArmor.ArmorType.MAGIC, magicArmor);
+		final Stat magicArmorStat = getStat(ITrait.TraitType.MAGICAL_PROTECTION);
+		if (magicArmorStat != null) {
+			final int magicArmor = magicArmorStat.getValue();
+			realDamage -= IArmor.ArmorType.MAGIC.getArmorReduction(damageType, value, magicArmor);
 		}
 		
 		final int currentVitality = this.getCurrentTrait(TraitType.VITALITY).getValue();
@@ -506,22 +508,30 @@ public class Actor extends Observable{
 	public String weaponAtack(final Actor target) {
 		try {
 			String log = "";
+			
+			final int critical = ThreadLocalRandom.current().nextInt(0, 100 + 1);
+			final Boolean isCritical = this.getStat(ITrait.TraitType.CRITICAL).getValue() >= critical ? true : false;
+			
+			if (isCritical) {
+				log += "Critical attack !" + System.lineSeparator();
+			}
+			
 			IWeapon weapon = (IWeapon) this.getEquipedObject(IEquipable.OccupiedPlace.BOTH_HANDS);
 			if (weapon == null) {
 				weapon = (IWeapon) this.getEquipedObject(IEquipable.OccupiedPlace.RIGHT_HAND);
 				IWeapon leftWeapon = (IWeapon) this.getEquipedObject(IEquipable.OccupiedPlace.LEFT_HAND);
 				if (weapon != null) {
-					log += weapon.attack(target);
+					log += weapon.attack(target, isCritical);
 				}
 				if (leftWeapon != null) {
-					log += leftWeapon.attack(target);
+					log += leftWeapon.attack(target, isCritical);
 				}
 				if (weapon == null && leftWeapon == null) {
-					log += MeleWeapon.getFists(this.getCurrentTrait(TraitType.STRENGTH).getValue()).attack(target);
+					log += MeleWeapon.getFists(this.getCurrentTrait(TraitType.STRENGTH).getValue()).attack(target, isCritical);
 				}
 			}
 			else {
-				log += weapon.attack(target);
+				log += weapon.attack(target, isCritical);
 			}
 			return log;
 		}
@@ -579,5 +589,9 @@ public class Actor extends Observable{
 
 	public void setAi(AI ai) {
 		this.ai = ai;
+	}
+	
+	public Boolean isDead() {
+		return this.getCurrentTrait(ITrait.TraitType.VITALITY).getValue() <= 0;
 	}
 }

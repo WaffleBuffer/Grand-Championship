@@ -12,18 +12,63 @@ import actor.characteristics.status.traitModifier.ITraitModifier;
 import actor.characteristics.status.traitModifier.StatModifier;
 import actor.characteristics.traits.ITrait;
 
+/**
+ * Standard metal armor
+ * @author tmedard
+ *
+ */
 public class MetalArmor implements IArmor {
 	
+	/**
+	 * The required {@link ITrait} to wear this {@link MetalArmor}
+	 */
 	private Collection<ITrait> requiredTraits;
+	/**
+	 * The name of the {@link MetalArmor}
+	 */
 	private String name;
+	/**
+	 * The description of the {@link MetalArmor}
+	 */
 	private final String description;
+	/**
+	 * The weight of the {@link MetalArmor}
+	 */
 	private final int weight;
+	/**
+	 * The value (in money) of the {@link MetalArmor}
+	 */
 	private final int value;
+	/**
+	 * The {@link ArmorType} of the {@link MetalArmor}
+	 */
 	private final ArmorType armorType;
+	/**
+	 * The armor value of the {@link MetalArmor}
+	 */
 	private final int armorValue;
+	/**
+	 * The {@link IStatus} applied when equiping the {@link MetalArmor}.<br>
+	 * Will contains at least the {@link MetalArmor#armorValue} provided by the {@link MetalArmor}
+	 */
 	private Collection<IStatus> statusApllied;
+	/**
+	 * The {@link OccupiedPlace} of the {@link MetalArmor}
+	 */
 	private final OccupiedPlace occupiedPlace;
 
+	/**
+	 * The constructor
+	 * @param requiredTraits {@link MetalArmor#requiredTraits} of the {@link MetalArmor} (can be null)
+	 * @param name {@link MetalArmor#name} of the {@link MetalArmor}
+	 * @param description {@link MetalArmor#description} of the {@link MetalArmor}
+	 * @param weight {@link MetalArmor#weight} of the {@link MetalArmor}
+	 * @param value {@link MetalArmor#value} of the {@link MetalArmor}
+	 * @param armorType {@link MetalArmor#armorType} of the {@link MetalArmor}
+	 * @param armorValue {@link MetalArmor#armorValue} of the {@link MetalArmor}
+	 * @param statusApllied {@link MetalArmor#statusApllied} of the {@link MetalArmor} (can be null)
+	 * @param occupiedPlace {@link MetalArmor#occupiedPlace} of the {@link MetalArmor}
+	 */
 	public MetalArmor(final Collection<ITrait> requiredTraits, final String name, final String description, 
 			final int weight, final int value, final ArmorType armorType, final int armorValue, 
 			final Collection<IStatus> statusApllied, final OccupiedPlace occupiedPlace) {
@@ -125,7 +170,7 @@ public class MetalArmor implements IArmor {
 
 			armorStr += occupiedPlace + " ";
 			armorStr += System.lineSeparator() +
-					 + armorValue + " " + IArmor.getArmorTypeString(armorType) + " armor" + System.lineSeparator() +
+					 + armorValue + " " + armorType + " armor" + System.lineSeparator() +
 					weight + " Kg, " + value + " $" + System.lineSeparator();
 			
 			if (!requiredTraits.isEmpty()) {

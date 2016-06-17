@@ -16,27 +16,44 @@ import objects.equipables.IEquipable;
 import objects.equipables.weapons.IWeapon;
 import objects.equipables.weapons.meleWeapons.MeleWeapon;
 
+/**
+ * Test the battle system
+ * @author tmedard
+ *
+ */
 public class BattleTest {
 	
+	/**
+	 * The main function
+	 * @param args Arguments passed to the main function (unused)
+	 */
 	public static void main(String[] args) {
 		try {
+			// The champion !
 			final Actor bob = new Actor("Bob");
 			
+			// Preparation of his main weapon
 			Collection<ITraitModifier> weaponModifiedTraits = new LinkedList<ITraitModifier>();
 			weaponModifiedTraits.add(new BasicTraitModifier(ITrait.TraitType.STRENGTH, +1));
 			OneTimeStatus weaponStatus = new OneTimeStatus("Better strength", "Equiping this makes you feel stronger", 
 					weaponModifiedTraits, true, 100, null);
 
+			// On equipe
 			Collection<IStatus> weaponStatuss = new LinkedList<IStatus>();
-			Collection<IStatus> attackStatus = new LinkedList<IStatus>();
+			
 			Collection<ITraitModifier> modifiedTraits = new LinkedList<ITraitModifier>();
 			modifiedTraits.add(new BasicTraitModifier(ITrait.TraitType.WILL, -2));
 			modifiedTraits.add(new BasicTraitModifier(ITrait.TraitType.STRENGTH, -1));
 			modifiedTraits.add(new BasicTraitModifier(ITrait.TraitType.CONSTITUTION, -1));
+			weaponStatuss.add(weaponStatus);
+			
+			// On hit
+			Collection<IStatus> attackStatus = new LinkedList<IStatus>();
 			attackStatus.add(new EachTurnStatus("Spoon curse", "You have been cursed by a spoon, seriously?", modifiedTraits,
 					4, true, 70, null, IStatus.StatusType.TEMPORARY));
 			
-			weaponStatuss.add(weaponStatus);
+			
+			// Creating his main weapon
 			MeleWeapon spoon = new MeleWeapon(
 					null, 
 					"cursed spoon",
@@ -49,23 +66,38 @@ public class BattleTest {
 					attackStatus,
 					IEquipable.OccupiedPlace.ONE_HAND);
 			
-			System.out.println(bob.pick(spoon));
+			// Picking and equiping his main weapon
 			System.out.println(bob.equip(spoon));
 			
+			// Creating his challenger
 			final Actor pop = new Actor("Pop");
 			
+			// Bob is cheating! He attacks befor the actuel fight!
 			System.out.println(bob.weaponAtack(pop));
+			// So nom bob will desequip and drop his weapon
 			System.out.println(bob.desequip(spoon));
+			System.out.println(bob.drop(spoon));
 
+			// Preparation of the battle
 			final IBattleControler battleControler = new DefaultBattle();
 			battleControler.addActor(bob);
 			battleControler.addActor(pop);
 			
+			// Now let them fight for 10 turns
 			for (int i = 0; i < 10; ++i) {
 				System.out.println(battleControler.nextActor());
 				System.out.println(bob);
 				System.out.println(pop);
 			}
+			
+			// And now fight to the death
+			while(!battleControler.isBattleOver()) {
+				System.out.println(battleControler.nextActor());
+			}
+			
+			// Who won? Who's next? You decide! Epic Battle of the History!!!!!!!!!
+			System.out.println(bob);
+			System.out.println(pop);
 		}
 		catch (Exception e) {
 			e.printStackTrace();

@@ -1,7 +1,5 @@
 /**
- * 
- */
-/**
+ * Package about {@link objects.usables.potions.IPotion}
  * @author tmedard
  *
  */

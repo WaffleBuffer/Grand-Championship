@@ -148,17 +148,29 @@ public class MeleWeapon implements IWeapon {
 	}
 
 	@Override
-	public String attack(final Actor target) throws Exception {
+	public String attack(final Actor target, final Boolean critical) throws Exception {
 		Iterator<IStatus> statusIter = statusAplliedOnAttack.iterator();
 		
 		String log = "";
 		while (statusIter.hasNext()) {
 			IStatus currentStatus = statusIter.next();
 			
-			log += target.tryToResist(currentStatus, currentStatus.getApplyChances()) + System.lineSeparator();
+			int applyChances = currentStatus.getApplyChances();
+			
+			if (critical) {
+				applyChances *= 1.2;
+			}
+			
+			log += target.tryToResist(currentStatus, applyChances) + System.lineSeparator();
 		}	
 		
-		log += target.takeDamage(null, this.getDamageValue(), this.damageType());
+		int damageValue = this.getDamageValue();
+		
+		if (critical) {
+			damageValue *= 2;
+		}
+		
+		log += target.takeDamage(null, damageValue, this.damageType());
 		return log;
 	}
 

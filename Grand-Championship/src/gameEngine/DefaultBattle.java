@@ -12,11 +12,13 @@ public class DefaultBattle implements IBattleControler {
 	private final Collection<Actor> actors;
 	private Iterator<Actor> actorIter;
 	private Actor currentActor;
+	private Boolean over;
 	
 	public DefaultBattle() {
 		turnControler = new DefaultTurn();
 		actors = new LinkedList<Actor>();
 		actorIter = actors.iterator();
+		over = false;
 	}
 	
 	public void addActor(final Actor actor) {
@@ -35,8 +37,11 @@ public class DefaultBattle implements IBattleControler {
 		String log = "";
 		if (actorIter.hasNext()) {
 			currentActor = actorIter.next();
+			if (currentActor.isDead()) {
+				return finishBattle();
+			}
+			log += currentActor.getName() + " to move" + System.lineSeparator();
 			log += currentActor.getAi().play(this) + System.lineSeparator();
-			log += currentActor.getName() + " to move";
 			return log;
 		}
 		else {
@@ -44,8 +49,11 @@ public class DefaultBattle implements IBattleControler {
 			if (actorIter.hasNext()) {
 				log += turnControler.nextTurn(actors) + System.lineSeparator();
 				currentActor = actorIter.next();
+				if (currentActor.isDead()) {
+					return finishBattle();
+				}
+				log += currentActor.getName() + " to move" + System.lineSeparator();
 				log += currentActor.getAi().play(this) + System.lineSeparator();
-				log += currentActor.getName() + " to move";
 				return log;
 			}
 			else {
@@ -55,11 +63,17 @@ public class DefaultBattle implements IBattleControler {
 	}
 	
 	private String finishBattle() {
+		over = true;
 		return "Battle over";
 	}
 
 	@Override
 	public Collection<Actor> getActors() {
 		return actors;
+	}
+
+	@Override
+	public Boolean isBattleOver() {
+		return over;
 	}
 }

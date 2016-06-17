@@ -15,6 +15,9 @@ public class DefaultAI implements AI {
 
 	@Override
 	public String play(IBattleControler battle) {
+		if (actor.isDead()) {
+			return actor.getName() + " is dead and can't do anything";
+		}
 		Iterator<Actor> actorIter = battle.getActors().iterator();
 		
 		while (actorIter.hasNext()) {

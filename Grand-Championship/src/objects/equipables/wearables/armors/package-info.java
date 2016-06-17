@@ -1,7 +1,5 @@
 /**
- * 
- */
-/**
+ * Package about {@link objects.equipables.wearables.armors.IArmor}
  * @author tmedard
  *
  */
