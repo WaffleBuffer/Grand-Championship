@@ -553,6 +553,11 @@ public class Actor extends Observable{
 			threshold = applyChances;	
 		}
 		else {
+			/*
+			 * Because the resistanceTrait can be a BasicTrait, it should multiplied (for now)
+			 * TODO : create some restistance stats depending on the actual basic trait
+			 * to get rid of the multiplier.
+			 */
 			threshold = applyChances - resistanceTrait.getValue() * 5;
 		}
 		if (resistanceResult < threshold) {
