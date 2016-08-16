@@ -31,35 +31,78 @@ import objects.equipables.weapons.meleWeapons.MeleWeapon;
 import objects.equipables.wearables.armors.IArmor;
 
 /**
- * A basic character
+ * A basic character.
  * @author tmedard
  *
  */
 public class Actor extends Observable{
 	
+	/**
+	 * The default value for the {@link Actor}.
+	 */
 	public static final int DEFAULT_TRAIT_VALUE = 5;
 
+	/**
+	 * The name of the {@link Actor}.
+	 */
 	private final String name;
 	
+	/**
+	 * The {@link Set} of {@link ITrait} of the {@link Actor} without modification.
+	 */
 	private final Set<ITrait> basicCharacteristics;
+	/**
+	 * The {@link Set} of {@link ITrait} of the {@link Actor} with modification.
+	 */
 	private final Set<ITrait> currentCharacteristics;
 	
+	/**
+	 * The {@link Set} of {@link Stat} of the {@link Actor}.
+	 */
 	private final Set<Stat> stats;
 	
+	/**
+	 * The {@link Collection} of {@link OneTimeStatus} affecting this {@link Actor}.
+	 */
 	private final Collection<OneTimeStatus> oneTimestatus;
+	/**
+	 * The {@link Set} of {@link EachTurnStatus} affecting this {@link Actor}.<br>
+	 * All {@link EachTurnStatus} should only be once in the {@link Set}.
+	 */
 	private final Set<EachTurnStatus> eachTurnStatus;
 	
+	/**
+	 * The {@link Map} of each {@link IEquipable} in each {@link IEquipable.OccupiedPlace} of this {@link Actor}.
+	 */
 	private final Map<IEquipable.OccupiedPlace, IEquipable> equipedObjects;
 	
+	/**
+	 * The max weight of this {@link Actor}.
+	 */
 	private final int maxWeight;
+	/**
+	 * The current weight of this {@link Actor}.
+	 */
 	private int currentWeight;
+	/**
+	 * The inventory of this {@link Actor}.
+	 */
 	private final Collection<IObject> inventory;
 	
+	/**
+	 * The {@link AI} controlling this {@link Actor}.
+	 */
 	private AI ai;
 	
+	/**
+	 * The constructor of {@link Actor} with {@link Actor#DEFAULT_TRAIT_VALUE} as default value for all {@link ITrait}.
+	 * @param name The {@link Actor#name} of this {@link Actor}.
+	 * @throws Exception Exception thrown by {@link BasicTraitFactory} and not catched.
+	 */
 	public Actor (String name) throws Exception {
 		super();
 		
+		// Initialization of all attributes.
 		this.name = name;
 		this.basicCharacteristics = new HashSet<ITrait>();
 		this.stats = new HashSet<Stat>();
@@ -70,6 +113,7 @@ public class Actor extends Observable{
 		this.inventory = new LinkedList<IObject>();
 		this.setAi(new DefaultAI(this));
 		
+		// Initialization of equipable slots.
 		this.equipedObjects = new HashMap<IEquipable.OccupiedPlace, IEquipable>();
 		equipedObjects.put(OccupiedPlace.BOTH_HANDS, null);
 		equipedObjects.put(OccupiedPlace.HEAD, null);
@@ -78,6 +122,7 @@ public class Actor extends Observable{
 		equipedObjects.put(OccupiedPlace.RIGHT_HAND, null);
 		equipedObjects.put(OccupiedPlace.TORSO, null);
 		
+		// Creation of BasicTrait with BasicTraitFactory for the basic characteristics
 		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.VITALITY, 200));
 		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.STRENGTH, DEFAULT_TRAIT_VALUE));
 		BasicTrait dexterity = BasicTraitFactory.getBasicTrait(ITrait.TraitType.DEXTERITY, DEFAULT_TRAIT_VALUE);
@@ -85,6 +130,7 @@ public class Actor extends Observable{
 		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.CONSTITUTION, DEFAULT_TRAIT_VALUE));
 		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.WILL, DEFAULT_TRAIT_VALUE));
 		
+		// Creation of BasicTrait with BasicTraitFactory for the current characteristics
 		currentCharacteristics = new HashSet<ITrait>();
 		currentCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.VITALITY, 200));
 		currentCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.STRENGTH, DEFAULT_TRAIT_VALUE));
@@ -93,12 +139,19 @@ public class Actor extends Observable{
 		currentCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.CONSTITUTION, DEFAULT_TRAIT_VALUE));
 		currentCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.WILL, DEFAULT_TRAIT_VALUE));
 		
+		//Creating Stat
 		final Stat critical = StatFactory.createState(ITrait.TraitType.CRITICAL, (10 + 2 * dexterity.getValue()), this);
 		stats.add(critical);
 		final Stat armor = StatFactory.createState(ITrait.TraitType.ARMOR, 0, this);
 		stats.add(armor);
 	}
 	
+	/**
+	 * Add an {@link IStatus} to this {@link Actor}.
+	 * @param status The {@link IStatus} to add.
+	 * @return The result of the application of the {@link IStatus}.
+	 * @throws Exception No Exception catched.
+	 */
 	public String addIStatus(IStatus status) throws Exception {
 		
 		switch (status.getType()) {
@@ -109,34 +162,18 @@ public class Actor extends Observable{
 		case TEMPORARY :
 			final EachTurnStatus eachTurnStatu = (EachTurnStatus) status;
 			this.eachTurnStatus.add(eachTurnStatu);
-			eachTurnStatu.applyEffect(this);
-			break;
+			return (eachTurnStatu.applyEffect(this));
 		default :
 			throw new Exception("Unknown status type");
 		}
-		
-		return "";
-		/*Iterator<ITraitModifier> traitModifierIter = status.traitModifiers().iterator();
-		
-		while (traitModifierIter.hasNext()) {
-			
-			ITraitModifier currentModifiedTrait = traitModifierIter.next();
-			
-			Iterator<ITrait> traitsIter = this.currentCharacteristics.iterator();
-			
-			while (traitsIter.hasNext()) {
-			
-				ITrait currentActorTrait = traitsIter.next();
-				
-				if (currentActorTrait.getTraitType() == currentModifiedTrait.getTraitType()) {
-					
-					currentActorTrait.setValue(currentActorTrait.getValue() + currentModifiedTrait.getValue());
-					return;
-				}
-			}
-		}*/
 	}
 	
+	/**
+	 * Remove an {@link IStatus} from this {@link Actor}.
+	 * @param status The {@link IStatus} to remove.
+	 * @returnThe result of the application of the {@link IStatus}.
+	 * @throws Exception No Exception catched.
+	 */
 	public String removeStatus (IStatus status) throws Exception {
 		
 		String log = "";
@@ -554,7 +591,7 @@ public class Actor extends Observable{
 		}
 		else {
 			/*
-			 * Because the resistanceTrait can be a BasicTrait, it should multiplied (for now)
+			 * Because the resistanceTrait can be a BasicTrait, it should be multiplied (for now)
 			 * TODO : create some resistance status depending on the actual basic trait
 			 * to get rid of the multiplier.
 			 */
