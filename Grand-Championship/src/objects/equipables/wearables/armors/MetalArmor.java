@@ -11,6 +11,7 @@ import actor.characteristics.status.OneTimeStatus;
 import actor.characteristics.status.traitModifier.ITraitModifier;
 import actor.characteristics.status.traitModifier.StatModifier;
 import actor.characteristics.traits.ITrait;
+import gameExceptions.GameException;
 
 /**
  * Standard metal armor
@@ -111,7 +112,7 @@ public class MetalArmor implements IArmor {
 	}
 
 	@Override
-	public String applieOnEquipe(Actor target) throws Exception {
+	public String applieOnEquipe(Actor target) throws GameException {
 		Iterator<IStatus> statusIter = statusApllied.iterator();
 		
 		String log = "";
@@ -126,7 +127,7 @@ public class MetalArmor implements IArmor {
 	}
 
 	@Override
-	public void removeApplieOnEquipe(Actor target) throws Exception {
+	public void removeApplieOnEquipe(Actor target) throws GameException {
 		Iterator<IStatus> statusIter = statusApllied.iterator();
 		
 		while (statusIter.hasNext()) {

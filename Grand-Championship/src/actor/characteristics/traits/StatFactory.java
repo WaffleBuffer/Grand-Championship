@@ -3,10 +3,11 @@ package actor.characteristics.traits;
 import java.util.Observable;
 
 import actor.Actor;
+import gameExceptions.GameException;
 
 public abstract class StatFactory {
 
-	public static Stat createState (final ITrait.TraitType type, final int value, final Actor actor) throws Exception {
+	public static Stat createState (final ITrait.TraitType type, final int value, final Actor actor) throws GameException {
 		switch (type) {
 		case CRITICAL :
 			
@@ -43,7 +44,7 @@ public abstract class StatFactory {
 				}
 			};
 		default :
-			throw new Exception ("Unknown stat type");
+			throw new GameException ("Unknown stat type", GameException.ExceptionType.UNKNOWN_TRAIT);
 		}
 	}
 }

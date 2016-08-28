@@ -1,5 +1,6 @@
 package actor.characteristics.traits;
 
+import gameExceptions.GameException;
 import utilities.IObservable;
 
 public interface ITrait extends IObservable {
@@ -16,7 +17,7 @@ public interface ITrait extends IObservable {
 		CRITICAL
 	}
 	
-	public static String getTraitName (final TraitType type) throws Exception{
+	public static String getTraitName (final TraitType type) throws GameException{
 		switch (type) {
 			case VITALITY :
 				return "Vitality";
@@ -35,7 +36,7 @@ public interface ITrait extends IObservable {
 			case CRITICAL :
 				return "Critical chance";
 			default :
-				throw new Exception ("Unsupported type of BasicTrait");
+				throw new GameException ("Unsupported type of BasicTrait", GameException.ExceptionType.UNKNOWN_BASICTRAIT);
 		}
 	}
 

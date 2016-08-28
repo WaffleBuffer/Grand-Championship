@@ -5,6 +5,7 @@ import java.util.Observer;
 
 import actor.Actor;
 import actor.characteristics.traits.ITrait;
+import gameExceptions.GameException;
 import objects.IObject;
 
 public interface IEquipable extends IObject, Observer {
@@ -36,9 +37,9 @@ public interface IEquipable extends IObject, Observer {
 
 	public Collection<ITrait> getRequiredTraits();
 	
-	public String applieOnEquipe(Actor target) throws Exception;
+	public String applieOnEquipe(Actor target) throws GameException;
 	
-	public void removeApplieOnEquipe(Actor target) throws Exception;
+	public void removeApplieOnEquipe(Actor target) throws GameException;
 	
 	public OccupiedPlace getOccupiedPlace ();
 }

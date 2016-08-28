@@ -87,7 +87,7 @@ public class MeleWeapon implements IWeapon {
 	}
 
 	@Override
-	public String applieOnEquipe(Actor target) throws GameException, Exception {
+	public String applieOnEquipe(Actor target) throws GameException {
 		
 		Iterator<IStatus> statusIter = statusAplliedOnEquip.iterator();
 		
@@ -103,7 +103,7 @@ public class MeleWeapon implements IWeapon {
 	}
 
 	@Override
-	public void removeApplieOnEquipe(Actor target) throws Exception {
+	public void removeApplieOnEquipe(Actor target) throws GameException {
 		Iterator<IStatus> statusIter = statusAplliedOnEquip.iterator();
 		
 		while (statusIter.hasNext()) {

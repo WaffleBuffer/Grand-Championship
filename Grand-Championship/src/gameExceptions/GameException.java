@@ -8,7 +8,7 @@ public class GameException extends Exception{
 	private static final long serialVersionUID = 1642409915850351094L;
 
 	public enum ExceptionType {
-		OBJECT_WEIGHT, REQUIRED_TRAIT
+		OBJECT_WEIGHT, REQUIRED_TRAIT, UNKNOWN_OBJECT, UNKNOWN_TRAIT, UNKNOWN_STATUS, UNKNOWN_BASICTRAIT
 	}
 	
 	private final ExceptionType exceptionType;

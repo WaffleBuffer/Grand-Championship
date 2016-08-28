@@ -15,6 +15,8 @@ import gameEngine.IBattleControler;
 import objects.equipables.IEquipable;
 import objects.equipables.weapons.IWeapon;
 import objects.equipables.weapons.meleWeapons.MeleWeapon;
+import objects.equipables.wearables.armors.IArmor;
+import objects.equipables.wearables.armors.MetalArmor;
 
 /**
  * Test the battle system
@@ -68,6 +70,22 @@ public class BattleTest {
 			
 			// Picking and equiping his main weapon
 			System.out.println(bob.equip(spoon));
+			
+			// Creation of some Armor
+			MetalArmor metalPlates = new MetalArmor(
+					null,
+					"Metal plates", 
+					"Some good old metal plates",
+					30,
+					60,
+					IArmor.ArmorType.PHYSICAL, 
+					20, 
+					null, 
+					IEquipable.OccupiedPlace.TORSO);
+			
+			// Picking then equiping the Armor
+			System.out.println(bob.pick(metalPlates));
+			System.out.println(bob.equip(metalPlates));
 			
 			// Creating his challenger
 			final Actor pop = new Actor("Pop");

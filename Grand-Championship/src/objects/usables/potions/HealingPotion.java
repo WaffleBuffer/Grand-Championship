@@ -55,7 +55,7 @@ public class HealingPotion implements IPotion {
 	}
 
 	@Override
-	public String use(Actor user, Actor target) {
+	public String use(Actor user, Actor target) throws GameException {
 
 		final int max = target.getBasicTrait(TraitType.VITALITY).getValue();
 		final int vitality = target.getCurrentTrait(TraitType.VITALITY).getValue();

@@ -10,6 +10,7 @@ import actor.characteristics.traits.ITrait;
 import actor.characteristics.traits.ITrait.TraitType;
 import actor.characteristics.traits.Stat;
 import actor.characteristics.traits.StatFactory;
+import gameExceptions.GameException;
 
 public class EachTurnStatus implements IStatus {
 
@@ -82,7 +83,7 @@ public class EachTurnStatus implements IStatus {
 	}
 	
 	@Override
-	public String applyEffect(final Actor target) throws Exception {
+	public String applyEffect(final Actor target) throws GameException {
 		Iterator<ITraitModifier> traitModifierIter = this.getTraitModifiers().iterator();
 		
 		while (traitModifierIter.hasNext()) {

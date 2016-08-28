@@ -1,10 +1,11 @@
 package actor.characteristics.traits;
 
 import actor.characteristics.traits.ITrait.TraitType;
+import gameExceptions.GameException;
 
 public abstract class BasicTraitFactory {
 
-	public static BasicTrait getBasicTrait (final TraitType type, final int value) throws Exception{
+	public static BasicTrait getBasicTrait (final TraitType type, final int value) throws GameException{
 		switch (type) {
 			case VITALITY :
 					return new BasicTrait(ITrait.getTraitName(type), TraitType.VITALITY, value);
@@ -17,7 +18,7 @@ public abstract class BasicTraitFactory {
 			case WILL :
 					return new BasicTrait(ITrait.getTraitName(type), TraitType.WILL, value);
 			default :
-				throw new Exception ("Unsupported type of BasicTrait");
+				throw new GameException ("Unsupported type of BasicTrait", GameException.ExceptionType.UNKNOWN_BASICTRAIT);
 		}
 	}
 }

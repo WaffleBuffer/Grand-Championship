@@ -97,9 +97,9 @@ public class Actor extends Observable{
 	/**
 	 * The constructor of {@link Actor} with {@link Actor#DEFAULT_TRAIT_VALUE} as default value for all {@link ITrait}.
 	 * @param name The {@link Actor#name} of this {@link Actor}.
-	 * @throws Exception Exception thrown by {@link BasicTraitFactory} and not catched.
+	 * @throws GameException If {@link ITrait} are not supported.
 	 */
-	public Actor (String name) throws Exception {
+	public Actor (String name) throws GameException {
 		super();
 		
 		// Initialization of all attributes.
@@ -150,9 +150,9 @@ public class Actor extends Observable{
 	 * Add an {@link IStatus} to this {@link Actor}.
 	 * @param status The {@link IStatus} to add.
 	 * @return The result of the application of the {@link IStatus}.
-	 * @throws Exception No Exception catched.
+	 * @throws GameException If {@link ITrait} are not supported.
 	 */
-	public String addIStatus(IStatus status) throws Exception {
+	public String addIStatus(IStatus status) throws GameException {
 		
 		switch (status.getType()) {
 		case ONE_TIME :
@@ -164,7 +164,7 @@ public class Actor extends Observable{
 			this.eachTurnStatus.add(eachTurnStatu);
 			return (eachTurnStatu.applyEffect(this));
 		default :
-			throw new Exception("Unknown status type");
+			throw new GameException("Unknown status type", GameException.ExceptionType.UNKNOWN_STATUS);
 		}
 	}
 	
@@ -172,9 +172,9 @@ public class Actor extends Observable{
 	 * Remove an {@link IStatus} from this {@link Actor}.
 	 * @param status The {@link IStatus} to remove.
 	 * @returnThe result of the application of the {@link IStatus}.
-	 * @throws Exception No Exception catched.
+	 * @throws GameException If unknown {@link IStatus} is unknown.
 	 */
-	public String removeStatus (IStatus status) throws Exception {
+	public String removeStatus (IStatus status) throws GameException {
 		
 		String log = "";
 		switch (status.getType()) {
@@ -187,16 +187,23 @@ public class Actor extends Observable{
 			this.eachTurnStatus.remove(status);
 			break;
 		default :
-			throw new Exception("Unknown status type");
+			throw new GameException("Unknown trait", GameException.ExceptionType.UNKNOWN_TRAIT);
 		}	
 		log += this.getName() + " is no longer affected by " + status.getName();
 		return log;
 	}
 	
+	/**
+	 * Return the name of this {@link Actor}.
+	 * @return the Name of this {@link Actor}.
+	 */
 	public String getName() {
 		return this.name;
 	}
 
+	/**
+	 * Make a recap of the {@link Actor}.
+	 */
 	@Override
 	public String toString() {
 		String actorString = "=============== " + name + " ===============" + System.lineSeparator() +
@@ -274,18 +281,36 @@ public class Actor extends Observable{
 		return actorString;
 	}
 
+	/**
+	 * Return the current characteristics of this {@link Actor}.
+	 * @return The current characteristics of this {@link Actor}.
+	 */
 	public Set<ITrait> currentCharacteristics() {
 		return currentCharacteristics;
 	}
 
+	/**
+	 * Return the current max weight of this {@link Actor}.
+	 * @return The current max weight of this {@link Actor}.
+	 */
 	public int maxWeight() {
 		return maxWeight;
 	}
 	
+	/**
+	 * Return the current weight of this {@link Actor}.
+	 * @return The current weight of this {@link Actor}.
+	 */
 	public int currentWeight() {
 		return currentWeight;
 	}
 	
+	/**
+	 * Pick an {@link IObject} and put it into this {@link Actor}'s {@link Actor#inventory}.
+	 * @param object The {@link IObject} to pick up.
+	 * @return A String saying the result of the action.
+	 * @throws GameException If the {@link IObject} is too heavy.
+	 */
 	public String pick (IObject object) throws GameException {
 		if (object.getWeight() + this.currentWeight <= this.maxWeight) {
 			this.inventory.add(object);
@@ -297,14 +322,30 @@ public class Actor extends Observable{
 		}
 	}
 	
-	public String drop (IObject object) {
-		this.inventory.remove(object);
-		this.currentWeight -= object.getWeight();
-		return object.getName() + " has been droped";
+	/**
+	 * Drop the {@link IObject} from this {@link Actor}'s {@link Actor#inventory}.
+	 * @param object The {@link IObject} to drop.
+	 * @return A string explaining the result of the action.
+	 * @throws GameException If the object is not in the inventory then an exception is raised.
+	 */
+	public String drop (IObject object) throws GameException {
+		if (this.inventory.contains(object)) {
+			this.inventory.remove(object);
+			this.currentWeight -= object.getWeight();
+			return object.getName() + " has been droped";
+		}
+		throw new GameException("Object not in inventory", GameException.ExceptionType.UNKNOWN_OBJECT);
 	}
 	
-	public String equip(IEquipable equipObject) throws GameException, Exception{
+	/**
+	 * Equip an {@link IObject} in the first free {@link OccupiedPlace}.
+	 * @param equipObject The {@link IObject} to equip.
+	 * @return The result of the action.
+	 * @throws GameException If you can't equip the new {@link IObject}.
+	 */
+	public String equip(IEquipable equipObject) throws GameException{
 		
+		// Some basics verifications
 		if (equipedObjects.containsValue(equipObject)) {
 			return this.getName() + " is already equiped with " + equipObject.getName();
 		}
@@ -313,14 +354,18 @@ public class Actor extends Observable{
 					GameException.ExceptionType.REQUIRED_TRAIT);
 		}
 		
+		// Preparing result's logs.
 		String log = "";
 		if (!inventory.contains(equipObject)) {
 			log += this.pick(equipObject) + System.lineSeparator();
 		}
 		
+		// If an object was already equipped.
 		IEquipable lastObject;
 		final OccupiedPlace occupiedPlace = equipObject.getOccupiedPlace(); 
+		// If the object is both handed
 		if (occupiedPlace == OccupiedPlace.BOTH_HANDS) {
+			// Verifying if an object is equipped in right or left hand.
 			if (equipedObjects.get(OccupiedPlace.LEFT_HAND) != null) {
 				lastObject = equipedObjects.get(OccupiedPlace.LEFT_HAND);
 				log += desequip(lastObject) + System.lineSeparator();
@@ -342,7 +387,9 @@ public class Actor extends Observable{
 			
 			equipedObjects.put(OccupiedPlace.BOTH_HANDS, equipObject);
 		}
+		// If the object is one handed
 		else if (occupiedPlace == OccupiedPlace.ONE_HAND) {
+			// Verifying if a double handed object is already equipped.
 			if (equipedObjects.get(OccupiedPlace.BOTH_HANDS) != null) {
 				lastObject = equipedObjects.get(OccupiedPlace.BOTH_HANDS);
 				log += desequip(lastObject) + System.lineSeparator();
@@ -353,6 +400,7 @@ public class Actor extends Observable{
 				}
 			}
 			
+			// If the right hand is occupied then verifying the left one.
 			if (equipedObjects.get(OccupiedPlace.RIGHT_HAND) != null) {
 				if (equipedObjects.get(OccupiedPlace.LEFT_HAND) != null) {
 					lastObject = equipedObjects.get(OccupiedPlace.RIGHT_HAND);
@@ -434,7 +482,7 @@ public class Actor extends Observable{
 		return true;
 	}
 	
-	public String desequip(IEquipable object) throws Exception {
+	public String desequip(IEquipable object) throws GameException {
 		
 		Set<Entry<OccupiedPlace, IEquipable>> entrySet = equipedObjects.entrySet();
 		

@@ -5,6 +5,7 @@ import java.util.Collection;
 import actor.Actor;
 import actor.characteristics.status.traitModifier.ITraitModifier;
 import actor.characteristics.traits.ITrait;
+import gameExceptions.GameException;
 
 public interface IStatus {
 	
@@ -32,7 +33,7 @@ public interface IStatus {
 	
 	public Collection<ITraitModifier> getTraitModifiers();
 	
-	public String applyEffect(final Actor target) throws Exception;
+	public String applyEffect(final Actor target) throws GameException;
 
 	public String removeEffect(final Actor target);
 	
