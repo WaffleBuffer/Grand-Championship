@@ -3,6 +3,7 @@
  */
 package objects.equipables.wearables.armors;
 
+import gameExceptions.GameException;
 import objects.equipables.IEquipable;
 import objects.equipables.weapons.IWeapon;
 import objects.equipables.weapons.IWeapon.DamageType;
@@ -37,7 +38,7 @@ public interface IArmor extends IEquipable{
 			@Override
 			public int getArmorReduction (final IWeapon.DamageType damageType, final int damageValue, 
 					final int armorValue)
-					throws Exception {
+					throws GameException {
 				switch (damageType) {
 				case PIERCING :
 					return (int) (armorValue - armorValue * 0.2);
@@ -46,7 +47,7 @@ public interface IArmor extends IEquipable{
 				case SMASH :
 					return armorValue;
 				default :
-					throw new Exception ("Unknown armor type");
+					throw new GameException ("Unknown armor type", GameException.ExceptionType.UNKNOWN_ARMORTYPE);
 				}
 			}
 		},
@@ -62,8 +63,7 @@ public interface IArmor extends IEquipable{
 			
 			@Override
 			public int getArmorReduction (final IWeapon.DamageType damageType, final int damageValue, 
-					final int armorValue)
-					throws Exception {
+					final int armorValue) throws GameException {
 				switch (damageType) {
 				case PIERCING :
 					return 0;
@@ -72,7 +72,7 @@ public interface IArmor extends IEquipable{
 				case SMASH :
 					return 0;
 				default :
-					throw new Exception ("Unknown armor type");
+					throw new GameException ("Unknown armor type", GameException.ExceptionType.UNKNOWN_ARMORTYPE);
 				}
 			}
 		};
@@ -83,11 +83,11 @@ public interface IArmor extends IEquipable{
 		 * @param damageValue The damage value
 		 * @param armorValue The armor value
 		 * @return The armor reduction
-		 * @throws Exception When unknown armor type
+		 * @throws GameException When unknown armor type
 		 */
 		public abstract int getArmorReduction (final IWeapon.DamageType damageType, final int damageValue, 
 				final int armorValue)
-				throws Exception;
+				throws GameException;
 	}
 	
 	/**

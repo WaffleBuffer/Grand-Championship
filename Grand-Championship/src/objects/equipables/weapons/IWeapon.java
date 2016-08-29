@@ -1,6 +1,7 @@
 package objects.equipables.weapons;
 
 import actor.Actor;
+import gameExceptions.GameException;
 import objects.equipables.IEquipable;
 
 public interface IWeapon extends IEquipable {
@@ -9,7 +10,7 @@ public interface IWeapon extends IEquipable {
 		SLASH, SMASH, PIERCING
 	}
 	
-	public static String getDamageTypeString(final DamageType damageType) throws Exception {
+	public static String getDamageTypeString(final DamageType damageType) throws GameException {
 		switch (damageType) {
 			case SLASH :
 				return "Slash";
@@ -18,7 +19,7 @@ public interface IWeapon extends IEquipable {
 			case PIERCING :
 				return "Piercing";
 			default :
-				throw new Exception("Unsupported damage type");
+				throw new GameException("Unsupported damage type", GameException.ExceptionType.UNKNOWN_DAMAGETYPE);
 		}
 	}
 

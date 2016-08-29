@@ -623,14 +623,14 @@ public class Actor extends Observable{
 	
 	/**
 	 * Make this Actor take damage
-	 * @param origin
-	 * @param value
-	 * @param damageType
-	 * @return
-	 * @throws Exception
+	 * @param origin The {@link Actor} who is making the damage (can be null).
+	 * @param value The raw value of the damage.
+	 * @param damageType The {@link IWeapon.DamageType} of the attack.
+	 * @return The result log of the action.
+	 * @throws GameException If unknown stuff appear.
 	 */
 	public String takeDamage (final Actor origin, final int value, final IWeapon.DamageType damageType) 
-			throws Exception {
+			throws GameException {
 		int realDamage = value;
 		
 		final Stat armorStat = getStat(ITrait.TraitType.ARMOR);
