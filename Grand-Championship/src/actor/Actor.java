@@ -547,7 +547,7 @@ public class Actor extends Observable{
 	}
 	
 	/**
-	 * Get this {@link Actor} current {@link ITrait} of a certain {@link ITrait.TraitType}.
+	 * Get this {@link Actor}'s current {@link ITrait} of a certain {@link ITrait.TraitType}.
 	 * @param type The {@link ITrait.TraitType} of the current {@link ITrait} looked for.
 	 * @return The current {@link ITrait} of the {@link ITrait.TraitType} looked for.
 	 * @throws GameException If this {@link Actor} doesn't have this {@link ITrait}.
@@ -571,7 +571,17 @@ public class Actor extends Observable{
 		throw new GameException("Unknown TraitType", GameException.ExceptionType.UNKNOWN_TRAIT);
 	}
 	
-	public ITrait getBasicTrait (final ITrait.TraitType type) {
+	/**
+	 * Get this {@link Actor}'s basic {@link ITrait} of a certain {@link ITrait.TraitType}.
+	 * @param type The {@link ITrait.TraitType} of the basic {@link ITrait} looked for.
+	 * @return The basic {@link ITrait} of the {@link ITrait.TraitType} looked for.
+	 * @throws GameException If this {@link Actor} doesn't have this basic {@link ITrait}.
+	 */
+	public ITrait getBasicTrait (final ITrait.TraitType type) throws GameException {
+		if (!currentCharacteristics.contains(type)) {
+			throw new GameException("Unknown TraitType", GameException.ExceptionType.UNKNOWN_TRAIT);
+		}
+		
 		final Iterator<ITrait> basicTraitIter = basicCharacteristics.iterator();
 		
 		while(basicTraitIter.hasNext()) {
@@ -582,10 +592,21 @@ public class Actor extends Observable{
 			}
 		}
 		
-		return null;
+		// Should never go there.
+		throw new GameException("Unknown TraitType", GameException.ExceptionType.UNKNOWN_TRAIT);
 	}
 	
-	public Stat getStat (final ITrait.TraitType type) {
+	/**
+	 * Get this {@link Actor}'s {@link Stat} of a certain {@link ITrait.TraitType}.
+	 * @param type The {@link ITrait.TraitType} of the {@link Stat} looked for.
+	 * @return The {@link Stat} of the {@link ITrait.TraitType} looked for.
+	 * @throws GameException If this {@link Actor} doesn't have this {@link Stat}.
+	 */
+	public Stat getStat (final ITrait.TraitType type) throws GameException {
+		if (!currentCharacteristics.contains(type)) {
+			throw new GameException("Unknown TraitType", GameException.ExceptionType.UNKNOWN_TRAIT);
+		}
+		
 		final Iterator<Stat> statIter = stats.iterator();
 		
 		while(statIter.hasNext()) {
@@ -596,10 +617,20 @@ public class Actor extends Observable{
 			}
 		}
 		
-		return null;
+		// Should never go there.
+		throw new GameException("Unknown TraitType", GameException.ExceptionType.UNKNOWN_TRAIT);
 	}
 	
-	public String takeDamage (final Actor origin, final int value, final IWeapon.DamageType damageType) throws Exception {
+	/**
+	 * Make this Actor take damage
+	 * @param origin
+	 * @param value
+	 * @param damageType
+	 * @return
+	 * @throws Exception
+	 */
+	public String takeDamage (final Actor origin, final int value, final IWeapon.DamageType damageType) 
+			throws Exception {
 		int realDamage = value;
 		
 		final Stat armorStat = getStat(ITrait.TraitType.ARMOR);

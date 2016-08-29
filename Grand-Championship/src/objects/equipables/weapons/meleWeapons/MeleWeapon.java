@@ -229,7 +229,7 @@ public class MeleWeapon implements IWeapon {
 		return new MeleWeapon(
 				null,
 				"Fists",
-				"You know whene they sais : \"Do it by yourself\".",
+				"You know whene they say : \"Do it by yourself\".",
 				0,
 				0,
 				DamageType.SMASH,
