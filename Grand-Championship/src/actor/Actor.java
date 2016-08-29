@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Observable;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
@@ -74,7 +73,7 @@ public class Actor extends Observable{
 	/**
 	 * The {@link Map} of each {@link IEquipable} in each {@link IEquipable.OccupiedPlace} of this {@link Actor}.
 	 */
-	private final Map<IEquipable.OccupiedPlace, IEquipable> equipedObjects;
+	private final Map<IEquipable.OccupiedPlace, IEquipable> equippedObjects;
 	
 	/**
 	 * The max weight of this {@link Actor}.
@@ -114,13 +113,13 @@ public class Actor extends Observable{
 		this.setAi(new DefaultAI(this));
 		
 		// Initialization of equipable slots.
-		this.equipedObjects = new HashMap<IEquipable.OccupiedPlace, IEquipable>();
-		equipedObjects.put(OccupiedPlace.BOTH_HANDS, null);
-		equipedObjects.put(OccupiedPlace.HEAD, null);
-		equipedObjects.put(OccupiedPlace.LEGS, null);
-		equipedObjects.put(OccupiedPlace.LEFT_HAND, null);
-		equipedObjects.put(OccupiedPlace.RIGHT_HAND, null);
-		equipedObjects.put(OccupiedPlace.TORSO, null);
+		this.equippedObjects = new HashMap<IEquipable.OccupiedPlace, IEquipable>();
+		equippedObjects.put(OccupiedPlace.BOTH_HANDS, null);
+		equippedObjects.put(OccupiedPlace.HEAD, null);
+		equippedObjects.put(OccupiedPlace.LEGS, null);
+		equippedObjects.put(OccupiedPlace.LEFT_HAND, null);
+		equippedObjects.put(OccupiedPlace.RIGHT_HAND, null);
+		equippedObjects.put(OccupiedPlace.TORSO, null);
 		
 		// Creation of BasicTrait with BasicTraitFactory for the basic characteristics
 		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.VITALITY, 200));
@@ -206,8 +205,14 @@ public class Actor extends Observable{
 	 */
 	@Override
 	public String toString() {
-		String actorString = "=============== " + name + " ===============" + System.lineSeparator() +
-		getCurrentTrait(TraitType.VITALITY) + "/" + getBasicTrait(TraitType.VITALITY).getValue() + ", ";
+		String actorString = "";
+		try {
+			actorString = "=============== " + name + " ===============" + System.lineSeparator() +
+			getCurrentTrait(TraitType.VITALITY) + "/" + getBasicTrait(TraitType.VITALITY).getValue() + ", ";
+		} 
+		catch (GameException e1) {
+			e1.printStackTrace();
+		}
 		
 		Iterator<ITrait> traitIter = currentCharacteristics.iterator();
 
@@ -263,7 +268,7 @@ public class Actor extends Observable{
 		
 		actorString += System.lineSeparator() + "Equiped Objects : " + System.lineSeparator();
 		actorString += System.lineSeparator();
-		for (Map.Entry<OccupiedPlace, IEquipable> currentEntry : equipedObjects.entrySet()) {
+		for (Map.Entry<OccupiedPlace, IEquipable> currentEntry : equippedObjects.entrySet()) {
 			
 			if (currentEntry.getValue() != null) {
 				try {
@@ -346,7 +351,7 @@ public class Actor extends Observable{
 	public String equip(IEquipable equipObject) throws GameException{
 		
 		// Some basics verifications
-		if (equipedObjects.containsValue(equipObject)) {
+		if (equippedObjects.containsValue(equipObject)) {
 			return this.getName() + " is already equiped with " + equipObject.getName();
 		}
 		if (!canEquip(equipObject)) {
@@ -366,8 +371,8 @@ public class Actor extends Observable{
 		// If the object is both handed
 		if (occupiedPlace == OccupiedPlace.BOTH_HANDS) {
 			// Verifying if an object is equipped in right or left hand.
-			if (equipedObjects.get(OccupiedPlace.LEFT_HAND) != null) {
-				lastObject = equipedObjects.get(OccupiedPlace.LEFT_HAND);
+			if (equippedObjects.get(OccupiedPlace.LEFT_HAND) != null) {
+				lastObject = equippedObjects.get(OccupiedPlace.LEFT_HAND);
 				log += desequip(lastObject) + System.lineSeparator();
 				if (!canEquip(equipObject)) {
 					equip(lastObject);
@@ -375,8 +380,8 @@ public class Actor extends Observable{
 							GameException.ExceptionType.REQUIRED_TRAIT);
 				}
 			}
-			if (equipedObjects.get(OccupiedPlace.RIGHT_HAND) != null) {
-				lastObject = equipedObjects.get(OccupiedPlace.RIGHT_HAND);
+			if (equippedObjects.get(OccupiedPlace.RIGHT_HAND) != null) {
+				lastObject = equippedObjects.get(OccupiedPlace.RIGHT_HAND);
 				log += desequip(lastObject) + System.lineSeparator();
 				if (!canEquip(equipObject)) {
 					equip(lastObject);
@@ -385,13 +390,13 @@ public class Actor extends Observable{
 				}
 			}
 			
-			equipedObjects.put(OccupiedPlace.BOTH_HANDS, equipObject);
+			equippedObjects.put(OccupiedPlace.BOTH_HANDS, equipObject);
 		}
 		// If the object is one handed
 		else if (occupiedPlace == OccupiedPlace.ONE_HAND) {
 			// Verifying if a double handed object is already equipped.
-			if (equipedObjects.get(OccupiedPlace.BOTH_HANDS) != null) {
-				lastObject = equipedObjects.get(OccupiedPlace.BOTH_HANDS);
+			if (equippedObjects.get(OccupiedPlace.BOTH_HANDS) != null) {
+				lastObject = equippedObjects.get(OccupiedPlace.BOTH_HANDS);
 				log += desequip(lastObject) + System.lineSeparator();
 				if (!canEquip(equipObject)) {
 					equip(lastObject);
@@ -401,40 +406,42 @@ public class Actor extends Observable{
 			}
 			
 			// If the right hand is occupied then verifying the left one.
-			if (equipedObjects.get(OccupiedPlace.RIGHT_HAND) != null) {
-				if (equipedObjects.get(OccupiedPlace.LEFT_HAND) != null) {
-					lastObject = equipedObjects.get(OccupiedPlace.RIGHT_HAND);
+			if (equippedObjects.get(OccupiedPlace.RIGHT_HAND) != null) {
+				// If both hands are occupied then equipping in the right one.
+				if (equippedObjects.get(OccupiedPlace.LEFT_HAND) != null) {
+					lastObject = equippedObjects.get(OccupiedPlace.RIGHT_HAND);
 					log += desequip(lastObject) + System.lineSeparator();
 					if (!canEquip(equipObject)) {
 						equip(lastObject);
 						throw new GameException("You can't equip " + equipObject.getName(), 
 								GameException.ExceptionType.REQUIRED_TRAIT);
 					}
-					equipedObjects.put(OccupiedPlace.RIGHT_HAND, equipObject);
+					equippedObjects.put(OccupiedPlace.RIGHT_HAND, equipObject);
 				}
 				else {
-					lastObject = equipedObjects.get(OccupiedPlace.LEFT_HAND);
+					lastObject = equippedObjects.get(OccupiedPlace.LEFT_HAND);
 					log += desequip(lastObject) + System.lineSeparator();
 					if (!canEquip(equipObject)) {
 						equip(lastObject);
 						throw new GameException("You can't equip " + equipObject.getName(), 
 								GameException.ExceptionType.REQUIRED_TRAIT);
 					}
-					equipedObjects.put(OccupiedPlace.LEFT_HAND, equipObject);
+					equippedObjects.put(OccupiedPlace.LEFT_HAND, equipObject);
 				}
 			}
 			else {
-				lastObject = equipedObjects.get(OccupiedPlace.RIGHT_HAND);
+				lastObject = equippedObjects.get(OccupiedPlace.RIGHT_HAND);
 				if (!canEquip(equipObject)) {
 					equip(lastObject);
 					throw new GameException("You can't equip " + equipObject.getName(), 
 							GameException.ExceptionType.REQUIRED_TRAIT);
 				}
-				equipedObjects.put(OccupiedPlace.RIGHT_HAND, equipObject);
+				equippedObjects.put(OccupiedPlace.RIGHT_HAND, equipObject);
 			}
 		}
+		// If it's not a hand object.
 		else {
-			lastObject = equipedObjects.get(occupiedPlace);
+			lastObject = equippedObjects.get(occupiedPlace);
 			if (lastObject != null) {
 				log += desequip(lastObject) + System.lineSeparator();
 				
@@ -444,9 +451,10 @@ public class Actor extends Observable{
 							GameException.ExceptionType.REQUIRED_TRAIT);
 				}
 			}
-			equipedObjects.put(occupiedPlace, equipObject);
+			equippedObjects.put(occupiedPlace, equipObject);
 		}
 		
+		// Making object's required traits to observe the actor's corresponding trait.
 		Iterator<ITrait> requiredIter = equipObject.getRequiredTraits().iterator();
 		
 		while (requiredIter.hasNext()) {
@@ -457,17 +465,29 @@ public class Actor extends Observable{
 		}
 		
 		log += equipObject.applieOnEquipe(this);
-		log += name + " is equiped with " + equipObject.getName();
+		log += this.getName() + " is equiped with " + equipObject.getName();
 		return log;
 	}
 	
-	private Boolean canEquip (IEquipable object) throws GameException {
+	/**
+	 * Verify is this {@link Actor} can equip an {@link IEquipable}.
+	 * @param object The {@link IEquipable} to verify.
+	 * @return true if possible or false otherwise.
+	 */
+	private Boolean canEquip (IEquipable object){
 		Iterator<ITrait> requiredIter = object.getRequiredTraits().iterator();
 		
 		while (requiredIter.hasNext()) {
 			ITrait currentRequiredTrait = requiredIter.next();
-		
-			final ITrait currentTargetTrait = this.getCurrentTrait(currentRequiredTrait.getTraitType());
+			ITrait currentTargetTrait = null;
+			
+			// If the actor doesn't even have the right trait.
+			try {
+				currentTargetTrait = this.getCurrentTrait(currentRequiredTrait.getTraitType());
+			}
+			catch (GameException e) {
+				return false;
+			}
 			
 			if(currentTargetTrait != null) {
 				
@@ -475,50 +495,68 @@ public class Actor extends Observable{
 					return false;
 				}
 			}
-			else {
-				return false;
-			}
 		}
 		return true;
 	}
 	
+	/**
+	 * Desequip an {@link IEquipable} from this {@link Actor}.
+	 * @param object The {@link IEquipable} to desequip.
+	 * @return The action's log.
+	 * @throws GameException If an error occur while removing the object's effects,
+	 * or if the object is not already equipped.
+	 */
 	public String desequip(IEquipable object) throws GameException {
 		
-		Set<Entry<OccupiedPlace, IEquipable>> entrySet = equipedObjects.entrySet();
-		
-		Iterator<Entry<OccupiedPlace, IEquipable>> entryIter =  entrySet.iterator();
-		
-		while (entryIter.hasNext()) {
-			Entry<OccupiedPlace, IEquipable> entry = entryIter.next();
-			
-			if (entry.getValue() == object) {
-				equipedObjects.put(entry.getKey(), null);
-				
-				Iterator<ITrait> requiredIter = object.getRequiredTraits().iterator();
-				
-				while (requiredIter.hasNext()) {
-					ITrait currentRequiredTrait = requiredIter.next();
-					
-					ITrait trait = this.getCurrentTrait(currentRequiredTrait.getTraitType());
-					trait.deleteObserver(object);
-				}
-				
-				object.removeApplieOnEquipe(this);
-				return name + " is no longer equiped with " + object.getName();
-			}
+		if (!equippedObjects.containsKey(object)) {
+			throw new GameException("Object not equipped", GameException.ExceptionType.UNKNOWN_OBJECT);
 		}
-		return "";
+		
+		equippedObjects.put(object.getOccupiedPlace(), null);
+		
+		Iterator<ITrait> requiredIter = object.getRequiredTraits().iterator();
+		
+		// For all required trait, removing observation.
+		while (requiredIter.hasNext()) {
+			ITrait currentRequiredTrait = requiredIter.next();
+			
+			ITrait trait = this.getCurrentTrait(currentRequiredTrait.getTraitType());
+			trait.deleteObserver(object);
+		}
+		
+		// Removing effects
+		object.removeApplieOnEquipe(this);
+		return name + " is no longer equipped with " + object.getName();
 	}
 	
+	/**
+	 * Get the {@link IEquipable} at the {@link OccupiedPlace}.
+	 * @param place The {@link OccupiedPlace} of the {@link IEquipable}
+	 * @return The {@link IEquipable} at the {@link OccupiedPlace}.
+	 */
 	public IEquipable getEquipedObject(OccupiedPlace place) {
-		return equipedObjects.get(place);
+		return equippedObjects.get(place);
 	}
 	
+	/**
+	 * Get the {@link Stat} {@link Collection}.
+	 * @return The {@link Stat} {@link Collection}.
+	 */
 	public Collection<Stat> getStats() {
 		return stats;
 	}
 	
-	public ITrait getCurrentTrait (final ITrait.TraitType type) {
+	/**
+	 * Get this {@link Actor} current {@link ITrait} of a certain {@link ITrait.TraitType}.
+	 * @param type The {@link ITrait.TraitType} of the current {@link ITrait} looked for.
+	 * @return The current {@link ITrait} of the {@link ITrait.TraitType} looked for.
+	 * @throws GameException If this {@link Actor} doesn't have this {@link ITrait}.
+	 */
+	public ITrait getCurrentTrait (final ITrait.TraitType type) throws GameException {
+		if (!currentCharacteristics.contains(type)) {
+			throw new GameException("Unknown TraitType", GameException.ExceptionType.UNKNOWN_TRAIT);
+		}
+		
 		final Iterator<ITrait> currentTraitIter = currentCharacteristics.iterator();
 		
 		while(currentTraitIter.hasNext()) {
@@ -529,7 +567,8 @@ public class Actor extends Observable{
 			}
 		}
 		
-		return null;
+		// Should never go there.
+		throw new GameException("Unknown TraitType", GameException.ExceptionType.UNKNOWN_TRAIT);
 	}
 	
 	public ITrait getBasicTrait (final ITrait.TraitType type) {
@@ -682,6 +721,12 @@ public class Actor extends Observable{
 	}
 	
 	public Boolean isDead() {
-		return this.getCurrentTrait(ITrait.TraitType.VITALITY).getValue() <= 0;
+		try {
+			return this.getCurrentTrait(ITrait.TraitType.VITALITY).getValue() <= 0;
+		} 
+		catch (GameException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

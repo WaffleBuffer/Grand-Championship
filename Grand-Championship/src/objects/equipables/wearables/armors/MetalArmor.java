@@ -206,7 +206,13 @@ public class MetalArmor implements IArmor {
 		while (requiredIter.hasNext()) {
 			ITrait currentRequiredTrait = requiredIter.next();
 		
-			final ITrait currentTargetTrait = actor.getCurrentTrait(currentRequiredTrait.getTraitType());
+			ITrait currentTargetTrait = null;
+			try {
+				currentTargetTrait = actor.getCurrentTrait(currentRequiredTrait.getTraitType());
+			} 
+			catch (GameException e1) {
+				e1.printStackTrace();
+			}
 			
 			if(currentTargetTrait != null) {
 				
