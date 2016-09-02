@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Observable;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
@@ -122,21 +123,21 @@ public class Actor extends Observable{
 		equippedObjects.put(OccupiedPlace.TORSO, null);
 		
 		// Creation of BasicTrait with BasicTraitFactory for the basic characteristics
-		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.VITALITY, 200));
-		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.STRENGTH, DEFAULT_TRAIT_VALUE));
-		BasicTrait dexterity = BasicTraitFactory.getBasicTrait(ITrait.TraitType.DEXTERITY, DEFAULT_TRAIT_VALUE);
+		basicCharacteristics.add(BasicTraitFactory.createBasicTrait(ITrait.TraitType.VITALITY, 200));
+		basicCharacteristics.add(BasicTraitFactory.createBasicTrait(ITrait.TraitType.STRENGTH, DEFAULT_TRAIT_VALUE));
+		BasicTrait dexterity = BasicTraitFactory.createBasicTrait(ITrait.TraitType.DEXTERITY, DEFAULT_TRAIT_VALUE);
 		basicCharacteristics.add(dexterity);
-		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.CONSTITUTION, DEFAULT_TRAIT_VALUE));
-		basicCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.WILL, DEFAULT_TRAIT_VALUE));
+		basicCharacteristics.add(BasicTraitFactory.createBasicTrait(ITrait.TraitType.CONSTITUTION, DEFAULT_TRAIT_VALUE));
+		basicCharacteristics.add(BasicTraitFactory.createBasicTrait(ITrait.TraitType.WILL, DEFAULT_TRAIT_VALUE));
 		
 		// Creation of BasicTrait with BasicTraitFactory for the current characteristics
 		currentCharacteristics = new HashSet<ITrait>();
-		currentCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.VITALITY, 200));
-		currentCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.STRENGTH, DEFAULT_TRAIT_VALUE));
-		dexterity = BasicTraitFactory.getBasicTrait(ITrait.TraitType.DEXTERITY, DEFAULT_TRAIT_VALUE);
+		currentCharacteristics.add(BasicTraitFactory.createBasicTrait(ITrait.TraitType.VITALITY, 200));
+		currentCharacteristics.add(BasicTraitFactory.createBasicTrait(ITrait.TraitType.STRENGTH, DEFAULT_TRAIT_VALUE));
+		dexterity = BasicTraitFactory.createBasicTrait(ITrait.TraitType.DEXTERITY, DEFAULT_TRAIT_VALUE);
 		currentCharacteristics.add(dexterity);
-		currentCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.CONSTITUTION, DEFAULT_TRAIT_VALUE));
-		currentCharacteristics.add(BasicTraitFactory.getBasicTrait(ITrait.TraitType.WILL, DEFAULT_TRAIT_VALUE));
+		currentCharacteristics.add(BasicTraitFactory.createBasicTrait(ITrait.TraitType.CONSTITUTION, DEFAULT_TRAIT_VALUE));
+		currentCharacteristics.add(BasicTraitFactory.createBasicTrait(ITrait.TraitType.WILL, DEFAULT_TRAIT_VALUE));
 		
 		//Creating Stat
 		final Stat critical = StatFactory.createState(ITrait.TraitType.CRITICAL, (10 + 2 * dexterity.getValue()), this);
@@ -206,13 +207,8 @@ public class Actor extends Observable{
 	@Override
 	public String toString() {
 		String actorString = "";
-		try {
-			actorString = "=============== " + name + " ===============" + System.lineSeparator() +
-			getCurrentTrait(TraitType.VITALITY) + "/" + getBasicTrait(TraitType.VITALITY).getValue() + ", ";
-		} 
-		catch (GameException e1) {
-			e1.printStackTrace();
-		}
+		actorString = "=============== " + name + " ===============" + System.lineSeparator() +
+		getCurrentTrait(TraitType.VITALITY) + "/" + getBasicTrait(TraitType.VITALITY).getValue() + ", ";
 		
 		Iterator<ITrait> traitIter = currentCharacteristics.iterator();
 
@@ -481,13 +477,7 @@ public class Actor extends Observable{
 			ITrait currentRequiredTrait = requiredIter.next();
 			ITrait currentTargetTrait = null;
 			
-			// If the actor doesn't even have the right trait.
-			try {
-				currentTargetTrait = this.getCurrentTrait(currentRequiredTrait.getTraitType());
-			}
-			catch (GameException e) {
-				return false;
-			}
+			currentTargetTrait = this.getCurrentTrait(currentRequiredTrait.getTraitType());
 			
 			if(currentTargetTrait != null) {
 				
@@ -507,12 +497,18 @@ public class Actor extends Observable{
 	 * or if the object is not already equipped.
 	 */
 	public String desequip(IEquipable object) throws GameException {
-		
-		if (!equippedObjects.containsKey(object)) {
+		System.out.println(object);
+		if (!equippedObjects.containsValue(object)) {
 			throw new GameException("Object not equipped", GameException.ExceptionType.UNKNOWN_OBJECT);
 		}
 		
-		equippedObjects.put(object.getOccupiedPlace(), null);
+		// Finding and desequipping the object.
+		for (Entry<OccupiedPlace, IEquipable> entry : equippedObjects.entrySet())
+		{
+		    if (entry.getValue() != null && entry.getValue().equals(object)) {
+		    	equippedObjects.put(entry.getKey(), null);
+		    }
+		}
 		
 		Iterator<ITrait> requiredIter = object.getRequiredTraits().iterator();
 		
@@ -549,13 +545,9 @@ public class Actor extends Observable{
 	/**
 	 * Get this {@link Actor}'s current {@link ITrait} of a certain {@link ITrait.TraitType}.
 	 * @param type The {@link ITrait.TraitType} of the current {@link ITrait} looked for.
-	 * @return The current {@link ITrait} of the {@link ITrait.TraitType} looked for.
-	 * @throws GameException If this {@link Actor} doesn't have this {@link ITrait}.
+	 * @return The current {@link ITrait} of the {@link ITrait.TraitType} looked for. Null if not.
 	 */
-	public ITrait getCurrentTrait (final ITrait.TraitType type) throws GameException {
-		if (!currentCharacteristics.contains(type)) {
-			throw new GameException("Unknown TraitType", GameException.ExceptionType.UNKNOWN_TRAIT);
-		}
+	public ITrait getCurrentTrait (final ITrait.TraitType type){
 		
 		final Iterator<ITrait> currentTraitIter = currentCharacteristics.iterator();
 		
@@ -567,20 +559,15 @@ public class Actor extends Observable{
 			}
 		}
 		
-		// Should never go there.
-		throw new GameException("Unknown TraitType", GameException.ExceptionType.UNKNOWN_TRAIT);
+		return null;
 	}
 	
 	/**
 	 * Get this {@link Actor}'s basic {@link ITrait} of a certain {@link ITrait.TraitType}.
 	 * @param type The {@link ITrait.TraitType} of the basic {@link ITrait} looked for.
-	 * @return The basic {@link ITrait} of the {@link ITrait.TraitType} looked for.
-	 * @throws GameException If this {@link Actor} doesn't have this basic {@link ITrait}.
+	 * @return The basic {@link ITrait} of the {@link ITrait.TraitType} looked for. Null if not.
 	 */
-	public ITrait getBasicTrait (final ITrait.TraitType type) throws GameException {
-		if (!currentCharacteristics.contains(type)) {
-			throw new GameException("Unknown TraitType", GameException.ExceptionType.UNKNOWN_TRAIT);
-		}
+	public ITrait getBasicTrait (final ITrait.TraitType type){
 		
 		final Iterator<ITrait> basicTraitIter = basicCharacteristics.iterator();
 		
@@ -592,21 +579,15 @@ public class Actor extends Observable{
 			}
 		}
 		
-		// Should never go there.
-		throw new GameException("Unknown TraitType", GameException.ExceptionType.UNKNOWN_TRAIT);
+		return null;
 	}
 	
 	/**
 	 * Get this {@link Actor}'s {@link Stat} of a certain {@link ITrait.TraitType}.
 	 * @param type The {@link ITrait.TraitType} of the {@link Stat} looked for.
-	 * @return The {@link Stat} of the {@link ITrait.TraitType} looked for.
-	 * @throws GameException If this {@link Actor} doesn't have this {@link Stat}.
+	 * @return The {@link Stat} of the {@link ITrait.TraitType} looked for. Null if not.
 	 */
-	public Stat getStat (final ITrait.TraitType type) throws GameException {
-		if (!currentCharacteristics.contains(type)) {
-			throw new GameException("Unknown TraitType", GameException.ExceptionType.UNKNOWN_TRAIT);
-		}
-		
+	public Stat getStat (final ITrait.TraitType type){		
 		final Iterator<Stat> statIter = stats.iterator();
 		
 		while(statIter.hasNext()) {
@@ -617,8 +598,7 @@ public class Actor extends Observable{
 			}
 		}
 		
-		// Should never go there.
-		throw new GameException("Unknown TraitType", GameException.ExceptionType.UNKNOWN_TRAIT);
+		return null;
 	}
 	
 	/**
@@ -633,13 +613,17 @@ public class Actor extends Observable{
 			throws GameException {
 		int realDamage = value;
 		
+		// Get the physical damage reduction.
 		final Stat armorStat = getStat(ITrait.TraitType.ARMOR);
+		// If there is some armor.
 		if (armorStat != null) {
 			final int armor = armorStat.getValue();
 			realDamage -= IArmor.ArmorType.PHYSICAL.getArmorReduction(damageType, value, armor);
 		}
 		
+		// Get the magic damage reduction.
 		final Stat magicArmorStat = getStat(ITrait.TraitType.MAGICAL_PROTECTION);
+		// If there is some magical protection.
 		if (magicArmorStat != null) {
 			final int magicArmor = magicArmorStat.getValue();
 			realDamage -= IArmor.ArmorType.MAGIC.getArmorReduction(damageType, value, magicArmor);
@@ -647,23 +631,33 @@ public class Actor extends Observable{
 		
 		final int currentVitality = this.getCurrentTrait(TraitType.VITALITY).getValue();
 		
+		// If damage reduction is superior to damage taken.
 		if (realDamage < 0) {
 			realDamage = 0;
 		}
+		// Make the damage
 		if (currentVitality - realDamage < 0) {
 			this.getCurrentTrait(TraitType.VITALITY).setValue(0);
 		}
 		else {
 			this.getCurrentTrait(TraitType.VITALITY).setValue(currentVitality - realDamage);
 		}
+		// The result's log.
 		return getName() + " took " + realDamage + " " + IWeapon.getDamageTypeString(damageType) + " damage" +
 		" (" + (value - realDamage) + " absorbed)" + (origin == null ? "" : " from " + origin.getName());
 	}
 	
+	/**
+	 * TODO : rethinks this function, i think there's a better to do it.
+	 * Make this {@link Actor} attack with his equipped weapon(s).
+	 * @param target The target of the attack.
+	 * @return The result's log.
+	 */
 	public String weaponAtack(final Actor target) {
 		try {
 			String log = "";
 			
+			// Get a random number for critical hit chances.
 			final int critical = ThreadLocalRandom.current().nextInt(0, 100 + 1);
 			final Boolean isCritical = this.getStat(ITrait.TraitType.CRITICAL).getValue() >= critical ? true : false;
 			
@@ -692,16 +686,26 @@ public class Actor extends Observable{
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-			return this.name + " don't have any weapon equiped";
+			return this.name + " couldn't attack.";
 		}
 	}
 	
-	public String tryToResist (final IStatus status, final int applyChances) throws Exception {
-		ITrait resistanceTrait = this.getBasicTrait(status.getResistance());
+	/**
+	 * Make a test to resist to an {@link IStatus}. If it failed, it will be applied.
+	 * @param status The {@link IStatus} to resist.
+	 * @param applyChances The chances of appliance.
+	 * @return The result's log.
+	 * @throws GameException 
+	 */
+	public String tryToResist (final IStatus status, final int applyChances) throws GameException {
+		// Try to get the resistance trait corresponding to the IStatus to resist.
+		ITrait resistanceTrait;// = this.getBasicTrait(status.getResistance());
 		
-		if (resistanceTrait == null) {
-			resistanceTrait = this.getStat(status.getResistance());
-		}
+		// No more resistance based on basic traits, only stats.
+		//if (resistanceTrait == null) {
+		resistanceTrait = this.getStat(status.getResistance());
+		//}
+		// Creating a random number.
 		final int resistanceResult = ThreadLocalRandom.current().nextInt(0, 100 + 1);
 		final int threshold;
 		if (resistanceTrait == null) {
@@ -709,11 +713,12 @@ public class Actor extends Observable{
 		}
 		else {
 			/*
-			 * Because the resistanceTrait can be a BasicTrait, it should be multiplied (for now)
-			 * TODO : create some resistance status depending on the actual basic trait
-			 * to get rid of the multiplier.
+			 * Because the resistanceTrait can be a BasicTrait, it should be multiplied (for now).
+			 * Indeed, a basic trait is a low value (5 by default) so it's not very high.
+			 * TODO : create some resistance status depending on the actual basic trait, or never 
+			 * use basic traits as resistance traits to get rid of the multiplier.
 			 */
-			threshold = applyChances - resistanceTrait.getValue() * 5;
+			threshold = applyChances - resistanceTrait.getValue()/* * 5*/;
 		}
 		if (resistanceResult < threshold) {
 			if (this.eachTurnStatus.contains(status)) {
@@ -735,29 +740,57 @@ public class Actor extends Observable{
 		}
 	}
 	
+	/**
+	 * Add a {@link Stat} to this {@link Actor}.
+	 * @param stat The {@link Stat} to add to this {@link Actor}.
+	 */
 	public void addStat (final Stat stat) {
 		this.stats.add(stat);
 	}
 	
+	/**
+	 * Get the {@link Collection} of all {@link EachTurnStatus}.
+	 * @return The {@link Collection} of all {@link EachTurnStatus}.
+	 */
 	public Collection<EachTurnStatus> getEachTurnStatus() {
 		return eachTurnStatus;
 	}
 
+	/**
+	 * Get the {@link AI} of this {@link Actor}.
+	 * @return The {@link AI} of this {@link Actor}.
+	 */
 	public AI getAi() {
 		return ai;
 	}
 
+	/**
+	 * Set the {@link AI} of this {@link Actor}.
+	 */
 	public void setAi(AI ai) {
 		this.ai = ai;
 	}
 	
+	/**
+	 * Check if this {@link Actor} is dead.
+	 * @return True if dead, false if alive.
+	 */
 	public Boolean isDead() {
-		try {
-			return this.getCurrentTrait(ITrait.TraitType.VITALITY).getValue() <= 0;
-		} 
-		catch (GameException e) {
-			e.printStackTrace();
-			return null;
-		}
+		return this.getCurrentTrait(ITrait.TraitType.VITALITY).getValue() <= 0;
+	}
+	
+	/**
+	 * Check if a {@link Collection} of {@link ITrait} contains a certain {@link ITrait.TraitType}.
+	 * @param collection The {@link Collection} to search into.
+	 * @param type The {@link ITrait.TraitType} to look for.
+	 * @return True if found, false if not.
+	 */
+	public boolean containsType (final Collection<ITrait> collection, final ITrait.TraitType type) {
+		for (ITrait trait : collection) {
+			if (trait.getTraitType() == type) {
+				return true;
+			}
+		}	
+		return false;
 	}
 }

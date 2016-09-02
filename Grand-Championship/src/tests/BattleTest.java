@@ -16,7 +16,7 @@ import objects.equipables.IEquipable;
 import objects.equipables.weapons.IWeapon;
 import objects.equipables.weapons.meleWeapons.MeleWeapon;
 import objects.equipables.wearables.armors.IArmor;
-import objects.equipables.wearables.armors.MetalArmor;
+import objects.equipables.wearables.armors.Armor;
 
 /**
  * Test the battle system
@@ -40,7 +40,7 @@ public class BattleTest {
 			OneTimeStatus weaponStatus = new OneTimeStatus("Better strength", "Equiping this makes you feel stronger", 
 					weaponModifiedTraits, true, 100, null);
 
-			// On equipe
+			// On equip
 			Collection<IStatus> weaponStatuss = new LinkedList<IStatus>();
 			
 			Collection<ITraitModifier> modifiedTraits = new LinkedList<ITraitModifier>();
@@ -68,11 +68,11 @@ public class BattleTest {
 					attackStatus,
 					IEquipable.OccupiedPlace.ONE_HAND);
 			
-			// Picking and equiping his main weapon
+			// Picking and equipping his main weapon
 			System.out.println(bob.equip(spoon));
 			
-			// Creation of some Armor
-			MetalArmor metalPlates = new MetalArmor(
+			// Creation of some Armor (yeah, bob is overpowered)
+			Armor metalPlates = new Armor(
 					null,
 					"Metal plates", 
 					"Some good old metal plates",
@@ -83,16 +83,16 @@ public class BattleTest {
 					null, 
 					IEquipable.OccupiedPlace.TORSO);
 			
-			// Picking then equiping the Armor
+			// Picking then equipping the Armor
 			System.out.println(bob.pick(metalPlates));
 			System.out.println(bob.equip(metalPlates));
 			
-			// Creating his challenger
+			// Creating his challenger (poor guy)
 			final Actor pop = new Actor("Pop");
 			
-			// Bob is cheating! He attacks befor the actuel fight!
+			// Bob is cheating! He attacks before the actual fight!
 			System.out.println(bob.weaponAtack(pop));
-			// So nom bob will desequip and drop his weapon
+			// So now bob will desequip and drop his weapon
 			System.out.println(bob.desequip(spoon));
 			System.out.println(bob.drop(spoon));
 

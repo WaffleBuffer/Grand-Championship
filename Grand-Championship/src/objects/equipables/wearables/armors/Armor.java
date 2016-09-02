@@ -18,59 +18,59 @@ import gameExceptions.GameException;
  * @author tmedard
  *
  */
-public class MetalArmor implements IArmor {
+public class Armor implements IArmor {
 	
 	/**
-	 * The required {@link ITrait} to wear this {@link MetalArmor}
+	 * The required {@link ITrait} to wear this {@link Armor}
 	 */
 	private Collection<ITrait> requiredTraits;
 	/**
-	 * The name of the {@link MetalArmor}
+	 * The name of the {@link Armor}
 	 */
 	private String name;
 	/**
-	 * The description of the {@link MetalArmor}
+	 * The description of the {@link Armor}
 	 */
 	private final String description;
 	/**
-	 * The weight of the {@link MetalArmor}
+	 * The weight of the {@link Armor}
 	 */
 	private final int weight;
 	/**
-	 * The value (in money) of the {@link MetalArmor}
+	 * The value (in money) of the {@link Armor}
 	 */
 	private final int value;
 	/**
-	 * The {@link ArmorType} of the {@link MetalArmor}
+	 * The {@link ArmorType} of the {@link Armor}
 	 */
 	private final ArmorType armorType;
 	/**
-	 * The armor value of the {@link MetalArmor}
+	 * The armor value of the {@link Armor}
 	 */
 	private final int armorValue;
 	/**
-	 * The {@link IStatus} applied when equiping the {@link MetalArmor}.<br>
-	 * Will contains at least the {@link MetalArmor#armorValue} provided by the {@link MetalArmor}
+	 * The {@link IStatus} applied when equiping the {@link Armor}.<br>
+	 * Will contains at least the {@link Armor#armorValue} provided by the {@link Armor}
 	 */
 	private Collection<IStatus> statusApllied;
 	/**
-	 * The {@link OccupiedPlace} of the {@link MetalArmor}
+	 * The {@link OccupiedPlace} of the {@link Armor}
 	 */
 	private final OccupiedPlace occupiedPlace;
 
 	/**
 	 * The constructor
-	 * @param requiredTraits {@link MetalArmor#requiredTraits} of the {@link MetalArmor} (can be null)
-	 * @param name {@link MetalArmor#name} of the {@link MetalArmor}
-	 * @param description {@link MetalArmor#description} of the {@link MetalArmor}
-	 * @param weight {@link MetalArmor#weight} of the {@link MetalArmor}
-	 * @param value {@link MetalArmor#value} of the {@link MetalArmor}
-	 * @param armorType {@link MetalArmor#armorType} of the {@link MetalArmor}
-	 * @param armorValue {@link MetalArmor#armorValue} of the {@link MetalArmor}
-	 * @param statusApllied {@link MetalArmor#statusApllied} of the {@link MetalArmor} (can be null)
-	 * @param occupiedPlace {@link MetalArmor#occupiedPlace} of the {@link MetalArmor}
+	 * @param requiredTraits {@link Armor#requiredTraits} of the {@link Armor} (can be null)
+	 * @param name {@link Armor#name} of the {@link Armor}
+	 * @param description {@link Armor#description} of the {@link Armor}
+	 * @param weight {@link Armor#weight} of the {@link Armor}
+	 * @param value {@link Armor#value} of the {@link Armor}
+	 * @param armorType {@link Armor#armorType} of the {@link Armor}
+	 * @param armorValue {@link Armor#armorValue} of the {@link Armor}
+	 * @param statusApllied {@link Armor#statusApllied} of the {@link Armor} (can be null)
+	 * @param occupiedPlace {@link Armor#occupiedPlace} of the {@link Armor}
 	 */
-	public MetalArmor(final Collection<ITrait> requiredTraits, final String name, final String description, 
+	public Armor(final Collection<ITrait> requiredTraits, final String name, final String description, 
 			final int weight, final int value, final ArmorType armorType, final int armorValue, 
 			final Collection<IStatus> statusApllied, final OccupiedPlace occupiedPlace) {
 		super();
@@ -207,12 +207,7 @@ public class MetalArmor implements IArmor {
 			ITrait currentRequiredTrait = requiredIter.next();
 		
 			ITrait currentTargetTrait = null;
-			try {
-				currentTargetTrait = actor.getCurrentTrait(currentRequiredTrait.getTraitType());
-			} 
-			catch (GameException e1) {
-				e1.printStackTrace();
-			}
+			currentTargetTrait = actor.getCurrentTrait(currentRequiredTrait.getTraitType());
 			
 			if(currentTargetTrait != null) {
 				

@@ -28,4 +28,7 @@ public interface IWeapon extends IEquipable {
 	public int getDamageValue();
 	
 	public String attack(final Actor target, final Boolean critical) throws Exception;
+	
+	public int getCriticalMultiplier();
+	public void setCriticalMultiplier(final int criticalMultiplier);
 }

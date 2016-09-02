@@ -7,7 +7,8 @@ import gameExceptions.GameException;
 
 public abstract class StatFactory {
 
-	public static Stat createState (final ITrait.TraitType type, final int value, final Actor actor) throws GameException {
+	public static Stat createState (final ITrait.TraitType type, final int value, final Actor actor) 
+			throws GameException {
 		switch (type) {
 		case CRITICAL :
 			

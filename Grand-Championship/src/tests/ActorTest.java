@@ -17,7 +17,7 @@ import objects.equipables.IEquipable;
 import objects.equipables.weapons.IWeapon;
 import objects.equipables.weapons.meleWeapons.MeleWeapon;
 import objects.equipables.wearables.armors.IArmor;
-import objects.equipables.wearables.armors.MetalArmor;
+import objects.equipables.wearables.armors.Armor;
 import objects.usables.potions.HealingPotion;
 
 /**
@@ -86,7 +86,7 @@ public class ActorTest {
 			// Preparation of a heavy Weapon
 			// Creation of the required ITrait to equip the Weapon
 			Collection<ITrait> required = new LinkedList<ITrait>();;
-			required.add(BasicTraitFactory.getBasicTrait(TraitType.STRENGTH, 8));
+			required.add(BasicTraitFactory.createBasicTrait(TraitType.STRENGTH, 8));
 			
 			// Creation of the actual MeleWeapon
 			MeleWeapon bigHighDoubleHandedSword = new MeleWeapon(
@@ -111,7 +111,7 @@ public class ActorTest {
 			
 			// Preparation of an nearly impossible to equipe Weapon
 			required = new LinkedList<ITrait>();
-			required.add(BasicTraitFactory.getBasicTrait(TraitType.STRENGTH, 5));
+			required.add(BasicTraitFactory.createBasicTrait(TraitType.STRENGTH, 5));
 			// Creation of the actual MeleWeapon
 			MeleWeapon theBigPoint = new MeleWeapon(
 					required, 
@@ -135,7 +135,7 @@ public class ActorTest {
 			}
 			
 			// Creation of some Armor
-			MetalArmor metalPlates = new MetalArmor(
+			Armor metalPlates = new Armor(
 					null,
 					"Metal plates", 
 					"Some good old metal plates",

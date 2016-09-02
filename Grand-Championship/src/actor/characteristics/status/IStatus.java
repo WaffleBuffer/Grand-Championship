@@ -13,7 +13,7 @@ public interface IStatus {
 		ONE_TIME, EACH_TURN, TEMPORARY
 	}
 	
-	public static IStatus copy(final IStatus status) throws Exception {
+	public static IStatus copy(final IStatus status) throws GameException {
 			switch (status.getType()) {
 			case EACH_TURN :
 			case TEMPORARY :
@@ -21,7 +21,7 @@ public interface IStatus {
 			case ONE_TIME :
 				return new OneTimeStatus(status);
 			default : 
-				throw new Exception("Unknown status type");
+				throw new GameException("Unknown status type", GameException.ExceptionType.UNKNOWN_STATUS);
 		}
 	}
 	

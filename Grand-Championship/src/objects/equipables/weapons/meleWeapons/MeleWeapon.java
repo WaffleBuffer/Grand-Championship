@@ -23,6 +23,7 @@ public class MeleWeapon implements IWeapon {
 	private Collection<IStatus> statusAplliedOnEquip;
 	private Collection<IStatus> statusAplliedOnAttack;
 	private final OccupiedPlace occupiedPlace;
+	private int criticalMultiplier;
 	
 	public MeleWeapon(final Collection<ITrait> requiredTraits, final String name, final String description, 
 			final int weight, final int value, final DamageType damageType, final int damageValue, 
@@ -49,6 +50,9 @@ public class MeleWeapon implements IWeapon {
 			this.statusAplliedOnAttack = new LinkedList<IStatus>();
 		}
 		this.occupiedPlace = occupiedPlace;
+		
+		// By default, critical attack doubles the damages.
+		this.criticalMultiplier = 2;
 	}
 
 	@Override
@@ -167,7 +171,7 @@ public class MeleWeapon implements IWeapon {
 		int damageValue = this.getDamageValue();
 		
 		if (critical) {
-			damageValue *= 2;
+			damageValue *= this.criticalMultiplier;
 		}
 		
 		log += target.takeDamage(null, damageValue, this.damageType());
@@ -192,12 +196,7 @@ public class MeleWeapon implements IWeapon {
 			ITrait currentRequiredTrait = requiredIter.next();
 		
 			ITrait currentTargetTrait = null;
-			try {
-				currentTargetTrait = actor.getCurrentTrait(currentRequiredTrait.getTraitType());
-			} 
-			catch (GameException e1) {
-				e1.printStackTrace();
-			}
+			currentTargetTrait = actor.getCurrentTrait(currentRequiredTrait.getTraitType());
 			
 			if(currentTargetTrait != null) {
 				
@@ -237,5 +236,15 @@ public class MeleWeapon implements IWeapon {
 				null,
 				null,
 				OccupiedPlace.BOTH_HANDS);
+	}
+
+	@Override
+	public int getCriticalMultiplier() {
+		return this.criticalMultiplier;
+	}
+
+	@Override
+	public void setCriticalMultiplier(int criticalMultiplier) {
+		this.criticalMultiplier = criticalMultiplier;
 	}
 }

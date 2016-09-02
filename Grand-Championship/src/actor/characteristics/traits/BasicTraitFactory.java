@@ -5,7 +5,7 @@ import gameExceptions.GameException;
 
 public abstract class BasicTraitFactory {
 
-	public static BasicTrait getBasicTrait (final TraitType type, final int value) throws GameException{
+	public static BasicTrait createBasicTrait (final TraitType type, final int value) throws GameException{
 		switch (type) {
 			case VITALITY :
 					return new BasicTrait(ITrait.getTraitName(type), TraitType.VITALITY, value);
