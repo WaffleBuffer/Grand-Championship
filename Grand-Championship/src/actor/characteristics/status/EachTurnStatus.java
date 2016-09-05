@@ -57,6 +57,9 @@ public class EachTurnStatus implements IStatus {
 		this.type = status.getType();
 	}
 
+	/** (non-Javadoc)
+	 * @see actor.characteristics.status.IStatus#getName()
+	 */
 	@Override
 	public String getName() {
 		return name;

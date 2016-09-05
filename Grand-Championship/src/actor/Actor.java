@@ -29,6 +29,7 @@ import objects.equipables.IEquipable.OccupiedPlace;
 import objects.equipables.weapons.IWeapon;
 import objects.equipables.weapons.meleWeapons.MeleWeapon;
 import objects.equipables.wearables.armors.IArmor;
+import utilities.Fonts;
 
 /**
  * A basic character.
@@ -72,7 +73,7 @@ public class Actor extends Observable{
 	private final Set<EachTurnStatus> eachTurnStatus;
 	
 	/**
-	 * The {@link Map} of each {@link IEquipable} in each {@link IEquipable.OccupiedPlace} of this {@link Actor}.
+	 * The {@link Map} of each {@link IEquipable} in each {@link objects.equipables.IEquipable.OccupiedPlace} of this {@link Actor}.
 	 */
 	private final Map<IEquipable.OccupiedPlace, IEquipable> equippedObjects;
 	
@@ -171,7 +172,7 @@ public class Actor extends Observable{
 	/**
 	 * Remove an {@link IStatus} from this {@link Actor}.
 	 * @param status The {@link IStatus} to remove.
-	 * @returnThe result of the application of the {@link IStatus}.
+	 * @return The result of the application of the {@link IStatus}.
 	 * @throws GameException If unknown {@link IStatus} is unknown.
 	 */
 	public String removeStatus (IStatus status) throws GameException {
@@ -460,8 +461,9 @@ public class Actor extends Observable{
 			trait.addObserver(equipObject);
 		}
 		
-		log += equipObject.applieOnEquipe(this);
-		log += this.getName() + " is equiped with " + equipObject.getName();
+		log += equipObject.applieOnEquipe(this) + System.lineSeparator();
+		log += "<span style=\"color:" + Fonts.C_ACTOR + "\">" + this.getName() + "</span> is equiped with <span style=\"color:" + Fonts.C_OBJECT + "\">" + 
+				equipObject.getName() + "</span>";
 		return log;
 	}
 	
@@ -543,9 +545,9 @@ public class Actor extends Observable{
 	}
 	
 	/**
-	 * Get this {@link Actor}'s current {@link ITrait} of a certain {@link ITrait.TraitType}.
-	 * @param type The {@link ITrait.TraitType} of the current {@link ITrait} looked for.
-	 * @return The current {@link ITrait} of the {@link ITrait.TraitType} looked for. Null if not.
+	 * Get this {@link Actor}'s current {@link ITrait} of a certain {@link actor.characteristics.traits.ITrait.TraitType}.
+	 * @param type The {@link actor.characteristics.traits.ITrait.TraitType} of the current {@link ITrait} looked for.
+	 * @return The current {@link ITrait} of the {@link actor.characteristics.traits.ITrait.TraitType} looked for. Null if not.
 	 */
 	public ITrait getCurrentTrait (final ITrait.TraitType type){
 		
@@ -563,9 +565,9 @@ public class Actor extends Observable{
 	}
 	
 	/**
-	 * Get this {@link Actor}'s basic {@link ITrait} of a certain {@link ITrait.TraitType}.
-	 * @param type The {@link ITrait.TraitType} of the basic {@link ITrait} looked for.
-	 * @return The basic {@link ITrait} of the {@link ITrait.TraitType} looked for. Null if not.
+	 * Get this {@link Actor}'s basic {@link ITrait} of a certain {@link actor.characteristics.traits.ITrait.TraitType}.
+	 * @param type The {@link actor.characteristics.traits.ITrait.TraitType} of the basic {@link ITrait} looked for.
+	 * @return The basic {@link ITrait} of the {@link actor.characteristics.traits.ITrait.TraitType} looked for. Null if not.
 	 */
 	public ITrait getBasicTrait (final ITrait.TraitType type){
 		
@@ -583,9 +585,9 @@ public class Actor extends Observable{
 	}
 	
 	/**
-	 * Get this {@link Actor}'s {@link Stat} of a certain {@link ITrait.TraitType}.
-	 * @param type The {@link ITrait.TraitType} of the {@link Stat} looked for.
-	 * @return The {@link Stat} of the {@link ITrait.TraitType} looked for. Null if not.
+	 * Get this {@link Actor}'s {@link Stat} of a certain {@link actor.characteristics.traits.ITrait.TraitType}.
+	 * @param type The {@link actor.characteristics.traits.ITrait.TraitType} of the {@link Stat} looked for.
+	 * @return The {@link Stat} of the {@link actor.characteristics.traits.ITrait.TraitType} looked for. Null if not.
 	 */
 	public Stat getStat (final ITrait.TraitType type){		
 		final Iterator<Stat> statIter = stats.iterator();
@@ -605,7 +607,7 @@ public class Actor extends Observable{
 	 * Make this Actor take damage
 	 * @param origin The {@link Actor} who is making the damage (can be null).
 	 * @param value The raw value of the damage.
-	 * @param damageType The {@link IWeapon.DamageType} of the attack.
+	 * @param damageType The {@link objects.equipables.weapons.IWeapon.DamageType} of the attack.
 	 * @return The result log of the action.
 	 * @throws GameException If unknown stuff appear.
 	 */
@@ -695,7 +697,7 @@ public class Actor extends Observable{
 	 * @param status The {@link IStatus} to resist.
 	 * @param applyChances The chances of appliance.
 	 * @return The result's log.
-	 * @throws GameException 
+	 * @throws GameException If copying the status (to affect this Actor) failed.
 	 */
 	public String tryToResist (final IStatus status, final int applyChances) throws GameException {
 		// Try to get the resistance trait corresponding to the IStatus to resist.
@@ -766,6 +768,7 @@ public class Actor extends Observable{
 
 	/**
 	 * Set the {@link AI} of this {@link Actor}.
+	 * @param ai The {@link AI} to set for this {@link Actor}.
 	 */
 	public void setAi(AI ai) {
 		this.ai = ai;
@@ -780,9 +783,9 @@ public class Actor extends Observable{
 	}
 	
 	/**
-	 * Check if a {@link Collection} of {@link ITrait} contains a certain {@link ITrait.TraitType}.
+	 * Check if a {@link Collection} of {@link ITrait} contains a certain {@link actor.characteristics.traits.ITrait.TraitType}.
 	 * @param collection The {@link Collection} to search into.
-	 * @param type The {@link ITrait.TraitType} to look for.
+	 * @param type The {@link actor.characteristics.traits.ITrait.TraitType} to look for.
 	 * @return True if found, false if not.
 	 */
 	public boolean containsType (final Collection<ITrait> collection, final ITrait.TraitType type) {

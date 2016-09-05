@@ -3,6 +3,9 @@ package tests;
 import java.util.Collection;
 import java.util.LinkedList;
 
+import javax.swing.JFrame;
+import javax.swing.JTextPane;
+
 import actor.Actor;
 import actor.characteristics.status.EachTurnStatus;
 import actor.characteristics.status.IStatus;
@@ -31,6 +34,20 @@ public class BattleTest {
 	 */
 	public static void main(String[] args) {
 		try {
+			// Creating the log's screen.
+			JFrame mainFrame = new JFrame("Battle Test");
+			JTextPane screen = new JTextPane();
+			mainFrame.setContentPane(screen);
+			
+			screen.setContentType("text/html");
+			screen.setText("<b>Welcome !</b>");
+			
+			mainFrame.setSize(600, 500);;
+			mainFrame.setVisible(true);
+			
+			// The actual logs
+			String logs = "" + System.lineSeparator();
+						
 			// The champion !
 			final Actor bob = new Actor("Bob");
 			
@@ -69,7 +86,8 @@ public class BattleTest {
 					IEquipable.OccupiedPlace.ONE_HAND);
 			
 			// Picking and equipping his main weapon
-			System.out.println(bob.equip(spoon));
+			logs += bob.equip(spoon) + System.lineSeparator();
+			screen.setText(logs);
 			
 			// Creation of some Armor (yeah, bob is overpowered)
 			Armor metalPlates = new Armor(
