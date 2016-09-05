@@ -99,7 +99,10 @@ public class MeleWeapon implements IWeapon {
 		while (statusIter.hasNext()) {
 			IStatus currentStatus = statusIter.next();
 			
-			log += target.addIStatus(currentStatus) + System.lineSeparator();
+			log += target.addIStatus(currentStatus);
+			if (statusIter.hasNext()){
+				log += "<br>";
+			}
 		}
 		
 		this.name += "(E)";

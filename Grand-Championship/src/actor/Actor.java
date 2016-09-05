@@ -29,6 +29,7 @@ import objects.equipables.IEquipable.OccupiedPlace;
 import objects.equipables.weapons.IWeapon;
 import objects.equipables.weapons.meleWeapons.MeleWeapon;
 import objects.equipables.wearables.armors.IArmor;
+import utilities.Fonts;
 
 /**
  * A basic character.
@@ -316,7 +317,7 @@ public class Actor extends Observable{
 		if (object.getWeight() + this.currentWeight <= this.maxWeight) {
 			this.inventory.add(object);
 			this.currentWeight += object.getWeight();
-			return  object.getName() + " picked";
+			return  Fonts.getHtml(object.getName(), Fonts.LogType.OBJECT) + " picked";
 		}
 		else {
 			throw new GameException("Object is too heavy", GameException.ExceptionType.OBJECT_WEIGHT);
@@ -348,17 +349,17 @@ public class Actor extends Observable{
 		
 		// Some basics verifications
 		if (equippedObjects.containsValue(equipObject)) {
-			return this.getName() + " is already equiped with " + equipObject.getName();
+			return Fonts.getHtml(this.getName(), Fonts.LogType.ACTOR) + "is already equiped with " + Fonts.getHtml(equipObject.getName(), Fonts.LogType.OBJECT);
 		}
 		if (!canEquip(equipObject)) {
-			throw new GameException("You can't equip " + equipObject.getName(), 
-					GameException.ExceptionType.REQUIRED_TRAIT);
+			throw new GameException(Fonts.getHtml(this.getName(), Fonts.LogType.ACTOR) + " can't equip " + 
+					Fonts.getHtml(equipObject.getName(), Fonts.LogType.OBJECT), GameException.ExceptionType.REQUIRED_TRAIT);
 		}
 		
 		// Preparing result's logs.
 		String log = "";
 		if (!inventory.contains(equipObject)) {
-			log += this.pick(equipObject) + System.lineSeparator();
+			log += this.pick(equipObject) + "<br>";
 		}
 		
 		// If an object was already equipped.
@@ -460,7 +461,7 @@ public class Actor extends Observable{
 			trait.addObserver(equipObject);
 		}
 		
-		log += equipObject.applieOnEquipe(this) + System.lineSeparator();
+		log += equipObject.applieOnEquipe(this) + "<br>";
 		log += "<span class=\"actor\">" + this.getName() + "</span> is equiped with <span class=\"object\">" + 
 				equipObject.getName() + "</span>";
 		return log;

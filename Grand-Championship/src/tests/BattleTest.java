@@ -38,19 +38,6 @@ public class BattleTest {
 		try {
 			// Creating the log's screen.
 			final LogScreen log = new LogScreen();
-			JFrame mainFrame = new JFrame("Battle Test");
-			JTextPane screen = new JTextPane();
-			mainFrame.setContentPane(screen);
-			
-			screen.setContentType("text/html");
-			screen.setText("<b>Welcome !</b>");
-			
-			mainFrame.setSize(600, 500);;
-			mainFrame.setVisible(true);
-			
-			// The actual logs
-			String logs = Fonts.CSS + System.lineSeparator() +
-				"<p>" + System.lineSeparator();
 						
 			// The champion !
 			final Actor bob = new Actor("Bob");
@@ -90,9 +77,7 @@ public class BattleTest {
 					IEquipable.OccupiedPlace.ONE_HAND);
 			
 			// Picking and equipping his main weapon
-			logs += bob.equip(spoon) + System.lineSeparator();
-			System.out.println(logs + "</p>");
-			screen.setText(logs + "</p>");
+			log.displayLog(bob.equip(spoon));
 			
 			// Creation of some Armor (yeah, bob is overpowered)
 			Armor metalPlates = new Armor(
