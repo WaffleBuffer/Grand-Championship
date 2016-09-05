@@ -15,6 +15,7 @@ import actor.characteristics.status.traitModifier.ITraitModifier;
 import actor.characteristics.traits.ITrait;
 import gameEngine.DefaultBattle;
 import gameEngine.IBattleControler;
+import hmi.LogScreen;
 import objects.equipables.IEquipable;
 import objects.equipables.weapons.IWeapon;
 import objects.equipables.weapons.meleWeapons.MeleWeapon;
@@ -36,6 +37,7 @@ public class BattleTest {
 	public static void main(String[] args) {
 		try {
 			// Creating the log's screen.
+			final LogScreen log = new LogScreen();
 			JFrame mainFrame = new JFrame("Battle Test");
 			JTextPane screen = new JTextPane();
 			mainFrame.setContentPane(screen);

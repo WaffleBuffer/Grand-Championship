@@ -29,7 +29,6 @@ import objects.equipables.IEquipable.OccupiedPlace;
 import objects.equipables.weapons.IWeapon;
 import objects.equipables.weapons.meleWeapons.MeleWeapon;
 import objects.equipables.wearables.armors.IArmor;
-import utilities.Fonts;
 
 /**
  * A basic character.
