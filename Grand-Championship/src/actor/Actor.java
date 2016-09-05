@@ -645,7 +645,8 @@ public class Actor extends Observable{
 			this.getCurrentTrait(TraitType.VITALITY).setValue(currentVitality - realDamage);
 		}
 		// The result's log.
-		return getName() + " took " + realDamage + " " + IWeapon.getDamageTypeString(damageType) + " damage" +
+		return Fonts.wrapHtml(getName(), Fonts.LogType.ACTOR) + " took " + 
+		Fonts.wrapHtml(Integer.toString(realDamage) + " " + IWeapon.getDamageTypeString(damageType) + " damage", Fonts.LogType.DAMAGE_VALUE) +
 		" (" + (value - realDamage) + " absorbed)" + (origin == null ? "" : " from " + origin.getName());
 	}
 	
@@ -664,7 +665,7 @@ public class Actor extends Observable{
 			final Boolean isCritical = this.getStat(ITrait.TraitType.CRITICAL).getValue() >= critical ? true : false;
 			
 			if (isCritical) {
-				log += Fonts.wrapHtml("Critical attack !",Fonts.LogType.CRITICAL) + System.lineSeparator();
+				log += Fonts.wrapHtml("Critical attack !",Fonts.LogType.CRITICAL) + "<br>";
 			}
 			
 			IWeapon weapon = (IWeapon) this.getEquipedObject(IEquipable.OccupiedPlace.BOTH_HANDS);

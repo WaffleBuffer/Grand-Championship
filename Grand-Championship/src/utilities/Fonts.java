@@ -17,20 +17,23 @@ public abstract class Fonts {
 	/**
 	 * Color for {@link IObject}
 	 */
+	//TODO : make previous one similar to DAMAGE_PHYS
 	public final static String C_OBJECT = "red";
-	public final static String C_CRITICAL = "crimson";
+	public final static String C_CRITICAL = "rgb(204,0,0)";
 	public final static String C_TEST = "green";
-	public final static String C_STATUS = "slateblue";
+	public final static String C_STATUS = "rgb(0,128,255)";
+	public final static String DAMAGE_PHYS = "color: rgb(255,21,21); font: bold;";
 	
 	/**
 	 * The CSS used in the display of the logs
 	 */
 	public final static String CSS = "<style type=\"text/css\">" +
-								     "	.actor {color: " + C_ACTOR + "}" +
-								     "	.object {color: " + C_OBJECT + "}" +
-								     "	.critical {color: " + C_CRITICAL + "}" +
-								     "	.test {color: " + C_TEST + "}" +
-								     "	.status {color: " + C_STATUS + "}" +
+								     "	.actor {color: " + C_ACTOR + ";}" +
+								     "	.object {color: " + C_OBJECT + ";}" +
+								     "	.critical {color: " + C_CRITICAL + ";}" +
+								     "	.test {color: " + C_TEST + ";}" +
+								     "	.status {color: " + C_STATUS + ";}" +
+								     "	.damageValue {" + DAMAGE_PHYS + "}" +
 								     "</style>";
 	
 	/**
@@ -46,7 +49,7 @@ public abstract class Fonts {
 		/**
 		 * {@link Object}
 		 */
-		OBJECT, CRITICAL, TEST, STATUS
+		OBJECT, CRITICAL, TEST, STATUS, DAMAGE_VALUE
 	}
 	
 	/**
@@ -72,6 +75,9 @@ public abstract class Fonts {
 			break;
 		case STATUS:
 			html += "status";
+			break;
+		case DAMAGE_VALUE:
+			html += "damageValue";
 			break;
 		default:
 			html += "default";

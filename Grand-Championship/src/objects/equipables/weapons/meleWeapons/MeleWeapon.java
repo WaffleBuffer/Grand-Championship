@@ -168,7 +168,7 @@ public class MeleWeapon implements IWeapon {
 				applyChances *= 1.2;
 			}
 			
-			log += target.tryToResist(currentStatus, applyChances) + System.lineSeparator();
+			log += target.tryToResist(currentStatus, applyChances) + "<br>";
 		}	
 		
 		int damageValue = this.getDamageValue();
