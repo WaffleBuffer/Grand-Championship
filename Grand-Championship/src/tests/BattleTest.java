@@ -19,6 +19,7 @@ import objects.equipables.IEquipable;
 import objects.equipables.weapons.IWeapon;
 import objects.equipables.weapons.meleWeapons.MeleWeapon;
 import objects.equipables.wearables.armors.IArmor;
+import utilities.Fonts;
 import objects.equipables.wearables.armors.Armor;
 
 /**
@@ -46,7 +47,8 @@ public class BattleTest {
 			mainFrame.setVisible(true);
 			
 			// The actual logs
-			String logs = "" + System.lineSeparator();
+			String logs = Fonts.CSS + System.lineSeparator() +
+				"<p>" + System.lineSeparator();
 						
 			// The champion !
 			final Actor bob = new Actor("Bob");
@@ -87,7 +89,8 @@ public class BattleTest {
 			
 			// Picking and equipping his main weapon
 			logs += bob.equip(spoon) + System.lineSeparator();
-			screen.setText(logs);
+			System.out.println(logs + "</p>");
+			screen.setText(logs + "</p>");
 			
 			// Creation of some Armor (yeah, bob is overpowered)
 			Armor metalPlates = new Armor(

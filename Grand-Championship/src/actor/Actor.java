@@ -462,7 +462,7 @@ public class Actor extends Observable{
 		}
 		
 		log += equipObject.applieOnEquipe(this) + System.lineSeparator();
-		log += "<span style=\"color:" + Fonts.C_ACTOR + "\">" + this.getName() + "</span> is equiped with <span style=\"color:" + Fonts.C_OBJECT + "\">" + 
+		log += "<span class=\"actor\">" + this.getName() + "</span> is equiped with <span class=\"object\">" + 
 				equipObject.getName() + "</span>";
 		return log;
 	}
