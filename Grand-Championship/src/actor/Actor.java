@@ -317,7 +317,7 @@ public class Actor extends Observable{
 		if (object.getWeight() + this.currentWeight <= this.maxWeight) {
 			this.inventory.add(object);
 			this.currentWeight += object.getWeight();
-			return  Fonts.getHtml(object.getName(), Fonts.LogType.OBJECT) + " picked";
+			return  Fonts.wrapHtml(object.getName(), Fonts.LogType.OBJECT) + " picked";
 		}
 		else {
 			throw new GameException("Object is too heavy", GameException.ExceptionType.OBJECT_WEIGHT);
@@ -349,11 +349,11 @@ public class Actor extends Observable{
 		
 		// Some basics verifications
 		if (equippedObjects.containsValue(equipObject)) {
-			return Fonts.getHtml(this.getName(), Fonts.LogType.ACTOR) + "is already equiped with " + Fonts.getHtml(equipObject.getName(), Fonts.LogType.OBJECT);
+			return Fonts.wrapHtml(this.getName(), Fonts.LogType.ACTOR) + "is already equiped with " + Fonts.wrapHtml(equipObject.getName(), Fonts.LogType.OBJECT);
 		}
 		if (!canEquip(equipObject)) {
-			throw new GameException(Fonts.getHtml(this.getName(), Fonts.LogType.ACTOR) + " can't equip " + 
-					Fonts.getHtml(equipObject.getName(), Fonts.LogType.OBJECT), GameException.ExceptionType.REQUIRED_TRAIT);
+			throw new GameException(Fonts.wrapHtml(this.getName(), Fonts.LogType.ACTOR) + " can't equip " + 
+					Fonts.wrapHtml(equipObject.getName(), Fonts.LogType.OBJECT), GameException.ExceptionType.REQUIRED_TRAIT);
 		}
 		
 		// Preparing result's logs.
@@ -664,7 +664,7 @@ public class Actor extends Observable{
 			final Boolean isCritical = this.getStat(ITrait.TraitType.CRITICAL).getValue() >= critical ? true : false;
 			
 			if (isCritical) {
-				log += "Critical attack !" + System.lineSeparator();
+				log += Fonts.wrapHtml("Critical attack !",Fonts.LogType.CRITICAL) + System.lineSeparator();
 			}
 			
 			IWeapon weapon = (IWeapon) this.getEquipedObject(IEquipable.OccupiedPlace.BOTH_HANDS);
@@ -688,7 +688,7 @@ public class Actor extends Observable{
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-			return this.name + " couldn't attack.";
+			return Fonts.wrapHtml(this.name, Fonts.LogType.ACTOR) + " couldn't attack.";
 		}
 	}
 	
@@ -730,15 +730,21 @@ public class Actor extends Observable{
 					EachTurnStatus currentStatus = statusIter.next();
 					if (currentStatus.equals(status)) {
 						currentStatus.setNbTurns(((EachTurnStatus) status).getNbTurns());
-						return this.getName() + " is affected again by " + status + " (" + resistanceResult + "/" + threshold + ")";
+						return Fonts.wrapHtml(this.getName(), Fonts.LogType.ACTOR) + " is affected again by " + 
+								Fonts.wrapHtml(status.toString(), Fonts.LogType.STATUS) + 
+								Fonts.wrapHtml(" (" + resistanceResult + "/" + threshold + ")", Fonts.LogType.TEST);
 					}
 				}
 			}
 			this.addIStatus(IStatus.copy(status));
-			return this.getName() + " is now affected by " + status + " (" + resistanceResult + "/" + threshold + ")";
+			return Fonts.wrapHtml(this.getName(), Fonts.LogType.ACTOR) + " is now affected by " + 
+				Fonts.wrapHtml(status.toString(), Fonts.LogType.STATUS) + 
+				Fonts.wrapHtml(" (" + resistanceResult + "/" + threshold + ")", Fonts.LogType.TEST);
 		}
 		else {
-			return this.getName() + " has resisted to " + status.getName() + " (" + resistanceResult + "/" + threshold + ")";
+			return Fonts.wrapHtml(this.getName(), Fonts.LogType.ACTOR) + " has resisted to " + 
+					Fonts.wrapHtml(status.toString(), Fonts.LogType.STATUS) + 
+					Fonts.wrapHtml(" (" + resistanceResult + "/" + threshold + ")", Fonts.LogType.TEST);
 		}
 	}
 	

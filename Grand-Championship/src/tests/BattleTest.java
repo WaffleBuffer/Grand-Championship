@@ -3,9 +3,6 @@ package tests;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import javax.swing.JFrame;
-import javax.swing.JTextPane;
-
 import actor.Actor;
 import actor.characteristics.status.EachTurnStatus;
 import actor.characteristics.status.IStatus;
@@ -20,7 +17,6 @@ import objects.equipables.IEquipable;
 import objects.equipables.weapons.IWeapon;
 import objects.equipables.weapons.meleWeapons.MeleWeapon;
 import objects.equipables.wearables.armors.IArmor;
-import utilities.Fonts;
 import objects.equipables.wearables.armors.Armor;
 
 /**
@@ -92,14 +88,15 @@ public class BattleTest {
 					IEquipable.OccupiedPlace.TORSO);
 			
 			// Picking then equipping the Armor
-			System.out.println(bob.pick(metalPlates));
-			System.out.println(bob.equip(metalPlates));
+			log.displayLog(bob.pick(metalPlates));
+			log.displayLog(bob.equip(metalPlates));
 			
 			// Creating his challenger (poor guy)
 			final Actor pop = new Actor("Pop");
 			
 			// Bob is cheating! He attacks before the actual fight!
 			System.out.println(bob.weaponAtack(pop));
+			log.displayLog(bob.weaponAtack(pop));
 			// So now bob will desequip and drop his weapon
 			System.out.println(bob.desequip(spoon));
 			System.out.println(bob.drop(spoon));

@@ -63,7 +63,7 @@ public class LogScreen extends JFrame{
 	/**
 	 * Add a log to the display. The log should be in html.
 	 * @param log The log to add. Should be in html.
-	 * @see Fonts#getHtml(String, utilities.Fonts.LogType)
+	 * @see Fonts#wrapHtml(String, utilities.Fonts.LogType)
 	 */
 	public void displayLog (final String log) {
 		this.logs += time.get(Calendar.HOUR_OF_DAY) + ":" + time.get(Calendar.MINUTE) + " : " + log + "<br><br>";

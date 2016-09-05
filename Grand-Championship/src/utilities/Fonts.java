@@ -18,6 +18,9 @@ public abstract class Fonts {
 	 * Color for {@link IObject}
 	 */
 	public final static String C_OBJECT = "red";
+	public final static String C_CRITICAL = "crimson";
+	public final static String C_TEST = "green";
+	public final static String C_STATUS = "slateblue";
 	
 	/**
 	 * The CSS used in the display of the logs
@@ -25,12 +28,15 @@ public abstract class Fonts {
 	public final static String CSS = "<style type=\"text/css\">" +
 								     "	.actor {color: " + C_ACTOR + "}" +
 								     "	.object {color: " + C_OBJECT + "}" +
+								     "	.critical {color: " + C_CRITICAL + "}" +
+								     "	.test {color: " + C_TEST + "}" +
+								     "	.status {color: " + C_STATUS + "}" +
 								     "</style>";
 	
 	/**
 	 * Identification for specific html content (such as {@link Actor} or {@link IObject}).
 	 * @author Thomas
-	 * @see Fonts#getHtml(String, LogType)
+	 * @see Fonts#wrapHtml(String, LogType)
 	 */
 	public enum LogType {
 		/**
@@ -40,7 +46,7 @@ public abstract class Fonts {
 		/**
 		 * {@link Object}
 		 */
-		OBJECT
+		OBJECT, CRITICAL, TEST, STATUS
 	}
 	
 	/**
@@ -49,15 +55,23 @@ public abstract class Fonts {
 	 * @param type The {@link LogType} to use for html tags (like {@link LogType#ACTOR}). Can be null for default text.
 	 * @return The wrapped String.
 	 */
-	public static String getHtml(final String text, final LogType type) {
-		String html = "";
-		html += "<span class=\"";
+	public static String wrapHtml(final String text, final LogType type) {
+		 String html = "<span class=\"";
 		switch(type) {
 		case ACTOR:
 			html += "actor";
 			break;
 		case OBJECT:
 			html += "object";
+			break;
+		case CRITICAL:
+			html += "critical";
+			break;
+		case TEST:
+			html += "test";
+			break;
+		case STATUS:
+			html += "status";
 			break;
 		default:
 			html += "default";
