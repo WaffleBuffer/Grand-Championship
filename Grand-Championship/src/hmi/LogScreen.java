@@ -1,6 +1,7 @@
 package hmi;
 
 import java.awt.BorderLayout;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -28,20 +29,12 @@ public class LogScreen extends JFrame{
 	 * The screen where the logs will be displayed
 	 */
 	private final JTextPane screen;
-	/**
-	 * To get the time of each log
-	 */
-	private final Calendar time;
 	
-
 	/**
 	 * Constructor of he JFrame
 	 */
 	public LogScreen() {
 		super("Log");
-		
-		// Initialization of the Calendar
-		time = Calendar.getInstance();
 		
 		//The main content panel
 		final JPanel content = new JPanel(new BorderLayout());
@@ -66,7 +59,7 @@ public class LogScreen extends JFrame{
 	 * @see Fonts#wrapHtml(String, utilities.Fonts.LogType)
 	 */
 	public void displayLog (final String log) {
-		this.logs += time.get(Calendar.HOUR_OF_DAY) + ":" + time.get(Calendar.MINUTE) + " : " + log + "<br><br>";
+		this.logs += LocalDateTime.now().getHour() + ":" + LocalDateTime.now().getHour() + " : " + log + "<br><br>";
 		screen.setText(this.logs);
 	}
 }

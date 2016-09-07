@@ -646,10 +646,13 @@ public class Actor extends Observable{
 		}
 		// The result's log.
 		return Fonts.wrapHtml(getName(), Fonts.LogType.ACTOR) + " took " + 
-		Fonts.wrapHtml(Integer.toString(realDamage) + " " + IWeapon.getDamageTypeString(damageType) + " damage", Fonts.LogType.DAMAGE_VALUE) +
-		" (" + (value - realDamage) + " absorbed)" + (origin == null ? "" : " from " + origin.getName());
+		Fonts.wrapHtml(Integer.toString(realDamage) + " " + IWeapon.getDamageTypeString(damageType) + " damage", Fonts.LogType.DAMAGE_PHYS) +
+		Fonts.wrapHtml(" (" + (value - realDamage) + " absorbed)", Fonts.LogType.ABSORBTION_PHYS) + (origin == null ? "" : " from " + 
+		Fonts.wrapHtml(origin.getName(), Fonts.LogType.ACTOR));
 	}
 	
+	// TODO: Create an Attack object
+	// TODO: Create an Observer Manager
 	/**
 	 * TODO : rethinks this function, i think there's a better to do it.
 	 * Make this {@link Actor} attack with his equipped weapon(s).
@@ -673,17 +676,17 @@ public class Actor extends Observable{
 				weapon = (IWeapon) this.getEquipedObject(IEquipable.OccupiedPlace.RIGHT_HAND);
 				IWeapon leftWeapon = (IWeapon) this.getEquipedObject(IEquipable.OccupiedPlace.LEFT_HAND);
 				if (weapon != null) {
-					log += weapon.attack(target, isCritical);
+					log += weapon.attack(target, isCritical, this);
 				}
 				if (leftWeapon != null) {
-					log += leftWeapon.attack(target, isCritical);
+					log += leftWeapon.attack(target, isCritical, this);
 				}
 				if (weapon == null && leftWeapon == null) {
-					log += MeleWeapon.getFists(this.getCurrentTrait(TraitType.STRENGTH).getValue()).attack(target, isCritical);
+					log += MeleWeapon.getFists(this.getCurrentTrait(TraitType.STRENGTH).getValue()).attack(target, isCritical, this);
 				}
 			}
 			else {
-				log += weapon.attack(target, isCritical);
+				log += weapon.attack(target, isCritical, this);
 			}
 			return log;
 		}

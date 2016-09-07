@@ -155,7 +155,7 @@ public class MeleWeapon implements IWeapon {
 	}
 
 	@Override
-	public String attack(final Actor target, final Boolean critical) throws Exception {
+	public String attack(final Actor target, final Boolean critical, final Actor origin) throws Exception {
 		Iterator<IStatus> statusIter = statusAplliedOnAttack.iterator();
 		
 		String log = "";
@@ -177,7 +177,7 @@ public class MeleWeapon implements IWeapon {
 			damageValue *= this.criticalMultiplier;
 		}
 		
-		log += target.takeDamage(null, damageValue, this.damageType());
+		log += target.takeDamage(origin, damageValue, this.damageType());
 		return log;
 	}
 

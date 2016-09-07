@@ -94,11 +94,10 @@ public class BattleTest {
 			// Creating his challenger (poor guy)
 			final Actor pop = new Actor("Pop");
 			
-			// Bob is cheating! He attacks before the actual fight!
-			System.out.println(bob.weaponAtack(pop));
+			// Bob is cheating! He attacks before the actual fight!;
 			log.displayLog(bob.weaponAtack(pop));
 			// So now bob will desequip and drop his weapon
-			System.out.println(bob.desequip(spoon));
+			log.displayLog(bob.desequip(spoon));
 			System.out.println(bob.drop(spoon));
 
 			// Preparation of the battle

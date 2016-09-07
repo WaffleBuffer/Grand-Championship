@@ -23,6 +23,7 @@ public abstract class Fonts {
 	public final static String C_TEST = "green";
 	public final static String C_STATUS = "rgb(0,128,255)";
 	public final static String DAMAGE_PHYS = "color: rgb(255,21,21); font: bold;";
+	public final static String ABSORBTION_PHYS = "color: rgb(255,21,21);";
 	
 	/**
 	 * The CSS used in the display of the logs
@@ -33,7 +34,8 @@ public abstract class Fonts {
 								     "	.critical {color: " + C_CRITICAL + ";}" +
 								     "	.test {color: " + C_TEST + ";}" +
 								     "	.status {color: " + C_STATUS + ";}" +
-								     "	.damageValue {" + DAMAGE_PHYS + "}" +
+								     "	.damageValuePhys {" + DAMAGE_PHYS + "}" +
+								     "	.absorbtionPhys {" + ABSORBTION_PHYS + "}" +
 								     "</style>";
 	
 	/**
@@ -49,7 +51,7 @@ public abstract class Fonts {
 		/**
 		 * {@link Object}
 		 */
-		OBJECT, CRITICAL, TEST, STATUS, DAMAGE_VALUE
+		OBJECT, CRITICAL, TEST, STATUS, DAMAGE_PHYS, ABSORBTION_PHYS
 	}
 	
 	/**
@@ -76,8 +78,11 @@ public abstract class Fonts {
 		case STATUS:
 			html += "status";
 			break;
-		case DAMAGE_VALUE:
-			html += "damageValue";
+		case DAMAGE_PHYS:
+			html += "damageValuePhys";
+			break;
+		case ABSORBTION_PHYS:
+			html += "absorbtionPhys";
 			break;
 		default:
 			html += "default";
