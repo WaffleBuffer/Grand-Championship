@@ -96,6 +96,7 @@ public class BattleTest {
 			
 			// Bob is cheating! He attacks before the actual fight!;
 			log.displayLog(bob.weaponAtack(pop));
+			System.out.println(bob.weaponAtack(pop));
 			// So now bob will desequip and drop his weapon
 			log.displayLog(bob.desequip(spoon));
 			System.out.println(bob.drop(spoon));

@@ -33,7 +33,7 @@ import utilities.Fonts;
 
 /**
  * A basic character.
- * @author tmedard
+ * @author Thomas Medard
  *
  */
 public class Actor extends Observable{
@@ -499,7 +499,6 @@ public class Actor extends Observable{
 	 * or if the object is not already equipped.
 	 */
 	public String desequip(IEquipable object) throws GameException {
-		System.out.println(object);
 		if (!equippedObjects.containsValue(object)) {
 			throw new GameException("Object not equipped", GameException.ExceptionType.UNKNOWN_OBJECT);
 		}
@@ -524,7 +523,8 @@ public class Actor extends Observable{
 		
 		// Removing effects
 		object.removeApplieOnEquipe(this);
-		return name + " is no longer equipped with " + object.getName();
+		return Fonts.wrapHtml(name, Fonts.LogType.ACTOR) + " is no longer equipped with " + 
+			Fonts.wrapHtml(object.getName(), Fonts.LogType.OBJECT);
 	}
 	
 	/**
@@ -742,7 +742,7 @@ public class Actor extends Observable{
 			}
 			this.addIStatus(IStatus.copy(status));
 			return Fonts.wrapHtml(this.getName(), Fonts.LogType.ACTOR) + " is now affected by " + 
-				Fonts.wrapHtml(status.toString(), Fonts.LogType.STATUS) + 
+				status.toString() + 
 				Fonts.wrapHtml(" (" + resistanceResult + "/" + threshold + ")", Fonts.LogType.TEST);
 		}
 		else {

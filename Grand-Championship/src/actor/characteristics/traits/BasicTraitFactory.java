@@ -3,8 +3,19 @@ package actor.characteristics.traits;
 import actor.characteristics.traits.ITrait.TraitType;
 import gameExceptions.GameException;
 
+/**
+ * A factory to create {@link BasicTrait}.
+ * @author Thomas MEDARD
+ */
 public abstract class BasicTraitFactory {
 
+	/**
+	 * The factory of {@link BasicTrait}.
+	 * @param type The {@link TraitType}.
+	 * @param value The value of the {@link BasicTrait}.
+	 * @return The {@link BasicTrait}.
+	 * @throws GameException If the {@link TraitType} isn't supported.
+	 */
 	public static BasicTrait createBasicTrait (final TraitType type, final int value) throws GameException{
 		switch (type) {
 			case VITALITY :

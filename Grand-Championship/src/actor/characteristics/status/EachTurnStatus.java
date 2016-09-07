@@ -11,6 +11,7 @@ import actor.characteristics.traits.ITrait.TraitType;
 import actor.characteristics.traits.Stat;
 import actor.characteristics.traits.StatFactory;
 import gameExceptions.GameException;
+import utilities.Fonts;
 
 /**
  * This is an {@link IStatus} applying its effects each turn or temporary for certain number of turn.
@@ -61,7 +62,7 @@ public class EachTurnStatus implements IStatus {
 	 * @param nbTurns The number of turn left this {@link EachTurnStatus} has before stopping.
 	 * @param displayable Should it be displayed in the list of {@link Actor}'s {@link IStatus}.
 	 * @param applyChances The {@link actor.characteristics.traits.ITrait.TraitType} that is used to calculate the resistance.
-	 * @param resistance The {@link actor.characteristics.traits.ITrait.TraitType} that is used to calculate the resistance. Can be null
+	 * @param resistance The {@link actor.characteristics.traits.ITrait.TraitType} that is used to calculate the resistance. Can be null.
 	 * @param type The {@link IStatus.StatusType} of this {@link EachTurnStatus}.<br>
 	 * For {@link EachTurnStatus}, it's {@code EACH_TURN} (each turn apply) or 
 	 * {@code TEMPORARY} (effects applies one time but last some turn).
@@ -133,7 +134,9 @@ public class EachTurnStatus implements IStatus {
 	 */
 	@Override
 	public String toString() {
-		return name + " : " + description + " " + traitModifiers + " " + nbTurn + " turns";
+		return Fonts.wrapHtml(name , Fonts.LogType.STATUS) + " : " + description + " " + 
+				Fonts.wrapHtml(traitModifiers.toString() , Fonts.LogType.STATUS) + " " + 
+				Fonts.wrapHtml(Integer.toString(nbTurn) + " turns", Fonts.LogType.STATUS);
 	}
 
 	/**
