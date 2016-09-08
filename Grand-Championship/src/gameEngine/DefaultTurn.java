@@ -6,6 +6,7 @@ import java.util.Iterator;
 import actor.Actor;
 import actor.characteristics.status.EachTurnStatus;
 import actor.characteristics.status.IStatus.StatusType;
+import gameExceptions.GameException;
 
 /**
  * @author Thomas MEDARD
@@ -13,8 +14,11 @@ import actor.characteristics.status.IStatus.StatusType;
  */
 public class DefaultTurn implements ITurnControler {
 
+	/**
+	 * @see gameEngine.ITurnControler#nextTurn(java.util.Collection)
+	 */
 	@Override
-	public String nextTurn(final Collection<Actor> actors) throws Exception {
+	public String nextTurn(final Collection<Actor> actors) throws GameException {
 		
 		String log = "";
 		final Iterator<Actor> actorIter = actors.iterator();

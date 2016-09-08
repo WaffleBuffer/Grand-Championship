@@ -5,7 +5,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import actor.Actor;
+import gameExceptions.GameException;
 import utilities.Fonts;
+import utilities.Fonts.LogType;
 
 /**
  * The default {@link IBattleControler}.
@@ -66,15 +68,15 @@ public class DefaultBattle implements IBattleControler {
 	 * @see gameEngine.IBattleControler#nextActor()
 	 */
 	@Override
-	public String nextActor() throws Exception {
+	public String nextActor() throws GameException {
 		String log = "";
 		if (actorIter.hasNext()) {
 			currentActor = actorIter.next();
 			if (currentActor.isDead()) {
 				return finishBattle();
 			}
-			log += currentActor.getName() + " to move" + System.lineSeparator();
-			log += currentActor.getAi().play(this) + System.lineSeparator();
+			log += Fonts.wrapHtml(currentActor.getName(), LogType.ACTOR) + " <b>to move</b> <br>";
+			log += currentActor.getAi().play(this) + "<br>";
 			return log;
 		}
 		else {
@@ -85,7 +87,7 @@ public class DefaultBattle implements IBattleControler {
 				if (currentActor.isDead()) {
 					return finishBattle();
 				}
-				log += currentActor.getName() + " to move" + System.lineSeparator();
+				log += Fonts.wrapHtml(currentActor.getName(), LogType.ACTOR) + " <b>to move</b> <br>";
 				log += currentActor.getAi().play(this) + System.lineSeparator();
 				return log;
 			}
