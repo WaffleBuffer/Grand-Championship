@@ -9,8 +9,8 @@ import actor.characteristics.status.IStatus.StatusType;
 import gameExceptions.GameException;
 
 /**
+ * The Default {@link ITurnControler}. Just apply all {@link EachTurnStatus}.
  * @author Thomas MEDARD
- *
  */
 public class DefaultTurn implements ITurnControler {
 

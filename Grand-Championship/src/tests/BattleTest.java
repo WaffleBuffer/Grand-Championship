@@ -96,8 +96,34 @@ public class BattleTest {
 			
 			// Bob is cheating! He attacks before the actual fight!;
 			log.displayLog(bob.weaponAtack(pop));
-			// So now bob will desequip and drop his weapon
+			// So now bob will desequip
 			log.displayLog(bob.desequip(spoon));
+			
+			// Testing some flamming sword		
+			
+			// On hit
+			modifiedTraits = new LinkedList<ITraitModifier>();
+			modifiedTraits.add(new BasicTraitModifier(ITrait.TraitType.VITALITY, -10));
+			
+			attackStatus = new LinkedList<IStatus>();
+			attackStatus.add(new EachTurnStatus("Burning", "This guy is on fiiiire!", 
+					modifiedTraits, 3, true, 100, null, IStatus.StatusType.EACH_TURN));
+			
+			
+			// Creating his main weapon
+			MeleWeapon flammingsword = new MeleWeapon(
+					null, 
+					"Flamming sword",
+					"And you get light in dark!",
+					10,
+					100, 
+					IWeapon.DamageType.SLASH,
+					20, 
+					null,
+					attackStatus,
+					IEquipable.OccupiedPlace.ONE_HAND);
+			
+			log.displayLog(bob.equip(flammingsword));
 
 			// Preparation of the battle
 			final IBattleControler battleControler = new DefaultBattle();

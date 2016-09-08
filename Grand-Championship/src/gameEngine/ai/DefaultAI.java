@@ -5,6 +5,10 @@ import java.util.Iterator;
 import actor.Actor;
 import gameEngine.IBattleControler;
 
+/**
+ * The default {@link AI}. It's just attacking with weapon for now.
+ * @author Thomas MEDARD
+ */
 public class DefaultAI implements AI {
 	
 	private Actor actor;

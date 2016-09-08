@@ -324,8 +324,6 @@ public class EachTurnStatus implements IStatus {
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
-		if (nbTurn != other.nbTurn)
-			return false;
 		if (resistance != other.resistance)
 			return false;
 		if (traitModifiers == null) {

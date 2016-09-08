@@ -736,16 +736,19 @@ public class Actor extends Observable{
 					}
 				}
 			}
-			this.addIStatus(IStatus.copy(status));
-			return Fonts.wrapHtml(this.getName(), Fonts.LogType.ACTOR) + " is now affected by " + 
-				status.toString() + 
-				Fonts.wrapHtml(" (" + resistanceResult + "/" + threshold + ")", Fonts.LogType.TEST);
+			else {
+				this.addIStatus(IStatus.copy(status));
+				return Fonts.wrapHtml(this.getName(), Fonts.LogType.ACTOR) + " is now affected by " + 
+					status.toString() + 
+					Fonts.wrapHtml(" (" + resistanceResult + "/" + threshold + ")", Fonts.LogType.TEST);
+			}
 		}
 		else {
 			return Fonts.wrapHtml(this.getName(), Fonts.LogType.ACTOR) + " has resisted to " + 
 					Fonts.wrapHtml(status.toString(), Fonts.LogType.STATUS) + 
 					Fonts.wrapHtml(" (" + resistanceResult + "/" + threshold + ")", Fonts.LogType.TEST);
 		}
+		return "There's has been an error";
 	}
 	
 	/**
