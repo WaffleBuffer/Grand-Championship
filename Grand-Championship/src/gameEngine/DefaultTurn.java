@@ -7,6 +7,10 @@ import actor.Actor;
 import actor.characteristics.status.EachTurnStatus;
 import actor.characteristics.status.IStatus.StatusType;
 
+/**
+ * @author Thomas MEDARD
+ *
+ */
 public class DefaultTurn implements ITurnControler {
 
 	@Override
