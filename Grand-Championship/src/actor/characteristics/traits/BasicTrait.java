@@ -3,6 +3,7 @@ package actor.characteristics.traits;
 import java.util.Observable;
 
 import actor.Actor;
+import utilities.Fonts;
 
 /**
  * The basics trait that all {@link Actor} have.
@@ -76,6 +77,6 @@ public class BasicTrait extends Observable implements ITrait {
 	 */
 	@Override
 	public String toString() {
-		return name + " = " + value;
+		return Fonts.wrapHtml(name, Fonts.LogType.ITRAIT) + " = " + Fonts.wrapHtml(Integer.toString(value), Fonts.LogType.ITRAIT);
 	}
 }

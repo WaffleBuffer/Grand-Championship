@@ -208,8 +208,8 @@ public class Actor extends Observable{
 	@Override
 	public String toString() {
 		String actorString = "";
-		actorString = "=============== " + name + " ===============" + System.lineSeparator() +
-		getCurrentTrait(TraitType.VITALITY) + "/" + getBasicTrait(TraitType.VITALITY).getValue() + ", ";
+		actorString = "=============== " + Fonts.wrapHtml(name, Fonts.LogType.ACTOR) + " ===============<br>" +
+		getCurrentTrait(TraitType.VITALITY) + "/" + Fonts.wrapHtml(Integer.toString(getBasicTrait(TraitType.VITALITY).getValue()), Fonts.LogType.ITRAIT) + ", ";
 		
 		Iterator<ITrait> traitIter = currentCharacteristics.iterator();
 
@@ -227,50 +227,46 @@ public class Actor extends Observable{
 			
 		}
 		
-		actorString += System.lineSeparator() +
-		stats + System.lineSeparator() +
-		currentWeight + "/" + maxWeight + " Kg" + System.lineSeparator(); 
+		actorString += "<br>" +
+		stats + "<br>" +
+		currentWeight + "/" + maxWeight + " Kg<br>"; 
 		
 		if (!oneTimestatus.isEmpty()) {
-			actorString += System.lineSeparator();
-			actorString += "Status : " + System.lineSeparator();
+			actorString += "<br>";
+			actorString += "<b>Status : </b>" + "<br>";
 			for (OneTimeStatus currentOneTimeStatus : oneTimestatus) {
 				if (currentOneTimeStatus.isDiplayable()) {
-					actorString += currentOneTimeStatus + System.lineSeparator();
+					actorString += currentOneTimeStatus + "<br>";
 				}
 			}
-			actorString += System.lineSeparator();
+			actorString += "<br>";
 		}
 		
 		if (!eachTurnStatus.isEmpty()) {
-			actorString += "Each turn status : " + System.lineSeparator();
+			actorString += "<b>Each turn status : </b><br>";
 			for (EachTurnStatus currentEachTurnStatus : eachTurnStatus) {
 				if (currentEachTurnStatus.isDiplayable()) {
-					actorString += currentEachTurnStatus + " (" + currentEachTurnStatus.getNbTurns() + " turns left)" +
-							System.lineSeparator();
+					actorString += currentEachTurnStatus + " (" + currentEachTurnStatus.getNbTurns() + " turns left)<br>";
 				}
 			}
-			actorString += System.lineSeparator();
+			actorString += "<br>";
 		}
 		
 		if (!inventory.isEmpty()) {
-			actorString += "inventory : " + System.lineSeparator();
-			actorString += System.lineSeparator();
+			actorString += "<b>inventory : </b><br>";
 			for (IObject currentObject : inventory) {
 				
-				actorString += currentObject + System.lineSeparator();
+				actorString += currentObject + "<br>";
 			}
-			actorString += System.lineSeparator();
+			actorString += "<br>";
 		}
 		
-		actorString += System.lineSeparator() + "Equiped Objects : " + System.lineSeparator();
-		actorString += System.lineSeparator();
+		actorString += "<b>Equiped Objects : </b><br>";
 		for (Map.Entry<OccupiedPlace, IEquipable> currentEntry : equippedObjects.entrySet()) {
 			
 			if (currentEntry.getValue() != null) {
 				try {
-					actorString += currentEntry.getKey() + " : " + currentEntry.getValue() + System.lineSeparator() +
-							System.lineSeparator();
+					actorString += currentEntry.getKey() + " : " + currentEntry.getValue() + "<br>";
 				} 
 				catch (Exception e) {
 					e.printStackTrace();
@@ -646,7 +642,7 @@ public class Actor extends Observable{
 		}
 		// The result's log.
 		return Fonts.wrapHtml(getName(), Fonts.LogType.ACTOR) + " took " + 
-		Fonts.wrapHtml(Integer.toString(realDamage) + " " + IWeapon.getDamageTypeString(damageType) + " damage", Fonts.LogType.DAMAGE_PHYS) +
+		Fonts.wrapHtml(Integer.toString(realDamage) + " " + damageType + " damage", Fonts.LogType.DAMAGE_PHYS) +
 		Fonts.wrapHtml(" (" + (value - realDamage) + " absorbed)", Fonts.LogType.ABSORBTION_PHYS) + (origin == null ? "" : " from " + 
 		Fonts.wrapHtml(origin.getName(), Fonts.LogType.ACTOR));
 	}

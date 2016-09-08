@@ -3,10 +3,23 @@ package actor.characteristics.traits;
 import java.util.Observable;
 
 import actor.Actor;
+import actor.characteristics.traits.ITrait.TraitType;
 import gameExceptions.GameException;
 
+/**
+ * Factory to create {@link Stat}.
+ * @author Thomas MEDARD
+ */
 public abstract class StatFactory {
 
+	/**
+	 * Factory creation function.
+	 * @param type The {@link TraitType} of the {@link Stat}.
+	 * @param value The modification value of the {@link Stat}.
+	 * @param actor The {@link Actor} on which to add the {@link Stat}.
+	 * @return The {@link Stat} created.
+	 * @throws GameException If the {@link TraitType} is not supported.
+	 */
 	public static Stat createState (final ITrait.TraitType type, final int value, final Actor actor) 
 			throws GameException {
 		switch (type) {

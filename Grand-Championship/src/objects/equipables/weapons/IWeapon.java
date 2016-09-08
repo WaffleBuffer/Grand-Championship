@@ -3,23 +3,24 @@ package objects.equipables.weapons;
 import actor.Actor;
 import gameExceptions.GameException;
 import objects.equipables.IEquipable;
+import utilities.Fonts;
 
 public interface IWeapon extends IEquipable {
 	
 	public enum DamageType {
-		SLASH, SMASH, PIERCING
-	}
-	
-	public static String getDamageTypeString(final DamageType damageType) throws GameException {
-		switch (damageType) {
-			case SLASH :
-				return "Slash";
-			case SMASH :
-				return "Smash";
-			case PIERCING :
-				return "Piercing";
-			default :
-				throw new GameException("Unsupported damage type", GameException.ExceptionType.UNKNOWN_DAMAGETYPE);
+		SLASH("Slash"), 
+		SMASH("Smash"), 
+		PIERCING("Piercing");
+		
+		private final String name;
+		
+		private DamageType(final String name) {
+			this.name = name;
+		}
+		
+		@Override
+		public String toString() {
+			return Fonts.wrapHtml(this.name, Fonts.LogType.DAMAGE_PHYS);
 		}
 	}
 

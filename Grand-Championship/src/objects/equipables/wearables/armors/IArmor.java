@@ -7,6 +7,7 @@ import gameExceptions.GameException;
 import objects.equipables.IEquipable;
 import objects.equipables.weapons.IWeapon;
 import objects.equipables.weapons.IWeapon.DamageType;
+import utilities.Fonts;
 
 /**
  * Description of any armor
@@ -32,7 +33,7 @@ public interface IArmor extends IEquipable{
 		PHYSICAL {
 			@Override
 			public String toString(){
-                return "Physical";
+                return Fonts.wrapHtml("Physical", Fonts.LogType.ABSORBTION_PHYS);
             }
 			
 			@Override
@@ -58,7 +59,7 @@ public interface IArmor extends IEquipable{
 		MAGIC {
 			@Override
 			public String toString(){
-                return "Magical";
+                return Fonts.wrapHtml("Magical", Fonts.LogType.ABSORBTION_MAG);
             }
 			
 			@Override

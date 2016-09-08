@@ -7,31 +7,28 @@ import actor.Actor;
 import actor.characteristics.traits.ITrait;
 import gameExceptions.GameException;
 import objects.IObject;
+import utilities.Fonts;
 
 public interface IEquipable extends IObject, Observer {
 	
 	public enum OccupiedPlace {
-		ONE_HAND, LEGS, BOTH_HANDS, HEAD, TORSO, LEFT_HAND, RIGHT_HAND;
-	}
-	
-	public static String getOccupiedPlaceString (final OccupiedPlace occupiedPlace) throws Exception {
-		switch (occupiedPlace) {
-			case ONE_HAND :
-				return "One hand";
-			case LEGS :
-				return "Legs";
-			case BOTH_HANDS :
-				return "Both Hands";
-			case HEAD :
-				return "Head";
-			case TORSO :
-				return "Torso";
-			case LEFT_HAND :
-				return "Left hand";
-			case RIGHT_HAND : 
-				return "Right hand";
-			default :
-				throw new Exception ("Unsupported place : " + occupiedPlace);
+		ONE_HAND("One hand"), 
+		LEGS("Legs"),
+		BOTH_HANDS("Both hands"),
+		HEAD("Head"),
+		TORSO("Torso"),
+		LEFT_HAND("Left hand"),
+		RIGHT_HAND("Right hand");
+		
+		private final String name;
+		
+		private OccupiedPlace(final String name) {
+			this.name = name;
+		}
+		
+		@Override
+		public String toString() {
+			return Fonts.wrapHtml(this.name, Fonts.LogType.OCCUPIED_PLACE);
 		}
 	}
 

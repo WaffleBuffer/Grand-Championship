@@ -96,10 +96,8 @@ public class BattleTest {
 			
 			// Bob is cheating! He attacks before the actual fight!;
 			log.displayLog(bob.weaponAtack(pop));
-			System.out.println(bob.weaponAtack(pop));
 			// So now bob will desequip and drop his weapon
 			log.displayLog(bob.desequip(spoon));
-			System.out.println(bob.drop(spoon));
 
 			// Preparation of the battle
 			final IBattleControler battleControler = new DefaultBattle();
@@ -108,19 +106,19 @@ public class BattleTest {
 			
 			// Now let them fight for 10 turns
 			for (int i = 0; i < 10; ++i) {
-				System.out.println(battleControler.nextActor());
-				System.out.println(bob);
-				System.out.println(pop);
+				log.displayLog(battleControler.nextActor());
+				log.displayLog(bob.toString());
+				log.displayLog(pop.toString());
 			}
 			
 			// And now fight to the death
 			while(!battleControler.isBattleOver()) {
-				System.out.println(battleControler.nextActor());
+				log.displayLog(battleControler.nextActor());
 			}
 			
 			// Who won? Who's next? You decide! Epic Battle of the History!!!!!!!!!
-			System.out.println(bob);
-			System.out.println(pop);
+			log.displayLog(bob.toString());
+			log.displayLog(pop.toString());
 		}
 		catch (Exception e) {
 			e.printStackTrace();

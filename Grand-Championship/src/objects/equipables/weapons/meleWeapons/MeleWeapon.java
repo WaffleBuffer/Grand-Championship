@@ -10,6 +10,7 @@ import actor.characteristics.status.IStatus;
 import actor.characteristics.traits.ITrait;
 import gameExceptions.GameException;
 import objects.equipables.weapons.IWeapon;
+import utilities.Fonts;
 
 public class MeleWeapon implements IWeapon {
 	
@@ -125,21 +126,20 @@ public class MeleWeapon implements IWeapon {
 	@Override
 	public String toString() {
 		try {
-			String weaponStr = name + " : " + description + System.lineSeparator();
+			String weaponStr = Fonts.wrapHtml(name, Fonts.LogType.OBJECT) + " : " + description + "<br>";
 			
-			weaponStr += occupiedPlace + " ";
-			weaponStr += System.lineSeparator() +
-					 + damageValue + " " + IWeapon.getDamageTypeString(damageType) + " damage" + System.lineSeparator() +
-					weight + " Kg, " + value + " $" + System.lineSeparator();
+			weaponStr += occupiedPlace + "; ";
+			weaponStr += Fonts.wrapHtml(Integer.toString(damageValue), Fonts.LogType.DAMAGE_PHYS) + " " + damageType + " damage<br>" +
+					weight + " Kg; " + Fonts.wrapHtml(value + " $", Fonts.LogType.MONEY) + "<br>";
 			
 			if (!requiredTraits.isEmpty()) {
-				weaponStr += "required : " + requiredTraits + System.lineSeparator();
+				weaponStr += "required : " + requiredTraits + "<br>";
 			}
 			if (!statusAplliedOnEquip.isEmpty()) {
-				weaponStr += "applies " + statusAplliedOnEquip + System.lineSeparator();
+				weaponStr += "applies : " + statusAplliedOnEquip + "<br>";
 			}
 			if (!statusAplliedOnAttack.isEmpty()) {
-				weaponStr += "on attack " + statusAplliedOnAttack + System.lineSeparator();
+				weaponStr += "on hit : " + statusAplliedOnAttack + "<br>";
 			}
 			return  weaponStr;
 		} 

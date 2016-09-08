@@ -12,6 +12,7 @@ import actor.characteristics.status.traitModifier.ITraitModifier;
 import actor.characteristics.status.traitModifier.StatModifier;
 import actor.characteristics.traits.ITrait;
 import gameExceptions.GameException;
+import utilities.Fonts;
 
 /**
  * Standard metal armor
@@ -167,18 +168,18 @@ public class Armor implements IArmor {
 	@Override
 	public String toString() {
 		try {
-			String armorStr = name + " : " + description + System.lineSeparator();
+			String armorStr = Fonts.wrapHtml(name, Fonts.LogType.OBJECT) + " : " + description + "<br>";
 
 			armorStr += occupiedPlace + " ";
-			armorStr += System.lineSeparator() +
-					 + armorValue + " " + armorType + " armor" + System.lineSeparator() +
-					weight + " Kg, " + value + " $" + System.lineSeparator();
+			armorStr += Fonts.wrapHtml(Integer.toString(armorValue), (armorType == ArmorType.PHYSICAL ? Fonts.LogType.ABSORBTION_PHYS : Fonts.LogType.ABSORBTION_MAG)) + 
+					" " + armorType + " armor" + System.lineSeparator() +
+					weight + " Kg, " + Fonts.wrapHtml(value + " $", Fonts.LogType.MONEY)  + "<br>";
 			
 			if (!requiredTraits.isEmpty()) {
-				armorStr += "required : " + requiredTraits + System.lineSeparator();
+				armorStr += "required : " + requiredTraits + "<br>";
 			}
 			if (!statusApllied.isEmpty()) {
-				armorStr += "applies" + statusApllied + System.lineSeparator();
+				armorStr += "applies" + statusApllied + "<br>";
 			}
 			return  armorStr;
 		} 
