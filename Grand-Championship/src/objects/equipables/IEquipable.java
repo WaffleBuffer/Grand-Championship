@@ -39,4 +39,6 @@ public interface IEquipable extends IObject, Observer {
 	public void removeApplieOnEquipe(Actor target) throws GameException;
 	
 	public OccupiedPlace getOccupiedPlace ();
+	
+	// TODO : create equip(Actor).
 }
