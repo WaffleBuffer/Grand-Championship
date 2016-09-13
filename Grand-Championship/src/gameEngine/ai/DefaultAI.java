@@ -11,12 +11,22 @@ import gameEngine.IBattleControler;
  */
 public class DefaultAI implements AI {
 	
+	/**
+	 * The {@link Actor} controlled by this {@link AI}.
+	 */
 	private Actor actor;
 	
+	/**
+	 * The constructor
+	 * @param actor The {@link Actor} to link this {@link DefaultAI} to.
+	 */
 	public DefaultAI (final Actor actor) {
 		this.actor = actor;
 	}
 
+	/**
+	 * @see gameEngine.ai.AI#play(gameEngine.IBattleControler)
+	 */
 	@Override
 	public String play(IBattleControler battle) {
 		if (actor.isDead()) {

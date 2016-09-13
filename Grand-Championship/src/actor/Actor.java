@@ -32,6 +32,7 @@ import objects.equipables.wearables.armors.IArmor;
 import utilities.Fonts;
 
 /**
+ * TODO : Create IActor
  * A basic character.
  * @author Thomas Medard
  *
