@@ -52,7 +52,11 @@ public class GameException extends Exception{
 		/**
 		 * If an {@link objects.equipables.weapons.IWeapon.DamageType} is not of an expecting type.
 		 */
-		UNKNOWN_DAMAGETYPE
+		UNKNOWN_DAMAGETYPE,
+		/**
+		 * If a value is not valid
+		 */
+		INVALID_VALUE
 	}
 	
 	/**

@@ -12,20 +12,70 @@ import gameExceptions.GameException;
 import objects.equipables.weapons.IWeapon;
 import utilities.Fonts;
 
+/**
+ * It's an {@link IWeapon} with no range.
+ * @author Thomas MEDARD
+ */
 public class MeleWeapon implements IWeapon {
 	
+	/**
+	 * The required {@link ITrait} to equip this.
+	 */
 	private Collection<ITrait> requiredTraits;
+	/**
+	 * The name of this.
+	 */
 	private String name;
+	/**
+	 * The description of this.
+	 */
 	private final String description;
+	/**
+	 * The weight of this.
+	 */
 	private final int weight;
+	/**
+	 * The value (in gold) of this.
+	 */
 	private final int value;
+	/**
+	 * The damage type of this.
+	 */
 	private final DamageType damageType;
+	/**
+	 * The raw damage value of this.
+	 */
 	private final int damageValue;
+	/**
+	 * The {@link Collection} of {@link IStatus} to apply on the owner when equipping this.
+	 */
 	private Collection<IStatus> statusAplliedOnEquip;
+	/**
+	 * The {@link Collection} of {@link IStatus} to apply on the target when attacking someone.
+	 */
 	private Collection<IStatus> statusAplliedOnAttack;
+	/**
+	 * The location on the body of this.
+	 */
 	private final OccupiedPlace occupiedPlace;
+	/**
+	 * The damage multiplier when the attack is critical.
+	 */
 	private int criticalMultiplier;
 	
+	/**
+	 * The constructor.
+	 * @param requiredTraits The required {@link ITrait} to equip this. Can be null.
+	 * @param name The name of this.
+	 * @param description The description of this.
+	 * @param weight The weight of this.
+	 * @param value The value (in gold) of this.
+	 * @param damageType The damage type of this.
+	 * @param damageValue The raw damage value of this.
+	 * @param statusApllied The {@link Collection} of {@link IStatus} to apply on the owner when equipping this. Can be null.
+	 * @param statusAplliedOnAttack The {@link Collection} of {@link IStatus} to apply on the target when attacking someone. Can be null.
+	 * @param occupiedPlace The location on the body of this.
+	 */
 	public MeleWeapon(final Collection<ITrait> requiredTraits, final String name, final String description, 
 			final int weight, final int value, final DamageType damageType, final int damageValue, 
 			final Collection<IStatus> statusApllied, final Collection<IStatus> statusAplliedOnAttack, 
@@ -56,41 +106,65 @@ public class MeleWeapon implements IWeapon {
 		this.criticalMultiplier = 2;
 	}
 
+	/**
+	 * @see objects.equipables.IEquipable#getRequiredTraits()
+	 */
 	@Override
 	public Collection<ITrait> getRequiredTraits() {
 		return requiredTraits;
 	}
 
+	/**
+	 * @see objects.IObject#getName()
+	 */
 	@Override
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * @see objects.IObject#getDescription()
+	 */
 	@Override
 	public String getDescription() {
 		return description;
 	}
 
+	/**
+	 * @see objects.IObject#getWeight()
+	 */
 	@Override
 	public int getWeight() {
 		return weight;
 	}
 
+	/**
+	 * @see objects.IObject#getValue()
+	 */
 	@Override
 	public int getValue() {
 		return value;
 	}
 
+	/**
+	 * @see objects.equipables.weapons.IWeapon#getDamageType()
+	 */
 	@Override
-	public DamageType damageType() {
+	public DamageType getDamageType() {
 		return damageType;
 	}
 
+	/**
+	 * @see objects.equipables.weapons.IWeapon#getDamageValue()
+	 */
 	@Override
 	public int getDamageValue() {
 		return damageValue;
 	}
 
+	/**
+	 * @see objects.equipables.IEquipable#applieOnEquipe(actor.Actor)
+	 */
 	@Override
 	public String applieOnEquipe(Actor target) throws GameException {
 		
@@ -110,6 +184,9 @@ public class MeleWeapon implements IWeapon {
 		return log;
 	}
 
+	/**
+	 * @see objects.equipables.IEquipable#removeApplieOnEquipe(actor.Actor)
+	 */
 	@Override
 	public void removeApplieOnEquipe(Actor target) throws GameException {
 		Iterator<IStatus> statusIter = statusAplliedOnEquip.iterator();
@@ -123,6 +200,9 @@ public class MeleWeapon implements IWeapon {
 		this.name = this.name.substring(0, name.length() - 3);
 	}
 
+	/**
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		try {
@@ -149,25 +229,34 @@ public class MeleWeapon implements IWeapon {
 		return null;
 	}
 
+	/**
+	 * @see objects.equipables.IEquipable#getOccupiedPlace()
+	 */
 	@Override
 	public OccupiedPlace getOccupiedPlace() {
 		return occupiedPlace;
 	}
 
+	/**
+	 * @see objects.equipables.weapons.IWeapon#attack(actor.Actor, java.lang.Boolean, actor.Actor)
+	 */
 	@Override
-	public String attack(final Actor target, final Boolean critical, final Actor origin) throws Exception {
+	public String attack(final Actor target, final Boolean critical, final Actor origin) throws GameException {
 		Iterator<IStatus> statusIter = statusAplliedOnAttack.iterator();
 		
 		String log = "";
 		while (statusIter.hasNext()) {
 			IStatus currentStatus = statusIter.next();
 			
-			int applyChances = currentStatus.getApplyChances();
+			float applyChances = currentStatus.getApplyChances();
 			
 			if (critical) {
 				applyChances *= 1.2;
 			}
 			
+			if (applyChances > 100) {
+				applyChances = 100;
+			}
 			log += target.tryToResist(currentStatus, applyChances) + "<br>";
 		}	
 		
@@ -177,10 +266,13 @@ public class MeleWeapon implements IWeapon {
 			damageValue *= this.criticalMultiplier;
 		}
 		
-		log += target.takeDamage(origin, damageValue, this.damageType());
+		log += target.takeDamage(origin, damageValue, this.getDamageType());
 		return log;
 	}
 
+	/**
+	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
+	 */
 	@Override
 	public void update(Observable o, Object arg) {
 		final Actor actor;
@@ -227,6 +319,11 @@ public class MeleWeapon implements IWeapon {
 		}
 	}
 	
+	/**
+	 * Create an {@link IWeapon} representing the fists.
+	 * @param damage The damages of the fists.
+	 * @return The fists created.
+	 */
 	public static MeleWeapon getFists (final int damage) {
 		return new MeleWeapon(
 				null,
@@ -241,11 +338,17 @@ public class MeleWeapon implements IWeapon {
 				OccupiedPlace.BOTH_HANDS);
 	}
 
+	/**
+	 * @see objects.equipables.weapons.IWeapon#getCriticalMultiplier()
+	 */
 	@Override
 	public int getCriticalMultiplier() {
 		return this.criticalMultiplier;
 	}
 
+	/**
+	 * @see objects.equipables.weapons.IWeapon#setCriticalMultiplier(int)
+	 */
 	@Override
 	public void setCriticalMultiplier(int criticalMultiplier) {
 		this.criticalMultiplier = criticalMultiplier;

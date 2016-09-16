@@ -103,7 +103,7 @@ public interface IStatus {
 	 * Get the apply chances for testing resistance when applied on an {@link Actor}.
 	 * @return The apply chances
 	 */
-	public int getApplyChances();
+	public float getApplyChances();
 	
 	/**
 	 * Get the {@link actor.characteristics.traits.ITrait.TraitType} which is involved on testing the resistance to this {@link IStatus}.

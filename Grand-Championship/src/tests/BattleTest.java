@@ -21,7 +21,7 @@ import objects.equipables.wearables.armors.Armor;
 
 /**
  * Test the battle system
- * @author tmedard
+ * @author Thomas MEDARD
  *
  */
 public class BattleTest {
@@ -72,6 +72,33 @@ public class BattleTest {
 					attackStatus,
 					IEquipable.OccupiedPlace.ONE_HAND);
 			
+			modifiedTraits = new LinkedList<ITraitModifier>();
+			modifiedTraits.add(new BasicTraitModifier(ITrait.TraitType.WILL, -2));
+			modifiedTraits.add(new BasicTraitModifier(ITrait.TraitType.DEXTERITY, -2));
+			
+			// On hit
+			attackStatus = new LinkedList<IStatus>();
+			attackStatus.add(new EachTurnStatus("DETERMINATION", "His determination to kill frightnes you !", modifiedTraits,
+					5, true, 85, null, IStatus.StatusType.TEMPORARY));
+			
+			modifiedTraits = new LinkedList<ITraitModifier>();
+			modifiedTraits.add(new BasicTraitModifier(ITrait.TraitType.VITALITY, -5));
+			
+			attackStatus.add(new OneTimeStatus("DETERMINATION", "His determination to kill frightnes you !", modifiedTraits,
+					false, 6, null));
+			
+			MeleWeapon OyaWeapon = new MeleWeapon(
+					null, 
+					"True Knife",
+					"Now We're Talking =D",
+					1,
+					1, 
+					IWeapon.DamageType.SLASH,
+					21, 
+					null,
+					attackStatus,
+					IEquipable.OccupiedPlace.ONE_HAND);
+			
 			// Picking and equipping his main weapon
 			log.displayLog(bob.equip(spoon));
 			
@@ -94,12 +121,14 @@ public class BattleTest {
 			// Creating his challenger (poor guy)
 			final Actor pop = new Actor("Pop");
 			
+			log.displayLog(pop.equip(OyaWeapon));
+			
 			// Bob is cheating! He attacks before the actual fight!;
 			log.displayLog(bob.weaponAtack(pop));
 			// So now bob will desequip
 			log.displayLog(bob.desequip(spoon));
 			
-			// Testing some flamming sword		
+			// Testing some flaming sword		
 			
 			// On hit
 			modifiedTraits = new LinkedList<ITraitModifier>();
@@ -133,8 +162,8 @@ public class BattleTest {
 			// Now let them fight for 10 turns
 			for (int i = 0; i < 10; ++i) {
 				log.displayLog(battleControler.nextActor());
-				log.displayLog(bob.toString());
-				log.displayLog(pop.toString());
+				// log.displayLog(bob.toString());
+				// log.displayLog(pop.toString());
 			}
 			
 			// And now fight to the death

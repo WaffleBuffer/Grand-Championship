@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Observer;
 
 import actor.Actor;
+import actor.characteristics.status.IStatus;
 import actor.characteristics.traits.ITrait;
 import gameExceptions.GameException;
 import objects.IObject;
@@ -11,7 +12,8 @@ import utilities.Fonts;
 
 /**
  * TODO : put equip function in this class.
- * An {@link IObject} which can be equiped.
+ * TODO : create a OccupiedPlace class with equipped object.
+ * An {@link IObject} which can be equipped.
  * @author Thomas MEDARD
  */
 public interface IEquipable extends IObject, Observer {
@@ -85,8 +87,17 @@ public interface IEquipable extends IObject, Observer {
 	 */
 	public String applieOnEquipe(Actor target) throws GameException;
 	
+	/**
+	 * When desequipping this, remove all {@link IStatus} on equippe.
+	 * @param target The {@link Actor} to remove from.
+	 * @throws GameException If there is type problem.
+	 */
 	public void removeApplieOnEquipe(Actor target) throws GameException;
 	
+	/**
+	 * Get the {@link OccupiedPlace} of this.
+	 * @return The {@link OccupiedPlace} of this.
+	 */
 	public OccupiedPlace getOccupiedPlace ();
 	
 	// TODO : create equip(Actor).

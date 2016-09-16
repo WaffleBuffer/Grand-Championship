@@ -701,7 +701,11 @@ public class Actor extends Observable{
 	 * @return The result's log.
 	 * @throws GameException If copying the status (to affect this Actor) failed.
 	 */
-	public String tryToResist (final IStatus status, final int applyChances) throws GameException {
+	public String tryToResist (final IStatus status, final float applyChances) throws GameException {
+		
+		if (applyChances > 100.0) {
+			throw new GameException("Apply chances must be < to 100", GameException.ExceptionType.INVALID_VALUE);
+		}
 		// Try to get the resistance trait corresponding to the IStatus to resist.
 		ITrait resistanceTrait;// = this.getBasicTrait(status.getResistance());
 		
@@ -710,8 +714,8 @@ public class Actor extends Observable{
 		resistanceTrait = this.getStat(status.getResistance());
 		//}
 		// Creating a random number.
-		final int resistanceResult = ThreadLocalRandom.current().nextInt(0, 100 + 1);
-		final int threshold;
+		final float resistanceResult = ThreadLocalRandom.current().nextInt(0, 100 + 1);
+		final float threshold;
 		if (resistanceTrait == null) {
 			threshold = applyChances;	
 		}

@@ -41,7 +41,7 @@ public class OneTimeStatus implements IStatus {
 	/**
 	 * The raw apply chancing of this {@link OneTimeStatus}.
 	 */
-	private int applyChances;
+	private float applyChances;
 	/**
 	 * The {@link actor.characteristics.traits.ITrait.TraitType} that is used to calculate the resistance. Can be null.
 	 */
@@ -58,7 +58,7 @@ public class OneTimeStatus implements IStatus {
 	 */
 	public OneTimeStatus(final String name, final String description, 
 			final Collection<ITraitModifier> traitModifiers,
-			final Boolean displayable, final int applyChances, final ITrait.TraitType resistance) {
+			final Boolean displayable, final float applyChances, final ITrait.TraitType resistance) {
 		super();
 		this.name = name;
 		this.description = description;
@@ -226,7 +226,7 @@ public class OneTimeStatus implements IStatus {
 	 * @see actor.characteristics.status.IStatus#getApplyChances()
 	 */
 	@Override
-	public int getApplyChances() {
+	public float getApplyChances() {
 		return applyChances;
 	}
 

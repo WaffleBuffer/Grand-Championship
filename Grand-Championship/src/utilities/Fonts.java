@@ -1,73 +1,134 @@
 package utilities;
 
 import actor.Actor;
+import actor.characteristics.status.IStatus;
+import actor.characteristics.traits.ITrait;
 import objects.IObject;
-import objects.equipables.IEquipable.OccupiedPlace;
 
 /**
- * All the fonts for each type of things.<br>
- * C_ = color
- * @author Thomas
+ * All the fonts for each type of things.
+ * @author Thomas MEDARD
  *
  */
 public abstract class Fonts {
 	/**
-	 * Color for {@link Actor}
+	 * CSS for {@link Actor}.
 	 */
-	public final static String C_ACTOR = "blue";
+	public final static String CSS_ACTOR = "blue";
 	/**
-	 * Color for {@link IObject}
+	 * CSS for {@link IObject}.
 	 */
-	//TODO : make previous one similar to DAMAGE_PHYS
-	private final static String C_OBJECT = "red";
-	private final static String C_CRITICAL = "rgb(204,0,0)";
-	private final static String C_TEST = "green";
-	private final static String C_STATUS = "rgb(0,128,255)";
-	private final static String DAMAGE_PHYS = "color: rgb(255,21,21); font: bold;";
-	private final static String ABSORBTION_PHYS = "color: rgb(255,21,21);";
-	private final static String ABSORBTION_MAG = "color: rgb(0, 204, 204);";
-	private final static String ITRAIT = "color: rgb(255, 153, 153);";
-	private final static String OCCUPIED_PLACE = "color: rgb(204, 0, 204);";
-	private final static String MONEY = "color: rgb(204, 204, 0)";
+	private final static String CSS_OBJECT = "red";
+	/**
+	 * CSS for critical hit?
+	 */
+	private final static String CSS_CRITICAL = "rgb(204,0,0)";
+	/**
+	 * CSS for test (chances).
+	 */
+	private final static String CSS_TEST = "green";
+	/**
+	 * CSS for {@link IStatus}.
+	 */
+	private final static String CSS_STATUS = "rgb(0,128,255)";
+	/**
+	 * CSS for physical damages.
+	 */
+	private final static String CSS_DAMAGE_PHYS = "color: rgb(255,21,21); font: bold;";
+	/**
+	 * CSS for physical damages absorption.
+	 */
+	private final static String CSS_ABSORBTION_PHYS = "color: rgb(255,21,21);";
+	/**
+	 * CSS for magical damages absorption.
+	 */
+	private final static String CSS_ABSORBTION_MAG = "color: rgb(0, 204, 204);";
+	/**
+	 * CSS for {@link ITrait}.
+	 */
+	private final static String CSS_ITRAIT = "color: rgb(255, 153, 153);";
+	/**
+	 * CSS for {@link objects.equipables.IEquipable.OccupiedPlace}.
+	 */
+	private final static String CSS_OCCUPIED_PLACE = "color: rgb(204, 0, 204);";
+	/**
+	 * CSS for money and value (in gold).
+	 */
+	private final static String CSS_MONEY = "color: rgb(204, 204, 0)";
 	
 	/**
 	 * The CSS used in the display of the logs
 	 */
 	public final static String CSS = "<style type=\"text/css\">" +
-								     "	.actor {color: " + C_ACTOR + ";}" +
-								     "	.object {color: " + C_OBJECT + ";}" +
-								     "	.critical {color: " + C_CRITICAL + ";}" +
-								     "	.test {color: " + C_TEST + ";}" +
-								     "	.status {color: " + C_STATUS + ";}" +
-								     "	.damageValuePhys {" + DAMAGE_PHYS + "}" +
-								     "	.absorbtionPhys {" + ABSORBTION_PHYS + "}" +
-								     "	.absorbtionMag {" + ABSORBTION_MAG + "}" +
-								     "	.iTrait {" + ITRAIT + "}" +
-								     "	.occupiedPlace {" + OCCUPIED_PLACE + "}" + 
-								     "	.money {" + MONEY + "}" +
+								     "	.actor {color: " + CSS_ACTOR + ";}" +
+								     "	.object {color: " + CSS_OBJECT + ";}" +
+								     "	.critical {color: " + CSS_CRITICAL + ";}" +
+								     "	.test {color: " + CSS_TEST + ";}" +
+								     "	.status {color: " + CSS_STATUS + ";}" +
+								     "	.damageValuePhys {" + CSS_DAMAGE_PHYS + "}" +
+								     "	.absorbtionPhys {" + CSS_ABSORBTION_PHYS + "}" +
+								     "	.absorbtionMag {" + CSS_ABSORBTION_MAG + "}" +
+								     "	.iTrait {" + CSS_ITRAIT + "}" +
+								     "	.occupiedPlace {" + CSS_OCCUPIED_PLACE + "}" + 
+								     "	.money {" + CSS_MONEY + "}" +
 								     "</style>";
 	
 	/**
-	 * Identification for specific html content (such as {@link Actor} or {@link IObject}).
-	 * @author Thomas
+	 * Identification for specific HTML content (such as {@link Actor} or {@link IObject}).
+	 * @author Thomas MEDARD
 	 * @see Fonts#wrapHtml(String, LogType)
 	 */
 	public enum LogType {
 		/**
-		 * {@link Actor}
+		 * {@link Actor}.
 		 */
 		ACTOR, 
 		/**
-		 * {@link Object}
+		 * {@link Object}.
 		 */
-		OBJECT, CRITICAL, TEST, STATUS, DAMAGE_PHYS, ABSORBTION_PHYS, ABSORBTION_MAG, ITRAIT, OCCUPIED_PLACE,
+		OBJECT, 
+		/**
+		 * Critical hit.
+		 */
+		CRITICAL, 
+		/**
+		 * Tests.
+		 */
+		TEST, 
+		/**
+		 * {@link IStatus}.
+		 */
+		STATUS,
+		/**
+		 * Physical damages.
+		 */
+		DAMAGE_PHYS, 
+		/**
+		 * Physical damages absorption.
+		 */
+		ABSORBTION_PHYS,
+		/**
+		 * Magical damages absorption.
+		 */
+		ABSORBTION_MAG, 
+		/**
+		 * {@link ITrait}.
+		 */
+		ITRAIT, 
+		/**
+		 * {@link objects.equipables.IEquipable.OccupiedPlace}.
+		 */
+		OCCUPIED_PLACE,
+		/**
+		 * Money and value (in gold).
+		 */
 		MONEY
 	}
 	
 	/**
-	 * Wraps a giver String with html tags.
+	 * Wraps a giver String with HTML tags.
 	 * @param text The String to wraps.
-	 * @param type The {@link LogType} to use for html tags (like {@link LogType#ACTOR}). Can be null for default text.
+	 * @param type The {@link LogType} to use for HTML tags (like {@link LogType#ACTOR}). Can be null for default text.
 	 * @return The wrapped String.
 	 */
 	public static String wrapHtml(final String text, final LogType type) {

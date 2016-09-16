@@ -16,7 +16,7 @@ import utilities.Fonts;
 
 /**
  * Standard metal armor
- * @author tmedard
+ * @author Thomas MEDARD
  *
  */
 public class Armor implements IArmor {
@@ -42,7 +42,7 @@ public class Armor implements IArmor {
 	 */
 	private final int value;
 	/**
-	 * The {@link ArmorType} of the {@link Armor}
+	 * The {@link objects.equipables.wearables.armors.IArmor.ArmorType} of the {@link Armor}
 	 */
 	private final ArmorType armorType;
 	/**
@@ -50,12 +50,12 @@ public class Armor implements IArmor {
 	 */
 	private final int armorValue;
 	/**
-	 * The {@link IStatus} applied when equiping the {@link Armor}.<br>
+	 * The {@link IStatus} applied when equipping the {@link Armor}.<br>
 	 * Will contains at least the {@link Armor#armorValue} provided by the {@link Armor}
 	 */
 	private Collection<IStatus> statusApllied;
 	/**
-	 * The {@link OccupiedPlace} of the {@link Armor}
+	 * The {@link objects.equipables.IEquipable.OccupiedPlace} of the {@link Armor}
 	 */
 	private final OccupiedPlace occupiedPlace;
 
@@ -97,21 +97,33 @@ public class Armor implements IArmor {
 		this.occupiedPlace = occupiedPlace;
 	}
 
+	/**
+	 * @see objects.equipables.wearables.armors.IArmor#getArmorValue()
+	 */
 	@Override
 	public int getArmorValue() {
 		return armorValue;
 	}
 
+	/**
+	 * @see objects.equipables.wearables.armors.IArmor#getArmorType()
+	 */
 	@Override
 	public ArmorType getArmorType() {
 		return armorType;
 	}
 
+	/**
+	 * @see objects.equipables.IEquipable#getRequiredTraits()
+	 */
 	@Override
 	public Collection<ITrait> getRequiredTraits() {
 		return requiredTraits;
 	}
 
+	/**
+	 * @see objects.equipables.IEquipable#applieOnEquipe(actor.Actor)
+	 */
 	@Override
 	public String applieOnEquipe(Actor target) throws GameException {
 		Iterator<IStatus> statusIter = statusApllied.iterator();
@@ -127,6 +139,9 @@ public class Armor implements IArmor {
 		return log;
 	}
 
+	/**
+	 * @see objects.equipables.IEquipable#removeApplieOnEquipe(actor.Actor)
+	 */
 	@Override
 	public void removeApplieOnEquipe(Actor target) throws GameException {
 		Iterator<IStatus> statusIter = statusApllied.iterator();
@@ -140,31 +155,49 @@ public class Armor implements IArmor {
 		this.name = this.name.substring(0, name.length() - 3);
 	}
 
+	/**
+	 * @see objects.equipables.IEquipable#getOccupiedPlace()
+	 */
 	@Override
 	public OccupiedPlace getOccupiedPlace() {
 		return occupiedPlace;
 	}
 
+	/**
+	 * @see objects.IObject#getName()
+	 */
 	@Override
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * @see objects.IObject#getDescription()
+	 */
 	@Override
 	public String getDescription() {
 		return description;
 	}
 
+	/**
+	 * @see objects.IObject#getWeight()
+	 */
 	@Override
 	public int getWeight() {
 		return weight;
 	}
 
+	/**
+	 * @see objects.IObject#getValue()
+	 */
 	@Override
 	public int getValue() {
 		return value;
 	}
 	
+	/**
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		try {
@@ -189,6 +222,9 @@ public class Armor implements IArmor {
 		return null;
 	}
 
+	/**
+	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
+	 */
 	@Override
 	public void update(Observable o, Object arg) {
 		

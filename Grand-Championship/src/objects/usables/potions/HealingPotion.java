@@ -6,8 +6,8 @@ import gameExceptions.GameException;
 import objects.RandomObject;
 
 /**
- * Standard healing potion
- * @author tmedard
+ * Standard healing potion.
+ * @author Thomas MEDARD
  *
  */
 public class HealingPotion implements IPotion {
@@ -54,6 +54,9 @@ public class HealingPotion implements IPotion {
 		useTime = 1;
 	}
 
+	/**
+	 * @see objects.usables.IUsable#use(actor.Actor, actor.Actor)
+	 */
 	@Override
 	public String use(Actor user, Actor target) throws GameException {
 
@@ -83,26 +86,41 @@ public class HealingPotion implements IPotion {
 		return target.getName() + " has been healed for " + realHealing + " PV";
 	}
 
+	/**
+	 * @see objects.IObject#getName()
+	 */
 	@Override
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * @see objects.IObject#getDescription()
+	 */
 	@Override
 	public String getDescription() {
 		return description;
 	}
 
+	/**
+	 * @see objects.IObject#getWeight()
+	 */
 	@Override
 	public int getWeight() {
 		return weight;
 	}
 
+	/**
+	 * @see objects.IObject#getValue()
+	 */
 	@Override
 	public int getValue() {
 		return value;
 	}
 	
+	/**
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		String potionStr = getName() + System.lineSeparator() +
@@ -112,6 +130,9 @@ public class HealingPotion implements IPotion {
 		return potionStr;
 	}
 
+	/**
+	 * @see objects.usables.IUsable#getUseTime()
+	 */
 	@Override
 	public int getUseTime() {
 		return useTime;

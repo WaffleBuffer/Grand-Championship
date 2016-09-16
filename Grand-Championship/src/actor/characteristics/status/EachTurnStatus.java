@@ -42,7 +42,7 @@ public class EachTurnStatus implements IStatus {
 	/**
 	 * The raw apply chancing of this {@link EachTurnStatus}.
 	 */
-	private int applyChances;
+	private float applyChances;
 	/**
 	 * The {@link actor.characteristics.traits.ITrait.TraitType} that is used to calculate the resistance. Can be null.
 	 */
@@ -68,7 +68,7 @@ public class EachTurnStatus implements IStatus {
 	 * {@code TEMPORARY} (effects applies one time but last some turn).
 	 */
 	public EachTurnStatus(String name, String description, Collection<ITraitModifier> traitModifiers,
-			final int nbTurns, final Boolean displayable, final int applyChances, final ITrait.TraitType resistance,
+			final int nbTurns, final Boolean displayable, final float applyChances, final ITrait.TraitType resistance,
 			final IStatus.StatusType type) {
 		super();
 		this.name = name;
@@ -257,7 +257,7 @@ public class EachTurnStatus implements IStatus {
 	 * @see actor.characteristics.status.IStatus#getApplyChances()
 	 */
 	@Override
-	public int getApplyChances() {
+	public float getApplyChances() {
 		return this.applyChances;
 	}
 
@@ -284,7 +284,7 @@ public class EachTurnStatus implements IStatus {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + applyChances;
+		result = prime * result + (int) applyChances;
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
 		result = prime * result + ((displayable == null) ? 0 : displayable.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());

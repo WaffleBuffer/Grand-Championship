@@ -6,7 +6,7 @@ import objects.IObject;
 
 /**
  * Usable object
- * @author tmedard
+ * @author Thomas MEDARD
  * @see IObject
  */
 public interface IUsable extends IObject {
@@ -16,7 +16,7 @@ public interface IUsable extends IObject {
 	 * @param user The {@link Actor} using the {@link IUsable}
 	 * @param target the {@link Actor} on which to use the {@link IUsable}
 	 * @return The log of the action
-	 * @throws GameException 
+	 * @throws GameException If there is a type probleme.
 	 */
 	public String use (final Actor user, final Actor target) throws GameException;
 	
