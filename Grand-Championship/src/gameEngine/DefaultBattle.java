@@ -82,13 +82,13 @@ public class DefaultBattle implements IBattleControler {
 		else {
 			actorIter = actors.iterator();
 			if (actorIter.hasNext()) {
-				log += turnControler.nextTurn(actors) + System.lineSeparator();
+				log += turnControler.nextTurn(actors) + "<br>";
 				currentActor = actorIter.next();
 				if (currentActor.isDead()) {
 					return finishBattle();
 				}
 				log += Fonts.wrapHtml(currentActor.getName(), LogType.ACTOR) + " <b>to move</b> <br>";
-				log += currentActor.getAi().play(this) + System.lineSeparator();
+				log += currentActor.getAi().play(this) + "<br>";
 				return log;
 			}
 			else {

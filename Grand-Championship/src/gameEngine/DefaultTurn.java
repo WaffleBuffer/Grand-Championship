@@ -7,6 +7,8 @@ import actor.Actor;
 import actor.characteristics.status.EachTurnStatus;
 import actor.characteristics.status.IStatus.StatusType;
 import gameExceptions.GameException;
+import utilities.Fonts;
+import utilities.Fonts.LogType;
 
 /**
  * The Default {@link ITurnControler}. Just apply all {@link EachTurnStatus}.
@@ -29,11 +31,16 @@ public class DefaultTurn implements ITurnControler {
 			final Iterator<EachTurnStatus> statusIter = currentActor.getEachTurnStatus().iterator();
 			
 			while (statusIter.hasNext()) {
+				
 				final EachTurnStatus currentStatus = statusIter.next();
+				
 				if (currentStatus.getType() == StatusType.EACH_TURN) {
-					log += currentStatus.applyEffect(currentActor) + System.lineSeparator();
+					log += Fonts.wrapHtml(currentActor.getName(), LogType.ACTOR) + " : " + 
+							currentStatus.applyEffect(currentActor) + "<br>";
 				}
+				
 				currentStatus.setNbTurns(currentStatus.getNbTurns() - 1);
+				
 				if (currentStatus.getNbTurns() <= 0) {
 					currentActor.removeStatus(currentStatus);
 				}

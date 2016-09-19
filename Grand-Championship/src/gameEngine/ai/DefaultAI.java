@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 import actor.Actor;
 import gameEngine.IBattleControler;
+import gameExceptions.GameException;
 
 /**
  * The default {@link AI}. It's just attacking with weapon for now.
@@ -25,10 +26,11 @@ public class DefaultAI implements AI {
 	}
 
 	/**
+	 * @throws GameException If there is an error in the attack function
 	 * @see gameEngine.ai.AI#play(gameEngine.IBattleControler)
 	 */
 	@Override
-	public String play(IBattleControler battle) {
+	public String play(IBattleControler battle) throws GameException {
 		if (actor.isDead()) {
 			return actor.getName() + " is dead and can't do anything";
 		}

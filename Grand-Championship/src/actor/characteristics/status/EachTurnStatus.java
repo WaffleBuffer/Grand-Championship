@@ -284,11 +284,8 @@ public class EachTurnStatus implements IStatus {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (int) applyChances;
-		result = prime * result + ((description == null) ? 0 : description.hashCode());
 		result = prime * result + ((displayable == null) ? 0 : displayable.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + nbTurn;
 		result = prime * result + ((resistance == null) ? 0 : resistance.hashCode());
 		result = prime * result + ((traitModifiers == null) ? 0 : traitModifiers.hashCode());
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
@@ -307,13 +304,6 @@ public class EachTurnStatus implements IStatus {
 		if (getClass() != obj.getClass())
 			return false;
 		EachTurnStatus other = (EachTurnStatus) obj;
-		if (applyChances != other.applyChances)
-			return false;
-		if (description == null) {
-			if (other.description != null)
-				return false;
-		} else if (!description.equals(other.description))
-			return false;
 		if (displayable == null) {
 			if (other.displayable != null)
 				return false;

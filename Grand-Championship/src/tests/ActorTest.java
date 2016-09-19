@@ -13,7 +13,8 @@ import actor.characteristics.traits.BasicTraitFactory;
 import actor.characteristics.traits.ITrait;
 import actor.characteristics.traits.ITrait.TraitType;
 import gameExceptions.GameException;
-import objects.equipables.IEquipable;
+import objects.equipables.ObjectEmplacement;
+import objects.equipables.ObjectEmplacement.PlaceType;
 import objects.equipables.weapons.IWeapon;
 import objects.equipables.weapons.meleWeapons.MeleWeapon;
 import objects.equipables.wearables.armors.IArmor;
@@ -66,6 +67,9 @@ public class ActorTest {
 			attackStatus.add(new EachTurnStatus("Spoon curse", "You have been cursed by a spoon, seriously?", modifiedTraits,
 					4, true, 70, null, IStatus.StatusType.TEMPORARY));
 			
+			Collection<PlaceType> objEmps = new LinkedList<PlaceType>();
+			objEmps.add(ObjectEmplacement.PlaceType.ONE_HAND);
+			
 			// Creating the actual MeleWeapon
 			MeleWeapon spoon = new MeleWeapon(
 					null, 
@@ -77,7 +81,7 @@ public class ActorTest {
 					3, 
 					weaponStatuss,
 					attackStatus,
-					IEquipable.OccupiedPlace.ONE_HAND);
+					objEmps);
 			
 			// Picking and equiping the Weapon
 			System.out.println(bob.pick(spoon));
@@ -87,6 +91,10 @@ public class ActorTest {
 			// Creation of the required ITrait to equip the Weapon
 			Collection<ITrait> required = new LinkedList<ITrait>();;
 			required.add(BasicTraitFactory.createBasicTrait(TraitType.STRENGTH, 8));
+			
+			objEmps = new LinkedList<PlaceType>();
+			objEmps.add(ObjectEmplacement.PlaceType.ONE_HAND);
+			objEmps.add(ObjectEmplacement.PlaceType.ONE_HAND);
 			
 			// Creation of the actual MeleWeapon
 			MeleWeapon bigHighDoubleHandedSword = new MeleWeapon(
@@ -99,7 +107,7 @@ public class ActorTest {
 					30, 
 					null,
 					null,
-					IEquipable.OccupiedPlace.BOTH_HANDS);
+					objEmps);
 			
 			try {
 				// Trying to picking it
@@ -112,6 +120,11 @@ public class ActorTest {
 			// Preparation of an nearly impossible to equipe Weapon
 			required = new LinkedList<ITrait>();
 			required.add(BasicTraitFactory.createBasicTrait(TraitType.STRENGTH, 5));
+			
+			objEmps = new LinkedList<PlaceType>();
+			objEmps.add(ObjectEmplacement.PlaceType.ONE_HAND);
+			objEmps.add(ObjectEmplacement.PlaceType.ONE_HAND);
+			
 			// Creation of the actual MeleWeapon
 			MeleWeapon theBigPoint = new MeleWeapon(
 					required, 
@@ -123,7 +136,7 @@ public class ActorTest {
 					20, 
 					null, 
 					null,
-					IEquipable.OccupiedPlace.BOTH_HANDS);
+					objEmps);
 			
 			// Pickin then trying to equip the Weapon
 			System.out.println(bob.pick(theBigPoint));
@@ -133,6 +146,9 @@ public class ActorTest {
 			catch (GameException e) {
 				e.printStackTrace();
 			}
+			
+			objEmps = new LinkedList<PlaceType>();
+			objEmps.add(ObjectEmplacement.PlaceType.TORSO);
 			
 			// Creation of some Armor
 			Armor metalPlates = new Armor(
@@ -144,7 +160,7 @@ public class ActorTest {
 					IArmor.ArmorType.PHYSICAL, 
 					20, 
 					null, 
-					IEquipable.OccupiedPlace.TORSO);
+					objEmps);
 			
 			// Picking then equiping the Armor
 			System.out.println(bob.pick(metalPlates));

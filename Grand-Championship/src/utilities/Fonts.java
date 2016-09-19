@@ -4,6 +4,7 @@ import actor.Actor;
 import actor.characteristics.status.IStatus;
 import actor.characteristics.traits.ITrait;
 import objects.IObject;
+import objects.equipables.ObjectEmplacement;
 
 /**
  * All the fonts for each type of things.
@@ -48,9 +49,9 @@ public abstract class Fonts {
 	 */
 	private final static String CSS_ITRAIT = "color: rgb(255, 153, 153);";
 	/**
-	 * CSS for {@link objects.equipables.IEquipable.OccupiedPlace}.
+	 * CSS for {@link ObjectEmplacement}.
 	 */
-	private final static String CSS_OCCUPIED_PLACE = "color: rgb(204, 0, 204);";
+	private final static String CSS_OBJECT_EMPLACEMENT = "color: rgb(204, 0, 204);";
 	/**
 	 * CSS for money and value (in gold).
 	 */
@@ -69,7 +70,7 @@ public abstract class Fonts {
 								     "	.absorbtionPhys {" + CSS_ABSORBTION_PHYS + "}" +
 								     "	.absorbtionMag {" + CSS_ABSORBTION_MAG + "}" +
 								     "	.iTrait {" + CSS_ITRAIT + "}" +
-								     "	.occupiedPlace {" + CSS_OCCUPIED_PLACE + "}" + 
+								     "	.occupiedPlace {" + CSS_OBJECT_EMPLACEMENT + "}" + 
 								     "	.money {" + CSS_MONEY + "}" +
 								     "</style>";
 	
@@ -116,9 +117,9 @@ public abstract class Fonts {
 		 */
 		ITRAIT, 
 		/**
-		 * {@link objects.equipables.IEquipable.OccupiedPlace}.
+		 * {@link ObjectEmplacement}.
 		 */
-		OCCUPIED_PLACE,
+		OBJECT_EMPLACEMENT,
 		/**
 		 * Money and value (in gold).
 		 */
@@ -158,7 +159,7 @@ public abstract class Fonts {
 		case ITRAIT:
 			html += "iTrait";
 			break;
-		case OCCUPIED_PLACE:
+		case OBJECT_EMPLACEMENT:
 			html += "occupiedPlace";
 			break;
 		case ABSORBTION_MAG:

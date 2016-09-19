@@ -13,7 +13,8 @@ import actor.characteristics.traits.ITrait;
 import gameEngine.DefaultBattle;
 import gameEngine.IBattleControler;
 import hmi.LogScreen;
-import objects.equipables.IEquipable;
+import objects.equipables.ObjectEmplacement;
+import objects.equipables.ObjectEmplacement.PlaceType;
 import objects.equipables.weapons.IWeapon;
 import objects.equipables.weapons.meleWeapons.MeleWeapon;
 import objects.equipables.wearables.armors.IArmor;
@@ -58,6 +59,8 @@ public class BattleTest {
 			attackStatus.add(new EachTurnStatus("Spoon curse", "You have been cursed by a spoon, seriously?", modifiedTraits,
 					4, true, 70, null, IStatus.StatusType.TEMPORARY));
 			
+			Collection <PlaceType> objEmps = new LinkedList<PlaceType>();
+			objEmps.add(ObjectEmplacement.PlaceType.ONE_HAND);
 			
 			// Creating his main weapon
 			MeleWeapon spoon = new MeleWeapon(
@@ -70,7 +73,7 @@ public class BattleTest {
 					3, 
 					weaponStatuss,
 					attackStatus,
-					IEquipable.OccupiedPlace.ONE_HAND);
+					objEmps);
 			
 			modifiedTraits = new LinkedList<ITraitModifier>();
 			modifiedTraits.add(new BasicTraitModifier(ITrait.TraitType.WILL, -2));
@@ -87,6 +90,9 @@ public class BattleTest {
 			attackStatus.add(new OneTimeStatus("DETERMINATION", "His determination to kill frightnes you !", modifiedTraits,
 					false, 6, null));
 			
+			objEmps = new LinkedList<PlaceType>();
+			objEmps.add(ObjectEmplacement.PlaceType.ONE_HAND);
+			
 			MeleWeapon OyaWeapon = new MeleWeapon(
 					null, 
 					"True Knife",
@@ -97,10 +103,13 @@ public class BattleTest {
 					21, 
 					null,
 					attackStatus,
-					IEquipable.OccupiedPlace.ONE_HAND);
+					objEmps);
 			
 			// Picking and equipping his main weapon
 			log.displayLog(bob.equip(spoon));
+			
+			objEmps = new LinkedList<PlaceType>();
+			objEmps.add(ObjectEmplacement.PlaceType.TORSO);
 			
 			// Creation of some Armor (yeah, bob is overpowered)
 			Armor metalPlates = new Armor(
@@ -112,7 +121,7 @@ public class BattleTest {
 					IArmor.ArmorType.PHYSICAL, 
 					20, 
 					null, 
-					IEquipable.OccupiedPlace.TORSO);
+					objEmps);
 			
 			// Picking then equipping the Armor
 			log.displayLog(bob.pick(metalPlates));
@@ -138,6 +147,8 @@ public class BattleTest {
 			attackStatus.add(new EachTurnStatus("Burning", "This guy is on fiiiire!", 
 					modifiedTraits, 3, true, 100, null, IStatus.StatusType.EACH_TURN));
 			
+			objEmps = new LinkedList<PlaceType>();
+			objEmps.add(ObjectEmplacement.PlaceType.ONE_HAND);
 			
 			// Creating his main weapon
 			MeleWeapon flammingsword = new MeleWeapon(
@@ -150,7 +161,7 @@ public class BattleTest {
 					20, 
 					null,
 					attackStatus,
-					IEquipable.OccupiedPlace.ONE_HAND);
+					objEmps);
 			
 			log.displayLog(bob.equip(flammingsword));
 

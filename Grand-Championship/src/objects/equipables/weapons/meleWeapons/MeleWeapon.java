@@ -9,6 +9,7 @@ import actor.Actor;
 import actor.characteristics.status.IStatus;
 import actor.characteristics.traits.ITrait;
 import gameExceptions.GameException;
+import objects.equipables.ObjectEmplacement.PlaceType;
 import objects.equipables.weapons.IWeapon;
 import utilities.Fonts;
 
@@ -17,6 +18,11 @@ import utilities.Fonts;
  * @author Thomas MEDARD
  */
 public class MeleWeapon implements IWeapon {
+	
+	/**
+	 * The {@link objects.equipables.IEquipable.EquipableType} of this {@link MeleWeapon}.
+	 */
+	private final EquipableType type = EquipableType.WEAPON;
 	
 	/**
 	 * The required {@link ITrait} to equip this.
@@ -55,9 +61,9 @@ public class MeleWeapon implements IWeapon {
 	 */
 	private Collection<IStatus> statusAplliedOnAttack;
 	/**
-	 * The location on the body of this.
+	 * The free locations on the body required to equip this.
 	 */
-	private final OccupiedPlace occupiedPlace;
+	private final Collection<PlaceType> objectEmplacements;
 	/**
 	 * The damage multiplier when the attack is critical.
 	 */
@@ -74,12 +80,12 @@ public class MeleWeapon implements IWeapon {
 	 * @param damageValue The raw damage value of this.
 	 * @param statusApllied The {@link Collection} of {@link IStatus} to apply on the owner when equipping this. Can be null.
 	 * @param statusAplliedOnAttack The {@link Collection} of {@link IStatus} to apply on the target when attacking someone. Can be null.
-	 * @param occupiedPlace The location on the body of this.
+	 * @param objectEmplacements The locations on the body of this.
 	 */
 	public MeleWeapon(final Collection<ITrait> requiredTraits, final String name, final String description, 
 			final int weight, final int value, final DamageType damageType, final int damageValue, 
 			final Collection<IStatus> statusApllied, final Collection<IStatus> statusAplliedOnAttack, 
-			final OccupiedPlace occupiedPlace) {
+			final Collection<PlaceType> objectEmplacements) {
 		super();
 		
 		this.requiredTraits = requiredTraits;
@@ -100,7 +106,7 @@ public class MeleWeapon implements IWeapon {
 		if (statusAplliedOnAttack == null) {
 			this.statusAplliedOnAttack = new LinkedList<IStatus>();
 		}
-		this.occupiedPlace = occupiedPlace;
+		this.objectEmplacements = objectEmplacements;
 		
 		// By default, critical attack doubles the damages.
 		this.criticalMultiplier = 2;
@@ -208,7 +214,7 @@ public class MeleWeapon implements IWeapon {
 		try {
 			String weaponStr = Fonts.wrapHtml(name, Fonts.LogType.OBJECT) + " : " + description + "<br>";
 			
-			weaponStr += occupiedPlace + "; ";
+			weaponStr += objectEmplacements + "<br>";
 			weaponStr += Fonts.wrapHtml(Integer.toString(damageValue), Fonts.LogType.DAMAGE_PHYS) + " " + damageType + " damage<br>" +
 					weight + " Kg; " + Fonts.wrapHtml(value + " $", Fonts.LogType.MONEY) + "<br>";
 			
@@ -230,11 +236,11 @@ public class MeleWeapon implements IWeapon {
 	}
 
 	/**
-	 * @see objects.equipables.IEquipable#getOccupiedPlace()
+	 * @see objects.equipables.IEquipable#getObjectEmplacements()
 	 */
 	@Override
-	public OccupiedPlace getOccupiedPlace() {
-		return occupiedPlace;
+	public Collection<PlaceType> getObjectEmplacements() {
+		return objectEmplacements;
 	}
 
 	/**
@@ -320,11 +326,16 @@ public class MeleWeapon implements IWeapon {
 	}
 	
 	/**
-	 * Create an {@link IWeapon} representing the fists.
+	 * Create an {@link IWeapon} representing the fists. (used when attacking without equipped weapon).
 	 * @param damage The damages of the fists.
 	 * @return The fists created.
 	 */
 	public static MeleWeapon getFists (final int damage) {
+		Collection<PlaceType> hands = new LinkedList<PlaceType>();
+		
+		hands.add(PlaceType.ONE_HAND);
+		hands.add(PlaceType.ONE_HAND);
+		
 		return new MeleWeapon(
 				null,
 				"Fists",
@@ -335,7 +346,7 @@ public class MeleWeapon implements IWeapon {
 				damage,
 				null,
 				null,
-				OccupiedPlace.BOTH_HANDS);
+				hands);
 	}
 
 	/**
@@ -352,5 +363,13 @@ public class MeleWeapon implements IWeapon {
 	@Override
 	public void setCriticalMultiplier(int criticalMultiplier) {
 		this.criticalMultiplier = criticalMultiplier;
+	}
+
+	/**
+	 * @see objects.equipables.IEquipable#getType()
+	 */
+	@Override
+	public EquipableType getType() {
+		return this.type;
 	}
 }

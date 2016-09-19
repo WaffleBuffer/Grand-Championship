@@ -12,6 +12,8 @@ import actor.characteristics.status.traitModifier.ITraitModifier;
 import actor.characteristics.status.traitModifier.StatModifier;
 import actor.characteristics.traits.ITrait;
 import gameExceptions.GameException;
+import objects.equipables.ObjectEmplacement.PlaceType;
+import objects.equipables.weapons.meleWeapons.MeleWeapon;
 import utilities.Fonts;
 
 /**
@@ -21,6 +23,10 @@ import utilities.Fonts;
  */
 public class Armor implements IArmor {
 	
+	/**
+	 * The {@link objects.equipables.IEquipable.EquipableType} of this {@link MeleWeapon}.
+	 */
+	private final EquipableType type = EquipableType.ARMOR;
 	/**
 	 * The required {@link ITrait} to wear this {@link Armor}
 	 */
@@ -54,10 +60,11 @@ public class Armor implements IArmor {
 	 * Will contains at least the {@link Armor#armorValue} provided by the {@link Armor}
 	 */
 	private Collection<IStatus> statusApllied;
+	
 	/**
-	 * The {@link objects.equipables.IEquipable.OccupiedPlace} of the {@link Armor}
+	 * The free locations on the body required to equip this.
 	 */
-	private final OccupiedPlace occupiedPlace;
+	private final Collection<PlaceType> objectEmplacements;
 
 	/**
 	 * The constructor
@@ -69,11 +76,11 @@ public class Armor implements IArmor {
 	 * @param armorType {@link Armor#armorType} of the {@link Armor}
 	 * @param armorValue {@link Armor#armorValue} of the {@link Armor}
 	 * @param statusApllied {@link Armor#statusApllied} of the {@link Armor} (can be null)
-	 * @param occupiedPlace {@link Armor#occupiedPlace} of the {@link Armor}
+	 * @param occupiedPlace {@link Armor#objectEmplacements} of the {@link Armor}
 	 */
 	public Armor(final Collection<ITrait> requiredTraits, final String name, final String description, 
 			final int weight, final int value, final ArmorType armorType, final int armorValue, 
-			final Collection<IStatus> statusApllied, final OccupiedPlace occupiedPlace) {
+			final Collection<IStatus> statusApllied, final Collection<PlaceType> occupiedPlace) {
 		super();
 		this.requiredTraits = requiredTraits;
 		if (requiredTraits == null) {
@@ -94,7 +101,7 @@ public class Armor implements IArmor {
 		armorModifier.add(new StatModifier(ITrait.TraitType.ARMOR, armorValue));
 		this.statusApllied.add(new OneTimeStatus(name, "Armor from " + name, armorModifier, false, 100, null));
 		
-		this.occupiedPlace = occupiedPlace;
+		this.objectEmplacements = occupiedPlace;
 	}
 
 	/**
@@ -156,11 +163,11 @@ public class Armor implements IArmor {
 	}
 
 	/**
-	 * @see objects.equipables.IEquipable#getOccupiedPlace()
+	 * @see objects.equipables.IEquipable#getObjectEmplacements()
 	 */
 	@Override
-	public OccupiedPlace getOccupiedPlace() {
-		return occupiedPlace;
+	public Collection<PlaceType> getObjectEmplacements() {
+		return objectEmplacements;
 	}
 
 	/**
@@ -203,7 +210,7 @@ public class Armor implements IArmor {
 		try {
 			String armorStr = Fonts.wrapHtml(name, Fonts.LogType.OBJECT) + " : " + description + "<br>";
 
-			armorStr += occupiedPlace + " ";
+			armorStr += objectEmplacements + "<br>";
 			armorStr += Fonts.wrapHtml(Integer.toString(armorValue), (armorType == ArmorType.PHYSICAL ? Fonts.LogType.ABSORBTION_PHYS : Fonts.LogType.ABSORBTION_MAG)) + 
 					" " + armorType + " armor" + System.lineSeparator() +
 					weight + " Kg, " + Fonts.wrapHtml(value + " $", Fonts.LogType.MONEY)  + "<br>";
@@ -271,5 +278,13 @@ public class Armor implements IArmor {
 			}
 		}
 		
+	}
+
+	/**
+	 * @see objects.equipables.IEquipable#getType()
+	 */
+	@Override
+	public EquipableType getType() {
+		return this.type;
 	}
 }

@@ -8,7 +8,7 @@ import actor.characteristics.status.IStatus;
 import actor.characteristics.traits.ITrait;
 import gameExceptions.GameException;
 import objects.IObject;
-import utilities.Fonts;
+import objects.equipables.ObjectEmplacement.PlaceType;
 
 /**
  * TODO : put equip function in this class.
@@ -19,58 +19,18 @@ import utilities.Fonts;
 public interface IEquipable extends IObject, Observer {
 	
 	/**
+	 * The type of this {@link IEquipable}
 	 * @author Thomas MEDARD
 	 */
-	public enum OccupiedPlace {
+	public enum EquipableType {
 		/**
-		 * One hand location.
+		 * A weapon that can attack
 		 */
-		ONE_HAND("One hand"), 
+		WEAPON, 
 		/**
-		 * Legs location.
+		 * An armor
 		 */
-		LEGS("Legs"),
-		/**
-		 * Both hands location.
-		 */
-		BOTH_HANDS("Both hands"),
-		/**
-		 * Head location.
-		 */
-		HEAD("Head"),
-		/**
-		 * Torso location.
-		 */
-		TORSO("Torso"),
-		/**
-		 * Left hand location.
-		 */
-		LEFT_HAND("Left hand"),
-		/**
-		 * Right hand location.
-		 */
-		RIGHT_HAND("Right hand");
-		
-		/**
-		 * The displayed name of this {@link OccupiedPlace}'s name.
-		 */
-		private final String name;
-		
-		/**
-		 * The constructor
-		 * @param name The name (displayed) of the place.
-		 */
-		private OccupiedPlace(final String name) {
-			this.name = name;
-		}
-		
-		/**
-		 * @see java.lang.Enum#toString()
-		 */
-		@Override
-		public String toString() {
-			return Fonts.wrapHtml(this.name, Fonts.LogType.OCCUPIED_PLACE);
-		}
+		ARMOR
 	}
 
 	/**
@@ -95,10 +55,14 @@ public interface IEquipable extends IObject, Observer {
 	public void removeApplieOnEquipe(Actor target) throws GameException;
 	
 	/**
-	 * Get the {@link OccupiedPlace} of this.
-	 * @return The {@link OccupiedPlace} of this.
+	 * Get the {@link ObjectEmplacement} of this.
+	 * @return The {@link ObjectEmplacement} of this.
 	 */
-	public OccupiedPlace getOccupiedPlace ();
+	public Collection<PlaceType> getObjectEmplacements ();
 	
-	// TODO : create equip(Actor).
+	/**
+	 * Get the {@link EquipableType} of this {@link IEquipable}.
+	 * @return The {@link EquipableType} of this {@link IEquipable}.
+	 */
+	public EquipableType getType();
 }
