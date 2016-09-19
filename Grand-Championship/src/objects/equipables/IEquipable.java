@@ -11,8 +11,6 @@ import objects.IObject;
 import objects.equipables.ObjectEmplacement.PlaceType;
 
 /**
- * TODO : put equip function in this class.
- * TODO : create a OccupiedPlace class with equipped object.
  * An {@link IObject} which can be equipped.
  * @author Thomas MEDARD
  */

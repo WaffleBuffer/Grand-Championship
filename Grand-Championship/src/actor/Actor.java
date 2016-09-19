@@ -330,7 +330,6 @@ public class Actor extends Observable{
 	}
 	
 	/**
-	 * TODO: Use equip in IEquipable
 	 * Equip an {@link IObject} in the first free {@link ObjectEmplacement}.
 	 * @param equipObject The {@link IObject} to equip.
 	 * @return The result of the action.

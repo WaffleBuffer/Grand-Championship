@@ -80,7 +80,7 @@ public class MeleWeapon implements IWeapon {
 	 * @param damageValue The raw damage value of this.
 	 * @param statusApllied The {@link Collection} of {@link IStatus} to apply on the owner when equipping this. Can be null.
 	 * @param statusAplliedOnAttack The {@link Collection} of {@link IStatus} to apply on the target when attacking someone. Can be null.
-	 * @param objectEmplacements The locations on the body of this.
+	 * @param objectEmplacements The locations taken on the body for equipping this.
 	 */
 	public MeleWeapon(final Collection<ITrait> requiredTraits, final String name, final String description, 
 			final int weight, final int value, final DamageType damageType, final int damageValue, 
